@@ -4,24 +4,27 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "Favorites")
+@Table(name = "CartItems")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Favorites {
+public class CartItems {
 
     @Id
-    @Column(name = "FavoriteID")
+    @Column(name = "CartItemID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long favoriteId;
+    private Long cartItemId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CartID", nullable=false)
+    private Cart cart;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="ProductID", nullable=false)
 //    private Products products;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="UserID", nullable=false)
-//    private Users users;
-
+    @Column(name = "Quantity")
+    private Integer quantity;
 }
+
