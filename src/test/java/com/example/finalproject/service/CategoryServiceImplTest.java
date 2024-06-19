@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
 import com.example.finalproject.repository.CategoryJpaRepository;
 import org.junit.jupiter.api.Test;
@@ -12,9 +13,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -32,6 +33,22 @@ public class CategoryServiceImplTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(categoryJpaRepository).findAll();
+    }
+    @Test
+    void getCategoryById_WhenCategoryExists(){
+        Long id = 1L;
+        CategoryEntity categoryEntity = new CategoryEntity();
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(categoryEntity));
+        CategoryEntity result = categoryServiceImpl.getById(id);
+        assertNotNull(result);
+        verify(categoryJpaRepository).findById(id);
+    }
+    @Test
+    void getCategoryById_WhenCategoryDoesNotExist(){
+        Long id = 1L;
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.empty());
+        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.getById(id));
+        verify(categoryJpaRepository).findById(id);
     }
     @Test
     void createCategory(){

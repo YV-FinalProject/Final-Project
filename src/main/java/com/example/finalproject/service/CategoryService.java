@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface CategoryService {
     List<CategoryEntity> getAll();
+    CategoryEntity getById(Long id);
     CategoryEntity create(CategoryCreateDto categoryCreateDto);
 }

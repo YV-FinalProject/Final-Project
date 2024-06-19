@@ -3,6 +3,7 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.dto.CategoryDto;
 import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
 import com.example.finalproject.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +59,27 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].name", is("Kosa")));
         verify(categoryService,times(1)).getAll();
+    }
+    @Test
+    public void getCategoryByIdTest() throws Exception{
+        Long id = 1L;
+        CategoryEntity categoryEntity = new CategoryEntity(id, "Sapa",null);
+        CategoryDto categoryDto = new CategoryDto(id, "Sapa");
+        given(categoryService.getById(id)).willReturn(categoryEntity);
+        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(categoryDto);
+        mockMvc.perform(get("/v1/categories/{id}", id))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(id.intValue())))
+                .andExpect(jsonPath("$.name", is("Sapa")));
+    }
+    @Test
+    void testGetCategoryByIdNotFound() throws Exception{
+        Long id = 1L;
+        when(categoryService.getById(id)).thenThrow(new CategoryNotFoundException("Категория не найдена."));
+        mockMvc.perform(get("/v1/categories/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error", is("Категория не найдена.")));
     }
     @Test
     public void createCategoryTest() throws Exception{

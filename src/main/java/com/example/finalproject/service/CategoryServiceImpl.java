@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
 import com.example.finalproject.repository.CategoryJpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,13 @@ public class CategoryServiceImpl implements CategoryService{
     public List<CategoryEntity> getAll() {
         log.debug("Извлечение всех категорий");
         return categoryJpaRepository.findAll();
+    }
+
+    @Override
+    public CategoryEntity getById(Long id) {
+        log.debug("Получение категории по идентификатору id: {}", id);
+        return categoryJpaRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Категория с " +
+                "идентификатором id" + id + "не найдено."));
     }
 
     @Override

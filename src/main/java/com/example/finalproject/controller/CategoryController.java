@@ -31,6 +31,12 @@ public class CategoryController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(categoryDtoList);
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryDto> getById(@PathVariable Long id){
+        log.debug("Получен запрос на получение категории по идентификатору ID: {}", id);
+        CategoryEntity categoryEntity = categoryService.getById(id);
+        return ResponseEntity.ok(categoryMapper.toDto(categoryEntity));
+    }
     @PostMapping
     public ResponseEntity<CategoryDto> create(@RequestBody CategoryCreateDto categoryCreateDto){
         log.debug("Получен запрос на создание новой категории: {}", categoryCreateDto.getName());
