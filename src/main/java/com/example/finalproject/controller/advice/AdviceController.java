@@ -1,6 +1,5 @@
 package com.example.finalproject.controller.advice;
 
-
 import org.modelmapper.spi.ErrorMessage;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -40,4 +39,5 @@ public class AdviceController {
                     .status(HttpStatus.I_AM_A_TEAPOT)
                     .body(new ErrorMessage("Sorry, something went wrong!"));
         }
+
 }
