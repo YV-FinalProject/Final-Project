@@ -1,4 +1,7 @@
 package com.example.finalproject.entity.enums;
 
-public class Role {
+public enum Role {
+    CLIENT,
+    ADMINISTRATOR
+
 }
