@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItemsDto {
+public class CartItemDto {
 
     private Long cartItemId;
 
@@ -25,5 +25,4 @@ public class CartItemsDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("cart")
     private CartDto cart;
-
 }

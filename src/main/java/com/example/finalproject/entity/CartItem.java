@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartItems {
+public class CartItem {
 
     @Id
     @Column(name = "CartItemID")
@@ -22,7 +22,7 @@ public class CartItems {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="ProductID", nullable=false)
-//    private Products products;
+//    private Product product;
 
     @Column(name = "Quantity")
     private Integer quantity;
