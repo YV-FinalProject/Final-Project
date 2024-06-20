@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.exceptions.CategoryInvalidArgumentException;
 import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
 import com.example.finalproject.repository.CategoryJpaRepository;
@@ -65,5 +66,39 @@ public class CategoryServiceImplTest {
         assertEquals("Test Category", result.getName());
         verify(categoryMapper).createDtoToEntity(any(CategoryCreateDto.class));
         verify(categoryJpaRepository).save(any(CategoryEntity.class));
+    }
+    @Test
+    void editCategory_WhenCategoryExists(){
+        Long id = 1L;
+        CategoryCreateDto categoryCreateDto = new CategoryCreateDto();
+        categoryCreateDto.setName("Updated Name");
+        CategoryEntity categoryEntity = new CategoryEntity();
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(categoryEntity));
+        when(categoryJpaRepository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
+        CategoryEntity result = categoryServiceImpl.edit(id, categoryCreateDto);
+        assertNotNull(result);
+        assertEquals("Updated Name", result.getName());
+        verify(categoryJpaRepository).save(categoryEntity);
+        verify(categoryJpaRepository).findById(id);
+    }
+    @Test
+    void editCategory_WhenCategoryDoesNotExist(){
+        Long id = 1L;
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.empty());
+        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.edit(id, new CategoryCreateDto()));
+    }
+    @Test
+    void deleteCategory_WhenCategoryExist(){
+        Long id = 1L;
+        when(categoryJpaRepository.existsById(id)).thenReturn(true);
+        categoryServiceImpl.delete(id);
+        verify(categoryJpaRepository).deleteById(id);
+    }
+    @Test
+    void deleteCategory_WhenCategoryDoesNotExist(){
+        Long id = 1L;
+        when(categoryJpaRepository.existsById(id)).thenReturn(false);
+        assertThrows(CategoryNotFoundException.class, ()  -> categoryServiceImpl.delete(id));
+        verify(categoryJpaRepository, never()).deleteById(id);
     }
 }

@@ -9,4 +9,7 @@ public interface CategoryService {
     List<CategoryEntity> getAll();
     CategoryEntity getById(Long id);
     CategoryEntity create(CategoryCreateDto categoryCreateDto);
+
+    CategoryEntity edit(Long id, CategoryCreateDto categoryCreateDto);
+    void delete(Long id);
 }

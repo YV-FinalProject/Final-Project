@@ -78,7 +78,8 @@ public class CategoryControllerTest {
         when(categoryService.getById(id)).thenThrow(new CategoryNotFoundException("Категория не найдена."));
         mockMvc.perform(get("/v1/categories/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.error", is("Категория не найдена.")));
     }
     @Test
     public void createCategoryTest() throws Exception{
@@ -93,6 +94,28 @@ public class CategoryControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Sapa")));
+    }
+    @Test
+    public void editCategoryTest() throws Exception{
+        Long id = 1L;
+        CategoryCreateDto categoryCreateDto = new CategoryCreateDto("Sapa2");
+        CategoryEntity updatedEntity = new CategoryEntity(id, "Sapa2", null);
+        CategoryDto updatedDto = new CategoryDto(id, "Sapa2");
+        given(categoryService.edit(eq(id), any(CategoryCreateDto.class))).willReturn(updatedEntity);
+        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(updatedDto);
+        mockMvc.perform(put("/v1/categories/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(categoryCreateDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(id.intValue())))
+                .andExpect(jsonPath("$.name", is("Sapa2")));
+    }
+    @Test
+    public void deleteCategoryTest() throws Exception{
+        Long id = 1L;
+        doNothing().when(categoryService).delete(id);
+        mockMvc.perform(delete("/v1/categories/{id}", id))
+                .andExpect(status().isNoContent());
     }
 }
 

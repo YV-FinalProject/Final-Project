@@ -39,4 +39,29 @@ public class CategoryServiceImpl implements CategoryService{
         log.debug("Категория успешно создана с идентификатором: {}");
         return savedEntity;
     }
+
+    @Override
+    public CategoryEntity edit(Long id, CategoryCreateDto categoryCreateDto) {
+        log.debug("Редактирование категории с идентификатором: {}", id);
+        return categoryJpaRepository.findById(id).map(category ->{
+            category.setName(categoryCreateDto.getName());
+            CategoryEntity updateCategory = categoryJpaRepository.save(category);
+            log.debug("Категория с идентификатором: {} успешно обновлена" , id);
+            return updateCategory;
+        }).orElseThrow(() -> {
+            log.error("Категория с идентификатором {} не найдена для обновления", id);
+            return new CategoryNotFoundException("Категория с идентификатором " + id + " не найдено.");
+        });
+    }
+
+    @Override
+    public void delete(Long id) {
+        log.debug("Удаление категории с идентификатором: {}", id);
+        if(!categoryJpaRepository.existsById(id)){
+            log.error("Категория с идентификатором {} не найдена для удаления", id);
+            throw new CategoryNotFoundException("Категория не найдена.");
+        }
+        categoryJpaRepository.deleteById(id);
+        log.debug("Категория с идентификатором: {} успешно удалена.", id);
+    }
 }
