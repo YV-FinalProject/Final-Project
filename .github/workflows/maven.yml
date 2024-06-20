@@ -28,7 +28,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Turn off liquibase
-      run: sed -i src/main/resources/application.properties 's|spring.liquibase.enabled=true|spring.liquibase.enabled=false|'
+      run: sed -i 's|spring.liquibase.enabled=true|spring.liquibase.enabled=false|' src/main/resources/application.properties
     - name: Maven - Validate
       run: mvn -B -f pom.xml validate
     - name: Maven - Compile
