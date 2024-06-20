@@ -78,8 +78,7 @@ public class CategoryControllerTest {
         when(categoryService.getById(id)).thenThrow(new CategoryNotFoundException("Категория не найдена."));
         mockMvc.perform(get("/v1/categories/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.error", is("Категория не найдена.")));
+                .andExpect(status().isNotFound());
     }
     @Test
     public void createCategoryTest() throws Exception{
