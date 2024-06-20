@@ -40,10 +40,9 @@ public class User {
     @OneToOne(mappedBy = "Users")
     private Cart cart;
 
-//    @OneToMany(mappedBy = "Users")
-//    private List<Order> orders;
-//
-//    @OneToMany(mappedBy = "Users")
-//    private List<Favorit> favorites;
+    @OneToMany(mappedBy = "Users")
+    private List<Order> orders;
 
+    @OneToMany(mappedBy = "Users")
+    private List<Favorit> favorites;
 }
