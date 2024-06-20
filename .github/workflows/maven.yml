@@ -21,12 +21,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 22
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '22'
+        java-version: '21'
         distribution: 'temurin'
         cache: maven
+    - name: Turn off liquibase
+      run: sed -i src/main/resources/application.properties 's|spring.liquibase.enabled=true|spring.liquibase.enabled=false|'
     - name: Maven - Validate
       run: mvn -B -f pom.xml validate
     - name: Maven - Compile
