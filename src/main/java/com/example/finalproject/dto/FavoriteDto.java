@@ -7,13 +7,13 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FavoritesDto {
+public class FavoriteDto {
 
     private Long favoriteId;
     private Long  productId;
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("users")
-//    private UsersDto users;
+//    @JsonProperty("user")
+//    private UserDto user;
 
 }

@@ -12,7 +12,7 @@ public class CartDto {
     private Long cartId;
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("users")
-//    private UsersDto users;
+//    @JsonProperty("user")
+//    private UserDto uses;
 
 }

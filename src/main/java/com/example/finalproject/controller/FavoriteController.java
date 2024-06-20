@@ -1,4 +1,4 @@
 package com.example.finalproject.controller;
 
-public class FavoritesController {
+public class FavoriteController {
 }

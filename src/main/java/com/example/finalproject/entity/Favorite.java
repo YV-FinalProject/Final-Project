@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Favorites {
+public class Favorite {
 
     @Id
     @Column(name = "FavoriteID")
@@ -18,10 +18,10 @@ public class Favorites {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="ProductID", nullable=false)
-//    private Products products;
+//    private Product product;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name="UserID", nullable=false)
-//    private Users users;
+//    private User user;
 
 }

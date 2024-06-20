@@ -20,10 +20,10 @@ public class Cart {
     private Long cartId;
 
 //    @OneToMany(mappedBy = "Cart", cascade = CascadeType.ALL)
-//    private Set<CartItems> cartItems = new HashSet<>();
+//    private Set<CartItem> cartItems = new HashSet<>();
 
 //    @OneToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "UserID", nullable=false, referencedColumnName = "UserID")
-//    private Users users;
+//    private User user;
 
 }
