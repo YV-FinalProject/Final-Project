@@ -1,11 +1,11 @@
 package com.example.finalproject.mapper;
 
 import com.example.finalproject.dto.CartDto;
-import com.example.finalproject.dto.CartItemsDto;
-import com.example.finalproject.dto.FavoritesDto;
+import com.example.finalproject.dto.CartItemDto;
+import com.example.finalproject.dto.FavoriteDto;
 import com.example.finalproject.entity.Cart;
-import com.example.finalproject.entity.CartItems;
-import com.example.finalproject.entity.Favorites;
+import com.example.finalproject.entity.CartItem;
+import com.example.finalproject.entity.Favorite;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -32,12 +32,12 @@ public class Mappers {
 //        return modelMapper.map(usersDto, Users.class);
 //    }
 
-    public FavoritesDto convertToFavoritesDto(Favorites favorites) {
-        return modelMapper.map(favorites, FavoritesDto.class);
+    public FavoriteDto convertToFavoritesDto(Favorite favorites) {
+        return modelMapper.map(favorites, FavoriteDto.class);
     }
 
-    public Favorites convertToFavorites(FavoritesDto favoritesDto) {
-        return modelMapper.map(favoritesDto, Favorites.class);
+    public Favorite convertToFavorites(FavoriteDto favoritesDto) {
+        return modelMapper.map(favoritesDto, Favorite.class);
     }
 
     public CartDto convertToCartDto(Cart cart) {
@@ -55,12 +55,12 @@ public class Mappers {
         return modelMapper.map(cartDto, Cart.class);
     }
 
-    public CartItemsDto convertToCartItemsDto(CartItems cartItems) {
-        return modelMapper.map(cartItems, CartItemsDto.class);
+    public CartItemDto convertToCartItemsDto(CartItem cartItems) {
+        return modelMapper.map(cartItems, CartItemDto.class);
     }
 
-    public CartItems convertToCartItems(CartItemsDto cartItemsDto) {
-        return modelMapper.map(cartItemsDto, CartItems.class);
+    public CartItem convertToCartItems(CartItemDto cartItemsDto) {
+        return modelMapper.map(cartItemsDto, CartItem.class);
     }
 
 //    public OrdersDto convertToOrdersDto(Orders orders) {

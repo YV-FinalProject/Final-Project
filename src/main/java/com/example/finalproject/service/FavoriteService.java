@@ -1,4 +1,4 @@
 package com.example.finalproject.service;
 
-public class FavoritesService {
+public class FavoriteService {
 }
