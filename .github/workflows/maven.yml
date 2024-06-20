@@ -29,6 +29,8 @@ jobs:
         cache: maven
     - name: Turn off liquibase
       run: sed -i 's|spring.liquibase.enabled=true|spring.liquibase.enabled=false|' src/main/resources/application.properties
+    - name: Turn off Spring Data Auto Configuration
+      run: echo 'spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration, org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration, org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration' > src/main/resources/application.properties
     - name: Maven - Validate
       run: mvn -B -f pom.xml validate
     - name: Maven - Compile
