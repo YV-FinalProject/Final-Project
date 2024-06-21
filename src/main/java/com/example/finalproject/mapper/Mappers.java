@@ -3,9 +3,11 @@ package com.example.finalproject.mapper;
 import com.example.finalproject.dto.CartDto;
 import com.example.finalproject.dto.CartItemDto;
 import com.example.finalproject.dto.FavoriteDto;
+import com.example.finalproject.dto.ProductDto;
 import com.example.finalproject.entity.Cart;
 import com.example.finalproject.entity.CartItem;
 import com.example.finalproject.entity.Favorite;
+import com.example.finalproject.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -78,4 +80,15 @@ public class Mappers {
 //    public OrderItems convertToOrderItems(OrderItemsDto orderItemsDto) {
 //        return modelMapper.map(orderItemsDto, OrderItems.class);
 //    }
+
+
+    public ProductDto convertToProductDto(Product product) {
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        return productDto;
+    }
+
+    public Product convertToProduct(ProductDto productDto) {
+        Product product = modelMapper.map(productDto, Product.class);
+        return product;
+    }
 }
