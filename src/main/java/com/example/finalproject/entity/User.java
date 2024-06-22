@@ -31,7 +31,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "PasswordHash")
-    private String passwordHash;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
@@ -44,5 +44,5 @@ public class User {
     private List<Order> orders;
 
     @OneToMany(mappedBy = "Users")
-    private List<Favorit> favorites;
+    private List<Favorite> favorites;
 }

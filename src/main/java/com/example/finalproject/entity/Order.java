@@ -21,7 +21,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "OrderID") //
-    private long orderId;
+    private Long orderId;
 
     @Column(name = "CreatedAt")
     private Timestamp createdAt; //
@@ -35,17 +35,17 @@ public class Order {
     @Column(name = "DeliveryMethod")
     private String deliveryMethod; //
 
-    @Column(name = "Status")
-    @Enumerated(EnumType.STRING)
-    private Status status; //
+//    @Column(name = "Status")
+//    @Enumerated(EnumType.STRING)
+//    private Status status; //
 
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt; //
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private Set<OrderItems> orderItems = new HashSet<>();
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID") //
-    private User user;
+    private User user;//
 }
