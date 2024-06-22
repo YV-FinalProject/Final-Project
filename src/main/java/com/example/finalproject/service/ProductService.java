@@ -1,7 +1,6 @@
 package com.example.finalproject.service;
 
 
-import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.ProductDto;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +54,7 @@ public class ProductService {
            if  (productToUpdate != null){
                         productToUpdate.setName(productDto.getName());
                         productToUpdate.setDescription(productDto.getDescription());
-                        productToUpdate.setImageURL(productDto.getImageURL());
+                        productToUpdate.setImageURL(productDto.getImage());
                         productToUpdate.setPrice(productDto.getPrice());
                         productToUpdate.setCategoryId(productDto.getCategoryId());   // Поменять на нормальное значение Категории
                         productToUpdate.setProductId(id);
@@ -70,5 +66,4 @@ public class ProductService {
         else {
              throw new InvalidValueExeption("The value you entered is not valid."); }
     }
-
 }

@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
@@ -30,15 +28,13 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto insertProduct(@RequestBody ProductDto productsDto) {
+    public ProductDto insertProduct(@RequestBody @Valid ProductDto productsDto) {
         return productService.insertProduct(productsDto);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto updateProducts(@RequestBody ProductDto productsDto,@PathVariable Long id) {
+    public ProductDto updateProducts(@RequestBody @Valid ProductDto productsDto,@PathVariable Long id) {
         return productService.updateProduct(productsDto, id);
     }
-
-
 }

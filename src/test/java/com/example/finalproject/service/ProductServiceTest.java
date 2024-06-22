@@ -1,11 +1,9 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.controller.ProductController;
 import com.example.finalproject.dto.ProductDto;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.ProductRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,15 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -32,9 +25,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -64,7 +54,7 @@ class ProductServiceTest {
                 .name("Name 1")
                 .description("Description")
                 .price(new BigDecimal("100.00"))
-                .imageURL("http::/localhost/img/1.jpg")
+                .image("http::/localhost/img/1.jpg")
                 .CategoryId(1L)
                 .build();
         productExpected = new Product(1L,

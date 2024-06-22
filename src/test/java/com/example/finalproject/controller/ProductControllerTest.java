@@ -1,10 +1,8 @@
 package com.example.finalproject.controller;
 
 
-import com.example.finalproject.controller.ProductController;
 import com.example.finalproject.dto.ProductDto;
 import com.example.finalproject.service.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,12 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
 
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +36,7 @@ class ProductControllerTest {
     private ProductService productServiceMock;
 
     private ProductDto productExpected1, productExpected2;
+
     @Autowired
     private ProductService productService;
 
@@ -51,14 +46,14 @@ class ProductControllerTest {
                 .name("Name 1")
                 .description("Description 1")
                 .price(new BigDecimal("100.00"))
-                .imageURL("http::/localhost/img/1.jpg")
+                .image("http::/localhost/img/1.jpg")
                 .CategoryId(1L)
                 .build();
         productExpected2 = ProductDto.builder()
                 .name("Name 1")
                 .description("Description 2")
                 .price(new BigDecimal("101.00"))
-                .imageURL("http::/localhost/img/2.jpg")
+                .image("http::/localhost/img/2.jpg")
                 .CategoryId(1L)
                 .build();
     }

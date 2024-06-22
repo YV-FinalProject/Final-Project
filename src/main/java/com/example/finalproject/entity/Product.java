@@ -9,8 +9,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "Products")
@@ -21,7 +19,7 @@ import java.util.Set;
 public class Product {
 
     @Id
-    @Column(name = "ProductId")
+    @Column(name = "ProductID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
