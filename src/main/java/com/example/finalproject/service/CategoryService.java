@@ -45,7 +45,7 @@ public class CategoryService {
     public void updateCategory(CategoryDto categoryDto, Long id) {
         if (id > 0) {
             Category category = categoryRepository.findById(id).orElse(null);
-            if (category !=null) {
+            if (category != null) {
                 categoryDto.setCategoryId(id);
                 categoryRepository.save(mappers.convertToCategory(categoryDto));
         }}
