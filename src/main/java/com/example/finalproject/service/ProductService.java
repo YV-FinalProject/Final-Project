@@ -24,8 +24,8 @@ public class ProductService {
     public ProductResponseDto getProductById(Long id) {
             Product productResponse = productRepository.findById(id).orElse(null);
             if (productResponse != null) {
-                    ProductResponseDto getProductResponseDto = mappers.convertToProductResponseDto(productResponse);
-                    return getProductResponseDto;
+                return mappers.convertToProductResponseDto(productResponse);
+
             } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
             }
@@ -40,7 +40,7 @@ public class ProductService {
     }
 
     public void insertProduct(ProductRequestDto productRequestDto) {
-        if (productRequestDto.getCategoryId() != null) {
+        if (productRequestDto.getCategory() != null) {
             Product productToInsert = mappers.convertToProductRequest(productRequestDto);     //  Добавить поиск категории по названию
             productToInsert.setProductId(0L);
             productToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
@@ -59,12 +59,13 @@ public class ProductService {
                         productToUpdate.setImageURL(productRequestDto.getImageURL());
                         productToUpdate.setPrice(productRequestDto.getPrice());
                         productToUpdate.setDiscountPrice(productRequestDto.getDiscountPrice());
-                        productToUpdate.setCategoryId(productRequestDto.getCategoryId());   // Поменять на нормальное значение Категории
+//                        productToUpdate.setCategory(productRequestDto.getCategory().get);   // Поменять на нормальное значение Категории
                         productToUpdate.setProductId(id);
                         productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                         productRepository.save(productToUpdate);
-        }
-        else {
+        } else {
+               throw new DataNotFoundInDataBaseException("Data not found in database.");
+           } } else {
              throw new InvalidValueExeption("The value you entered is not valid."); }
-    }}
+    }
 }

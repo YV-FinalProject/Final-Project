@@ -1,10 +1,7 @@
 package com.example.finalproject.mapper;
 
 import com.example.finalproject.dto.*;
-import com.example.finalproject.entity.Cart;
-import com.example.finalproject.entity.CartItem;
-import com.example.finalproject.entity.Favorite;
-import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -93,5 +90,13 @@ public class Mappers {
 
     public Product convertToProductResponse(ProductResponseDto productResponseDto) {
         return modelMapper.map(productResponseDto, Product.class);
+    }
+
+    public CategoryDto convertToCategoryDto(Category category) {
+        return modelMapper.map(category, CategoryDto.class);
+    }
+
+    public Category convertToCategory(CategoryDto categoriesDto) {
+        return modelMapper.map(categoriesDto, Category.class);
     }
 }
