@@ -47,11 +47,11 @@ public class Product {
     private Timestamp updatedAt;
 
 
-//   @ManyToOne(fetch = FetchType.LAZY)
-//   @JoinColumn(name = "CategoryId")
-//    private Categories category;
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "CategoryId")
+    private Category category;
 
 
-    @Column(name = "CategoryID")
-    private Long categoryId;
+//    @Column(name = "CategoryID")
+//    private Long categoryId;
 }

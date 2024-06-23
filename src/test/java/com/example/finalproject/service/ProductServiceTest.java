@@ -52,41 +52,41 @@ class ProductServiceTest {
 
     @BeforeEach
     void setUp() {
-        productResponseExpectedDto = ProductResponseDto.builder()
-                .productId(1L)
-                .name("Name 1")
-                .description("Description")
-                .price(new BigDecimal("100.00"))
-                .imageURL("http::/localhost/img/1.jpg")
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .CategoryId(1L)
-                .build();
-        productResponseExpected = new Product(1L,
-                "Name 1",
-                "Description 1",
-                new BigDecimal("100.00"),
-                "http::/localhost/img/1.jpg",
-                new BigDecimal("0.00"),
-                Timestamp.valueOf(LocalDateTime.now()),
-                Timestamp.valueOf(LocalDateTime.now()),
-                1L );
-
-        productRequestExpectedDto = ProductRequestDto.builder()
-                .name("Name 1")
-                .description("Description")
-                .price(new BigDecimal("100.00"))
-                .imageURL("http::/localhost/img/1.jpg")
-                .CategoryId(1L)
-                .build();
-        productRequestExpected = new Product(1L,
-                "Name 1",
-                "Description 1",
-                new BigDecimal("100.00"),
-                "http::/localhost/img/1.jpg",
-                new BigDecimal("0.00"),
-                Timestamp.valueOf(LocalDateTime.now()),
-                Timestamp.valueOf(LocalDateTime.now()),
-                1L );
+//        productResponseExpectedDto = ProductResponseDto.builder()
+//                .productId(1L)
+//                .name("Name 1")
+//                .description("Description")
+//                .price(new BigDecimal("100.00"))
+//                .imageURL("http::/localhost/img/1.jpg")
+//                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+//                .CategoryId(1L)
+//                .build();
+//        productResponseExpected = new Product(1L,
+//                "Name 1",
+//                "Description 1",
+//                new BigDecimal("100.00"),
+//                "http::/localhost/img/1.jpg",
+//                new BigDecimal("0.00"),
+//                Timestamp.valueOf(LocalDateTime.now()),
+//                Timestamp.valueOf(LocalDateTime.now()),
+//                1L );
+//
+//        productRequestExpectedDto = ProductRequestDto.builder()
+//                .name("Name 1")
+//                .description("Description")
+//                .price(new BigDecimal("100.00"))
+//                .imageURL("http::/localhost/img/1.jpg")
+//                .CategoryId(1L)
+//                .build();
+//        productRequestExpected = new Product(1L,
+//                "Name 1",
+//                "Description 1",
+//                new BigDecimal("100.00"),
+//                "http::/localhost/img/1.jpg",
+//                new BigDecimal("0.00"),
+//                Timestamp.valueOf(LocalDateTime.now()),
+//                Timestamp.valueOf(LocalDateTime.now()),
+//                1L );
 
     }
 
