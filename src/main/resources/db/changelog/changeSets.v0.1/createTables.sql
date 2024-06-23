@@ -35,7 +35,7 @@ ALTER TABLE Products ADD CONSTRAINT foreign_key_products_categories FOREIGN KEY 
 ALTER TABLE Favorites ADD CONSTRAINT foreign_key_favorites_users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 -- changeset yulia:create_foreign_key_favorites_products
-ALTER TABLE Favorites ADD CONSTRAINT foreign_key_favorites_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE Favorites ADD CONSTRAINT foreign_key_favorites_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 -- changeset yulia:create_foreign_key_cart_users
 ALTER TABLE Cart ADD CONSTRAINT foreign_key_cart_users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
@@ -44,7 +44,7 @@ ALTER TABLE Cart ADD CONSTRAINT foreign_key_cart_users FOREIGN KEY (UserID) REFE
 ALTER TABLE CartItems ADD CONSTRAINT foreign_key_cartitems_cart FOREIGN KEY (CartID) REFERENCES Cart (CartID) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 -- changeset yulia:create_foreign_key_cartitems_products
-ALTER TABLE CartItems ADD CONSTRAINT foreign_key_cartitems_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE CartItems ADD CONSTRAINT foreign_key_cartitems_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 -- changeset yulia:create_foreign_key_orders_users
 ALTER TABLE Orders ADD CONSTRAINT foreign_key_orders_users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
@@ -53,7 +53,7 @@ ALTER TABLE Orders ADD CONSTRAINT foreign_key_orders_users FOREIGN KEY (UserID) 
 ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_orders FOREIGN KEY (OrderID) REFERENCES Orders (OrderID) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 -- changeset yulia:create_foreign_key_orderitems_products
-ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 
