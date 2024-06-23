@@ -1,0 +1,548 @@
+Subject: [PATCH] Temporary changes
+---
+Index: src/main/java/com/example/finalproject/service/ProductService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/finalproject/service/ProductService.java b/src/main/java/com/example/finalproject/service/ProductService.java
+new file mode 100644
+--- /dev/null	(date 1718970933901)
++++ b/src/main/java/com/example/finalproject/service/ProductService.java	(date 1718970933901)
+@@ -0,0 +1,51 @@
++package com.example.finalproject.service;
++
++
++import com.example.finalproject.config.MapperUtil;
++import com.example.finalproject.dto.ProductDto;
++import com.example.finalproject.entity.Product;
++import com.example.finalproject.mapper.Mappers;
++import com.example.finalproject.repository.ProductRepository;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++
++import java.util.List;
++import java.util.Optional;
++import java.util.stream.Collectors;
++
++@Service
++@RequiredArgsConstructor
++public class ProductService {
++
++    private final ProductRepository productRepository;
++    private final Mappers mappers;
++
++//    public List<ProductDto> getProduct() {
++//        return MapperUtil.convertList(productRepository.findAll(), mappers::convertToProductDto);
++//    }
++
++    public ProductDto getProductById(Long id) {
++        return mappers.convertToProductDto(productRepository.findById(id).orElse(null));
++    }
++
++    public void deleteProductById(Long id) {
++        productRepository.findById(id).ifPresent(productRepository::delete);
++    }
++
++    public ProductDto insertProduct(ProductDto productDto) {
++        if (productDto.getCategoryId() ==null ){
++                return mappers.convertToProductDto(productRepository.save(mappers.convertToProduct(productDto)));
++    } else {
++            return null;}
++        }
++
++    public ProductDto updateProduct(ProductDto productDto) {
++        if (productDto.getProductId() > 0
++                && productDto.getName() != null
++                && productDto.getCategoryId() != null) {
++            return mappers.convertToProductDto(productRepository.save(mappers.convertToProduct(productDto)));
++        }
++        else {
++            return null; }
++    }
++}
+\ No newline at end of file
+Index: src/test/java/com/example/finalproject/service/ProductServiceTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/example/finalproject/service/ProductServiceTest.java b/src/test/java/com/example/finalproject/service/ProductServiceTest.java
+new file mode 100644
+--- /dev/null	(date 1718970933913)
++++ b/src/test/java/com/example/finalproject/service/ProductServiceTest.java	(date 1718970933913)
+@@ -0,0 +1,124 @@
++package com.example.finalproject.service;
++
++import com.example.finalproject.controller.ProductController;
++import com.example.finalproject.dto.ProductDto;
++import com.example.finalproject.entity.Product;
++import com.example.finalproject.mapper.Mappers;
++import com.example.finalproject.repository.ProductRepository;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.api.extension.ExtendWith;
++import org.mockito.InjectMocks;
++import org.mockito.Mock;
++import org.mockito.junit.jupiter.MockitoExtension;
++import org.modelmapper.ModelMapper;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
++import org.springframework.boot.test.mock.mockito.MockBean;
++import org.springframework.test.web.servlet.MockMvc;
++
++import java.math.BigDecimal;
++import java.sql.Timestamp;
++import java.time.LocalDateTime;
++import java.util.List;
++import java.util.Optional;
++
++
++import static org.junit.jupiter.api.Assertions.*;
++import static org.mockito.ArgumentMatchers.anyLong;
++import static org.mockito.ArgumentMatchers.any;
++
++import static org.mockito.Mockito.*;
++import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
++
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
++
++
++@ExtendWith(MockitoExtension.class)
++class ProductServiceTest {
++
++
++
++    @Mock
++    private ProductRepository productRepositoryMock;
++
++    @Mock
++    private Mappers mappersMock;
++
++    @Mock
++    private ModelMapper modelMapperMock;
++
++    @InjectMocks
++    private ProductService productServiceTest;
++
++    private ProductDto productExpectedDto;
++    private Product productExpected;
++
++
++    @BeforeEach
++    void setUp() {
++        productExpectedDto = ProductDto.builder()
++                .productId(1L)
++                .name("Name 1")
++                .description("Description")
++                .price(new BigDecimal("100.00"))
++                .imageURL("http::/localhost/img/1.jpg")
++                .discountPrice(new BigDecimal("0.00"))
++                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
++                .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
++                .CategoryId(1L)
++                .build();
++        productExpected = new Product(1L,
++                "Name 1",
++                "Description 1",
++                new BigDecimal("100.00"),
++                "http::/localhost/img/1.jpg",
++                new BigDecimal("0.00"),
++                Timestamp.valueOf(LocalDateTime.now()),
++                Timestamp.valueOf(LocalDateTime.now()),
++                1L );
++    }
++
++    @Test
++    void getProduct()  {
++        when(productRepositoryMock.findAll()).thenReturn(List.of(productExpected));
++        when(mappersMock.convertToProductDto(any(Product.class))).thenReturn(productExpectedDto);
++        assertEquals(List.of(productExpectedDto),productServiceTest.getProduct());
++    }
++
++    @Test
++    void getProductById() {
++        when(productRepositoryMock.findById(anyLong())).thenReturn(Optional.of(productExpected));
++        when(mappersMock.convertToProductDto(any(Product.class))).thenReturn(productExpectedDto);
++        assertEquals(productServiceTest.getProductById(productExpected.getProductId()),productExpectedDto);
++        verify(mappersMock, times(1)).convertToProductDto(any(Product.class));
++
++    }
++
++    @Test
++    void deleteProductById() {
++        long id = 1L;
++        when(productRepositoryMock.findById(id)).thenReturn(Optional.of(productExpected));
++        productServiceTest.deleteProductById(id);
++        verify(productRepositoryMock,times(1)).delete(productExpected);
++    }
++
++    @Test
++    void insertProduct() {
++
++        when(mappersMock.convertToProduct(productExpectedDto)).thenReturn(productExpected);
++        when(productRepositoryMock.save(any(Product.class))).thenReturn(productExpected);
++        when(mappersMock.convertToProductDto(productExpected)).thenReturn(productExpectedDto);
++
++        ProductDto actualProductDto = productServiceTest.insertProduct(productExpectedDto);
++        assertNotNull(actualProductDto);
++
++    }
++
++    @Test
++    void updateProduct() {
++    }
++}
+\ No newline at end of file
+Index: src/main/java/com/example/finalproject/controller/ProductController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/finalproject/controller/ProductController.java b/src/main/java/com/example/finalproject/controller/ProductController.java
+new file mode 100644
+--- /dev/null	(date 1718970933933)
++++ b/src/main/java/com/example/finalproject/controller/ProductController.java	(date 1718970933933)
+@@ -0,0 +1,50 @@
++package com.example.finalproject.controller;
++
++import com.example.finalproject.dto.ProductDto;
++import com.example.finalproject.service.ProductService;
++import jakarta.validation.Valid;
++import lombok.RequiredArgsConstructor;
++import org.springframework.http.HttpStatus;
++import org.springframework.web.bind.annotation.*;
++
++import java.util.List;
++
++@RestController
++@RequiredArgsConstructor
++@RequestMapping(value = "/products")
++public class ProductController {
++    private final ProductService productService;
++
++//    @GetMapping
++//    @ResponseStatus(HttpStatus.OK)
++//    public List<ProductDto> getProductsAll() {
++//        return productService.getProduct();
++//    }
++
++    @GetMapping(value = "/{id}")
++    @ResponseStatus(HttpStatus.OK)
++    public ProductDto getProductsById(@PathVariable Long id) {
++        return productService.getProductById(id);
++    }
++
++    @DeleteMapping(value = "/{id}")
++    @ResponseStatus(HttpStatus.NO_CONTENT)
++    public void deleteProductsById(@PathVariable Long id) {
++        productService.deleteProductById(id);
++    }
++
++
++    @PostMapping
++    @ResponseStatus(HttpStatus.CREATED)
++    public ProductDto insertProduct(@RequestBody @Valid  ProductDto productsDto) {
++        return productService.insertProduct(productsDto);
++    }
++
++    @PutMapping(value = "/{id}")
++    @ResponseStatus(HttpStatus.OK)
++    public ProductDto updateProducts(@RequestBody @Valid ProductDto productsDto) {
++        return productService.updateProduct(productsDto);
++    }
++
++
++}
+Index: src/main/java/com/example/finalproject/repository/ProductRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/finalproject/repository/ProductRepository.java b/src/main/java/com/example/finalproject/repository/ProductRepository.java
+new file mode 100644
+--- /dev/null	(date 1718970933921)
++++ b/src/main/java/com/example/finalproject/repository/ProductRepository.java	(date 1718970933921)
+@@ -0,0 +1,8 @@
++package com.example.finalproject.repository;
++
++import com.example.finalproject.entity.Product;
++import org.springframework.data.jpa.repository.JpaRepository;
++
++public interface ProductRepository extends JpaRepository<Product, Long> {
++
++}
+\ No newline at end of file
+Index: src/main/java/com/example/finalproject/dto/ProductDto.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/finalproject/dto/ProductDto.java b/src/main/java/com/example/finalproject/dto/ProductDto.java
+new file mode 100644
+--- /dev/null	(date 1718970947149)
++++ b/src/main/java/com/example/finalproject/dto/ProductDto.java	(date 1718970947149)
+@@ -0,0 +1,56 @@
++package com.example.finalproject.dto;
++
++import jakarta.persistence.Entity;
++import jakarta.persistence.*;
++import jakarta.validation.constraints.NotBlank;
++import jakarta.validation.constraints.Pattern;
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++import org.hibernate.annotations.CreationTimestamp;
++
++import java.math.BigDecimal;
++import java.sql.Timestamp;
++import java.util.HashSet;
++import java.util.Set;
++
++import com.fasterxml.jackson.annotation.JsonInclude;
++import com.fasterxml.jackson.annotation.JsonProperty;
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++import java.math.BigDecimal;
++import java.sql.Timestamp;
++
++@Data
++@NoArgsConstructor
++@AllArgsConstructor
++@Builder
++public class ProductDto {
++    private Long productId;
++    @NotBlank(message = "Invalid name: Empty name")
++    private String name;
++    @NotBlank(message = "Invalid description: Empty description")
++    private String description;
++    @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid price: not a number")
++    private BigDecimal price;
++    @NotBlank(message = "Invalid image: Empty imageURL")
++    private String imageURL;
++    @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid discount: not a number")
++    private BigDecimal discountPrice;
++    @NotBlank(message = "Invalid create date: Empty create date")
++    private Timestamp createdAt;
++    private Timestamp updatedAt;
++
++
++    @NotBlank(message = "Invalid Category: Empty Category")
++    @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid CategoryId: not a number")
++//    @JsonInclude(JsonInclude.Include.NON_NULL)
++//    @JsonProperty("category")
++//    private CategoriesDto category;
++
++    private Long CategoryId;
++}
+Index: src/main/java/com/example/finalproject/entity/Product.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/example/finalproject/entity/Product.java b/src/main/java/com/example/finalproject/entity/Product.java
+new file mode 100644
+--- /dev/null	(date 1718970933941)
++++ b/src/main/java/com/example/finalproject/entity/Product.java	(date 1718970933941)
+@@ -0,0 +1,59 @@
++package com.example.finalproject.entity;
++
++import jakarta.persistence.*;
++import lombok.AllArgsConstructor;
++import lombok.Getter;
++import lombok.NoArgsConstructor;
++import lombok.Setter;
++import org.hibernate.annotations.CreationTimestamp;
++
++import java.math.BigDecimal;
++import java.sql.Timestamp;
++import java.util.HashSet;
++import java.util.Set;
++
++@Entity
++@Table(name = "Products")
++@AllArgsConstructor
++@NoArgsConstructor
++@Getter
++@Setter
++public class Product {
++
++    @Id
++    @Column(name = "ProductId")
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long productId;
++
++    @Column(name = "Name")
++    private String name;
++
++    @Column(name = "Description")
++    private String description;
++
++    @Column(name = "Price")
++    private BigDecimal price;
++
++    @Column(name = "ImageURL")
++    private String imageURL;
++
++    @Column(name = "DiscountPrice")
++    private BigDecimal discountPrice;
++
++    @CreationTimestamp
++    @Column(name = "CreatedAt")
++    private Timestamp createdAt;
++
++    @CreationTimestamp
++    @Column(name = "UpdatedAt")
++    private Timestamp updatedAt;
++
++
++//   @ManyToOne(fetch = FetchType.LAZY)
++//   @JoinColumn(name = "CategoryId")
++//    private Categories category;
++//
++
++    @Column(name = "CategoryID")
++    private Long categoryId;
++}
+\ No newline at end of file
+Index: src/test/java/com/example/finalproject/controller/ProductControllerTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/test/java/com/example/finalproject/controller/ProductControllerTest.java b/src/test/java/com/example/finalproject/controller/ProductControllerTest.java
+new file mode 100644
+--- /dev/null	(date 1718970951693)
++++ b/src/test/java/com/example/finalproject/controller/ProductControllerTest.java	(date 1718970951693)
+@@ -0,0 +1,123 @@
++package com.example.finalproject.controller;
++
++
++import com.example.finalproject.controller.ProductController;
++import com.example.finalproject.dto.ProductDto;
++import com.example.finalproject.service.ProductService;
++import com.fasterxml.jackson.core.JsonProcessingException;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import org.junit.jupiter.api.BeforeEach;
++import org.junit.jupiter.api.Test;
++import org.springframework.beans.factory.annotation.Autowired;
++import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
++import org.springframework.boot.test.mock.mockito.MockBean;
++import org.springframework.http.MediaType;
++import org.springframework.test.web.servlet.MockMvc;
++
++import java.math.BigDecimal;
++import java.sql.Timestamp;
++import java.time.LocalDateTime;
++import java.util.List;
++
++
++import static org.junit.jupiter.api.Assertions.*;
++import static org.mockito.ArgumentMatchers.anyLong;
++import static org.mockito.Mockito.when;
++import static org.mockito.ArgumentMatchers.any;
++
++import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
++import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
++
++import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
++@WebMvcTest(ProductController.class)
++class ProductControllerTest {
++    @Autowired
++    private MockMvc mockMvc;
++
++    @Autowired
++    private ObjectMapper objectMapper;
++
++    @MockBean
++    private ProductService productServiceMock;
++
++    private ProductDto productExpected1, productExpected2;
++    @Autowired
++    private ProductService productService;
++
++    @BeforeEach
++    void setUp() {
++        productExpected1 = ProductDto.builder()
++                .productId(1L)
++                .name("Name 1")
++                .description("Description 1")
++                .price(new BigDecimal("100.00"))
++                .imageURL("http::/localhost/img/1.jpg")
++                .discountPrice(new BigDecimal("0.00"))
++                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
++                .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
++                .CategoryId(1L)
++                .build();
++        productExpected2 = ProductDto.builder()
++                .productId(2L)
++                .name("Name 1")
++                .description("Description 2")
++                .price(new BigDecimal("101.00"))
++                .imageURL("http::/localhost/img/2.jpg")
++                .discountPrice(new BigDecimal("0.00"))
++                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
++                .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
++                .CategoryId(1L)
++                .build();
++    }
++
++    @Test
++    void getProduct() throws Exception {
++        when(productServiceMock.getProduct()).thenReturn(List.of(productExpected1,productExpected2));
++        this.mockMvc.perform(get("/products")).andDo(print())
++                .andExpect(status().isOk())
++                .andExpect(jsonPath("$..productId").exists());
++    }
++
++
++    @Test
++    void getProductsById() throws Exception {
++        when(productServiceMock.getProductById(anyLong())).thenReturn(productExpected1);
++        this.mockMvc.perform(get("/products/{id}",1)).andDo(print())
++                .andExpect(status().isOk())
++                .andExpect(jsonPath("$.productId").exists())
++                .andExpect(jsonPath("$.productId").value(1));
++    }
++
++    @Test
++    void deleteProductsById() throws Exception {
++        Long id = 1L;
++        mockMvc.perform(delete("/products/{id}", id)).andDo(print())
++                .andExpect(status().isNoContent())
++                .andExpect(jsonPath("$.productsId").doesNotExist());
++    }
++
++    @Test
++    void insertProducts() throws Exception {
++        productExpected1.setProductId(0L);
++        when(productServiceMock.insertProduct(any(ProductDto.class))).thenReturn(productExpected1);
++        this.mockMvc.perform(post("/products")
++                        .contentType(MediaType.APPLICATION_JSON)
++                        .content(objectMapper.writeValueAsString(productExpected1))).andDo(print())
++                .andExpect(status().isCreated())
++                .andExpect(jsonPath("$.productId").exists())
++                .andExpect(jsonPath("$.productIdId").value(1));
++    }
++
++    @Test
++    void updateProducts() throws Exception {
++        productExpected1.setProductId(1L);
++        when(productServiceMock.updateProduct(any(ProductDto.class))).thenReturn(productExpected1);
++        this.mockMvc.perform(put("/products")
++                        .contentType(MediaType.APPLICATION_JSON)
++                        .content(objectMapper.writeValueAsString(productExpected2))).andDo(print())
++                .andExpect(status().isOk())
++                .andExpect(jsonPath("$.productId").exists())
++                .andExpect(jsonPath("$.productId").value(1));
++    }
++}
+\ No newline at end of file

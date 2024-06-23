@@ -1,5 +1,8 @@
 package com.example.finalproject.controller.advice;
 
+import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.InvalidValueExeption;
+import com.example.finalproject.exception.UnauthorizedDataException;
 import org.modelmapper.spi.ErrorMessage;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +20,29 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class AdviceController {
+
+
+    @ExceptionHandler(DataNotFoundInDataBaseException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(DataNotFoundInDataBaseException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidValueExeption.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(InvalidValueExeption exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(UnauthorizedDataException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(UnauthorizedDataException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
 
 // для обработки ошибок Validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -39,5 +65,11 @@ public class AdviceController {
                     .status(HttpStatus.I_AM_A_TEAPOT)
                     .body(new ErrorMessage("Sorry, something went wrong!"));
         }
+
+
+
+
+
+
 
 }
