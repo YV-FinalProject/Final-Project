@@ -1,9 +1,10 @@
 package com.example.finalproject.entity.enums;
 
 public enum Status {
-    AWAITING_PAYMENT,
+    CREATED,
+    PENDING_PAYMENT,
     PAID,
-    IN_TRANSIT,
+    ON_THE_WAY,
     DELIVERED,
     CANCELED
     }
