@@ -3,6 +3,7 @@ package com.example.finalproject.dto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -33,7 +34,7 @@ public class ProductRequestDto {
     private BigDecimal discountPrice;
 
     @NotBlank(message = "Invalid image: Empty imageURL")
-    // @Pattern(regexp = "^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(txt|gif|pdf|doc|docx|xls|xlsx)$", message = "Invalid URL")
+    @Pattern(regexp = "^https?://([-a-z0-9]{2,256}\\.){1,20}[a-z]{2,4}/[-a-zA-Z0-9_.#?&=%/]*$", message = "Invalid URL")
     private String imageURL;
 
     private Long CategoryId;
