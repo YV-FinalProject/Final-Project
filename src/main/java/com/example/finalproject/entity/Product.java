@@ -50,7 +50,7 @@ public class Product {
 //   @ManyToOne(fetch = FetchType.LAZY)
 //   @JoinColumn(name = "CategoryId")
 //    private Categories category;
-//
+
 
     @Column(name = "CategoryID")
     private Long categoryId;

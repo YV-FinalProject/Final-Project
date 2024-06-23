@@ -1,9 +1,6 @@
 package com.example.finalproject.mapper;
 
-import com.example.finalproject.dto.CartDto;
-import com.example.finalproject.dto.CartItemDto;
-import com.example.finalproject.dto.FavoriteDto;
-import com.example.finalproject.dto.ProductDto;
+import com.example.finalproject.dto.*;
 import com.example.finalproject.entity.Cart;
 import com.example.finalproject.entity.CartItem;
 import com.example.finalproject.entity.Favorite;
@@ -82,13 +79,19 @@ public class Mappers {
 //    }
 
 
-    public ProductDto convertToProductDto(Product product) {
-        ProductDto productDto = modelMapper.map(product, ProductDto.class);
-        return productDto;
+    public ProductResponseDto convertToProductRequestDto(Product product) {
+        return modelMapper.map(product, ProductResponseDto.class);
     }
 
-    public Product convertToProduct(ProductDto productDto) {
-        Product product = modelMapper.map(productDto, Product.class);
-        return product;
+    public Product convertToProductRequest(ProductRequestDto productRequestDto) {
+        return modelMapper.map(productRequestDto, Product.class);
+    }
+
+    public ProductResponseDto convertToProductResponseDto(Product product) {
+        return modelMapper.map(product, ProductResponseDto.class);
+    }
+
+    public Product convertToProductResponse(ProductResponseDto productResponseDto) {
+        return modelMapper.map(productResponseDto, Product.class);
     }
 }

@@ -15,7 +15,8 @@ import lombok.Data;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDto {
+public class ProductRequestDto {
+
 
     @NotBlank(message = "Invalid name: Empty name")
     private String name;
@@ -27,9 +28,13 @@ public class ProductDto {
     @Digits(integer=4, fraction=2)
     private BigDecimal price;
 
+    @DecimalMin(value = "0.0")
+    @Digits(integer=4, fraction=2)
+    private BigDecimal discountPrice;
+
     @NotBlank(message = "Invalid image: Empty imageURL")
-//    @Pattern(regexp = "^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(txt|gif|pdf|doc|docx|xls|xlsx)$", message = "Invalid URL"
-    private String image;
+    // @Pattern(regexp = "^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+\.(txt|gif|pdf|doc|docx|xls|xlsx)$", message = "Invalid URL")
+    private String imageURL;
 
     private Long CategoryId;
 

@@ -1,7 +1,8 @@
 package com.example.finalproject.service;
 
 
-import com.example.finalproject.dto.ProductDto;
+import com.example.finalproject.dto.ProductRequestDto;
+import com.example.finalproject.dto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
@@ -20,13 +21,14 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final Mappers mappers;
 
-    public ProductDto getProductById(Long id) {
-        ProductDto getProduct = mappers.convertToProductDto(productRepository.findById(id).orElse(null));
-        if (getProduct != null) {
-                return getProduct;
-        } else {
+    public ProductResponseDto getProductById(Long id) {
+            Product productResponse = productRepository.findById(id).orElse(null);
+            if (productResponse != null) {
+                    ProductResponseDto getProductResponseDto = mappers.convertToProductResponseDto(productResponse);
+                    return getProductResponseDto;
+            } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
-        }
+            }
     }
 
     public void deleteProductById(Long id) {
@@ -37,33 +39,32 @@ public class ProductService {
         }
     }
 
-    public ProductDto insertProduct(ProductDto productDto) {
-        if (productDto.getCategoryId() != null) {
-            Product productToInsert = mappers.convertToProduct(productDto);     //  Добавить поиск категории по названию
+    public void insertProduct(ProductRequestDto productRequestDto) {
+        if (productRequestDto.getCategoryId() != null) {
+            Product productToInsert = mappers.convertToProductRequest(productRequestDto);     //  Добавить поиск категории по названию
             productToInsert.setProductId(0L);
             productToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-            return mappers.convertToProductDto(productRepository.save(productToInsert));
+            productRepository.save(productToInsert);
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");          //  подумать какую ошибку присобачить Гав!
         }
     }
 
-    public ProductDto updateProduct(ProductDto productDto, Long id) {
+    public void updateProduct(ProductRequestDto productRequestDto, Long id) {
         if (id > 0) {
             Product productToUpdate = productRepository.findById(id).orElse(null);
            if  (productToUpdate != null){
-                        productToUpdate.setName(productDto.getName());
-                        productToUpdate.setDescription(productDto.getDescription());
-                        productToUpdate.setImageURL(productDto.getImage());
-                        productToUpdate.setPrice(productDto.getPrice());
-                        productToUpdate.setCategoryId(productDto.getCategoryId());   // Поменять на нормальное значение Категории
+                        productToUpdate.setName(productRequestDto.getName());
+                        productToUpdate.setDescription(productRequestDto.getDescription());
+                        productToUpdate.setImageURL(productRequestDto.getImageURL());
+                        productToUpdate.setPrice(productRequestDto.getPrice());
+                        productToUpdate.setDiscountPrice(productRequestDto.getDiscountPrice());
+                        productToUpdate.setCategoryId(productRequestDto.getCategoryId());   // Поменять на нормальное значение Категории
                         productToUpdate.setProductId(id);
                         productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-                        return mappers.convertToProductDto(productRepository.save(productToUpdate));
-        }
-            throw  new DataNotFoundInDataBaseException("Data not found in database.");
+                        productRepository.save(productToUpdate);
         }
         else {
              throw new InvalidValueExeption("The value you entered is not valid."); }
-    }
+    }}
 }

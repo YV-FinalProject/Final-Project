@@ -1,6 +1,7 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.ProductDto;
+import com.example.finalproject.dto.ProductRequestDto;
+import com.example.finalproject.dto.ProductResponseDto;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class ProductController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto getProductsById(@PathVariable Long id) {
+    public ProductResponseDto getProductsById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
 
@@ -28,13 +29,13 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDto insertProduct(@RequestBody @Valid ProductDto productsDto) {
-        return productService.insertProduct(productsDto);
+    public void insertProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
+        productService.insertProduct(productRequestDto);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductDto updateProducts(@RequestBody @Valid ProductDto productsDto,@PathVariable Long id) {
-        return productService.updateProduct(productsDto, id);
+    public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto, @PathVariable Long id) {
+        productService.updateProduct(productRequestDto,id);
     }
 }
