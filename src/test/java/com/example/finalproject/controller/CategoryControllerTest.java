@@ -49,7 +49,7 @@ public class CategoryControllerTest {
         CategoryDto categoryOneDto = new CategoryDto(1L,"Sapa");
         CategoryDto categoryTwoDto = new CategoryDto(2L, "Kosa");
         List<CategoryDto> categoryDtoList = Arrays.asList(categoryOneDto, categoryTwoDto);
-        given(categoryService.getAll()).willReturn(categoryList);
+        given(categoryService.getCategory()).willReturn(categoryList);
         given(categoryMapper.toDto(any(Category.class))).willReturn(categoryOneDto, categoryTwoDto);
         mockMvc.perform(get("/v1/categories"))
                 .andExpect(status().isOk())
@@ -58,14 +58,14 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$[0].name", is("Sapa")))
                 .andExpect(jsonPath("$[1].id", is(2)))
                 .andExpect(jsonPath("$[1].name", is("Kosa")));
-        verify(categoryService,times(1)).getAll();
+        verify(categoryService,times(1)).getCategory();
     }
     @Test
     public void getCategoryByIdTest() throws Exception{
         Long id = 1L;
         Category category = new Category(id, "Sapa",null);
         CategoryDto categoryDto = new CategoryDto(id, "Sapa");
-        given(categoryService.getById(id)).willReturn(category);
+        given(categoryService.getCategoryById(id)).willReturn(category);
         given(categoryMapper.toDto(any(Category.class))).willReturn(categoryDto);
         mockMvc.perform(get("/v1/categories/{id}", id))
                 .andExpect(status().isOk())
@@ -75,7 +75,7 @@ public class CategoryControllerTest {
     @Test
     void testGetCategoryByIdNotFound() throws Exception{
         Long id = 1L;
-        when(categoryService.getById(id)).thenThrow(new CategoryNotFoundException("Категория не найдена."));
+        when(categoryService.getCategoryById(id)).thenThrow(new CategoryNotFoundException("Категория не найдена."));
         mockMvc.perform(get("/v1/categories/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -86,7 +86,7 @@ public class CategoryControllerTest {
         Category category = new Category(1L,"Sapa",null);
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto("Sapa");
         CategoryDto categoryDto = new CategoryDto(1L, "Sapa");
-        given(categoryService.create(any(CategoryCreateDto.class))).willReturn(category);
+        given(categoryService.createCategory(any(CategoryCreateDto.class))).willReturn(category);
         given(categoryMapper.toDto(any(Category.class))).willReturn(categoryDto);
         mockMvc.perform(post("/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ public class CategoryControllerTest {
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto("Sapa2");
         Category updatedEntity = new Category(id, "Sapa2", null);
         CategoryDto updatedDto = new CategoryDto(id, "Sapa2");
-        given(categoryService.edit(eq(id), any(CategoryCreateDto.class))).willReturn(updatedEntity);
+        given(categoryService.editCategory(eq(id), any(CategoryCreateDto.class))).willReturn(updatedEntity);
         given(categoryMapper.toDto(any(Category.class))).willReturn(updatedDto);
         mockMvc.perform(put("/v1/categories/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +113,7 @@ public class CategoryControllerTest {
     @Test
     public void deleteCategoryTest() throws Exception{
         Long id = 1L;
-        doNothing().when(categoryService).delete(id);
+        doNothing().when(categoryService).deleteCategoryById(id);
         mockMvc.perform(delete("/v1/categories/{id}", id))
                 .andExpect(status().isNoContent());
     }

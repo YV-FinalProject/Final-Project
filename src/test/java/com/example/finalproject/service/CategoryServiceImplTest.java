@@ -29,7 +29,7 @@ public class CategoryServiceImplTest {
     @Test
     void getAllCategories(){
         when(categoryJpaRepository.findAll()).thenReturn(Arrays.asList(new Category(),new Category()));
-        List<Category> result = categoryServiceImpl.getAll();
+        List<Category> result = categoryServiceImpl.getCategory();
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(categoryJpaRepository).findAll();
@@ -39,7 +39,7 @@ public class CategoryServiceImplTest {
         Long id = 1L;
         Category category = new Category();
         when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(category));
-        Category result = categoryServiceImpl.getById(id);
+        Category result = categoryServiceImpl.getCategoryById(id);
         assertNotNull(result);
         verify(categoryJpaRepository).findById(id);
     }
@@ -47,7 +47,7 @@ public class CategoryServiceImplTest {
     void getCategoryById_WhenCategoryDoesNotExist(){
         Long id = 1L;
         when(categoryJpaRepository.findById(id)).thenReturn(Optional.empty());
-        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.getById(id));
+        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.getCategoryById(id));
         verify(categoryJpaRepository).findById(id);
     }
     @Test
@@ -59,7 +59,7 @@ public class CategoryServiceImplTest {
         category.setName("Test Category");
         when(categoryMapper.createDtoToEntity(any(CategoryCreateDto.class))).thenReturn(category);
         when(categoryJpaRepository.save(any(Category.class))).thenReturn(category);
-        Category result = categoryServiceImpl.create(categoryCreateDto);
+        Category result = categoryServiceImpl.createCategory(categoryCreateDto);
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Test Category", result.getName());
@@ -74,7 +74,7 @@ public class CategoryServiceImplTest {
         Category category = new Category();
         when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(category));
         when(categoryJpaRepository.save(any(Category.class))).thenReturn(category);
-        Category result = categoryServiceImpl.edit(id, categoryCreateDto);
+        Category result = categoryServiceImpl.editCategory(id, categoryCreateDto);
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
         verify(categoryJpaRepository).save(category);
@@ -84,20 +84,21 @@ public class CategoryServiceImplTest {
     void editCategory_WhenCategoryDoesNotExist(){
         Long id = 1L;
         when(categoryJpaRepository.findById(id)).thenReturn(Optional.empty());
-        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.edit(id, new CategoryCreateDto()));
+        assertThrows(CategoryNotFoundException.class, () -> categoryServiceImpl.editCategory(id,
+                new CategoryCreateDto()));
     }
     @Test
     void deleteCategory_WhenCategoryExist(){
         Long id = 1L;
         when(categoryJpaRepository.existsById(id)).thenReturn(true);
-        categoryServiceImpl.delete(id);
+        categoryServiceImpl.deleteCategoryById(id);
         verify(categoryJpaRepository).deleteById(id);
     }
     @Test
     void deleteCategory_WhenCategoryDoesNotExist(){
         Long id = 1L;
         when(categoryJpaRepository.existsById(id)).thenReturn(false);
-        assertThrows(CategoryNotFoundException.class, ()  -> categoryServiceImpl.delete(id));
+        assertThrows(CategoryNotFoundException.class, ()  -> categoryServiceImpl.deleteCategoryById(id));
         verify(categoryJpaRepository, never()).deleteById(id);
     }
 }

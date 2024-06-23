@@ -2,9 +2,11 @@ package com.example.finalproject.mapper;
 
 import com.example.finalproject.dto.CartDto;
 import com.example.finalproject.dto.CartItemDto;
+import com.example.finalproject.dto.CategoryDto;
 import com.example.finalproject.dto.FavoriteDto;
 import com.example.finalproject.entity.Cart;
 import com.example.finalproject.entity.CartItem;
+import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Favorite;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -63,6 +65,12 @@ public class Mappers {
         return modelMapper.map(cartItemsDto, CartItem.class);
     }
 
+    public CategoryDto convertToCategoryDto(Category category) {
+        return modelMapper.map(category, CategoryDto.class);
+    }
+    public Category convertToCategory(CategoryDto categoryDto){
+        return modelMapper.map(categoryDto, Category.class);
+    }
 //    public OrdersDto convertToOrdersDto(Orders orders) {
 //        return modelMapper.map(orders, OrdersDto.class);
 //    }

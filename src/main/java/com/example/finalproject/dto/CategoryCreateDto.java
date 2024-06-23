@@ -7,8 +7,6 @@ import lombok.*;
 @Getter
 @NoArgsConstructor
 public class CategoryCreateDto {
-    @NotBlank(message = "Id не должно быть пустым")
-    private String id;
     @NotBlank(message = "Имя не должно быть пустым")
     private String name;
     public CategoryCreateDto(String name){

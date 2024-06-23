@@ -1,12 +1,16 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.CategoryCreateDto;
+import com.example.finalproject.dto.CategoryDto;
 import com.example.finalproject.entity.Category;
+import com.example.finalproject.exception.CategoryWrongValueException;
 import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
+import com.example.finalproject.mapper.Mappers;
+import com.example.finalproject.repository.CartRepository;
 import com.example.finalproject.repository.CategoryJpaRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,40 +18,78 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl{
+public class CategoryServiceImpl {
     private final CategoryJpaRepository categoryJpaRepository;
+    private final CartRepository cartRepository;
+
+    private final Mappers mappers;
     private final CategoryMapper categoryMapper;
 
-    public List<Category> getAll() {
-        return categoryJpaRepository.findAll();
+    public List<CategoryDto> getCategory() {
+        return MapperUtil.convertList(categoryJpaRepository.findAll(), mappers::convertToCategoryDto);
     }
 
-    public Category getById(Long id) {
-        return categoryJpaRepository.findById(id).orElseThrow(() -> new CategoryNotFoundException("Категория с " +
-                "идентификатором id" + id + "не найдено."));
-    }
-
-    public Category create(CategoryCreateDto categoryCreateDto) {
-        Category category = categoryMapper.createDtoToEntity(categoryCreateDto);
-        Category savedEntity = categoryJpaRepository.save(category);
-        return savedEntity;
-    }
-
-    public Category edit(Long id, CategoryCreateDto categoryCreateDto) {
-        return categoryJpaRepository.findById(id).map(category ->{
-            category.setName(categoryCreateDto.getName());
-            Category updateCategory = categoryJpaRepository.save(category);
-            return updateCategory;
-        }).orElseThrow(() -> {
-            return new CategoryNotFoundException("Категория с идентификатором " + id + " не найдено.");
-        });
-    }
-
-
-    public void delete(Long id) {
-        if(!categoryJpaRepository.existsById(id)){
-            throw new CategoryNotFoundException("Категория не найдена.");
+    public CategoryDto getCategoryById(Long id) {
+        if (!categoryJpaRepository.findById(id).isPresent()) {
+            throw new CategoryNotFoundException("the given category was not found");
         }
-        categoryJpaRepository.deleteById(id);
+        return mappers.convertToCategoryDto(categoryJpaRepository.findById(id).orElse(null));
+    }
+
+    public CategoryDto editCategory(CategoryDto categoryDto) {
+        if (categoryDto.getId() > 0
+                && categoryJpaRepository.findById(categoryDto.getId()).orElse(null) != null) {
+            return mappers.convertToCategoryDto(categoryJpaRepository.save(mappers.convertToCategory(categoryDto)));
+        }
+        throw new CategoryWrongValueException("failed to update category's data");
+    }
+
+
+    public void deleteCategoryById(Long id) {
+        if (!categoryJpaRepository.findById(id).isPresent()) {
+            throw new CategoryNotFoundException("failed to delete category as it was not found");
+        }
+        categoryJpaRepository.findById(id).ifPresent(categoryJpaRepository::delete);
+    }
+
+    public CategoryDto createCategory(CategoryDto categoryDto) {
+        if (categoryDto.getName() != null) {
+            return mappers.convertToCategoryDto(categoryJpaRepository.save(mappers.convertToCategory(categoryDto)));
+        }
+        throw new CategoryWrongValueException("failed to create category due to the wrong parameters");
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
