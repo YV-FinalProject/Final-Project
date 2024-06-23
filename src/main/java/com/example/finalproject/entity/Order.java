@@ -1,14 +1,11 @@
 package com.example.finalproject.entity;
 
+import com.example.finalproject.entity.enums.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.*;
+import java.util.*;
 
 @Entity
 @Table(name = "Orders")
@@ -20,32 +17,32 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "OrderID") //
+    @Column(name = "OrderID")
     private Long orderId;
 
     @Column(name = "CreatedAt")
-    private Timestamp createdAt; //
+    private Timestamp createdAt;
 
     @Column(name = "DeliveryAddress")
-    private String deliveryAddress; //
+    private String deliveryAddress;
 
     @Column(name = "ContactPhone")
-    private String contactPhone; //
+    private String contactPhone;
 
     @Column(name = "DeliveryMethod")
-    private String deliveryMethod; //
+    private String deliveryMethod;
 
-//    @Column(name = "Status")
-//    @Enumerated(EnumType.STRING)
-//    private Status status; //
+    @Column(name = "Status")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @Column(name = "UpdatedAt")
-    private Timestamp updatedAt; //
+    private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserID") //
-    private User user;//
+    @ManyToOne
+    @JoinColumn(name = "UserID", nullable = false)
+    private User user;
 }

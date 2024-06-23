@@ -1,18 +1,11 @@
 package com.example.finalproject.dto;
 
-import com.example.finalproject.entity.Cart;
-import com.example.finalproject.entity.Favorite;
-import com.example.finalproject.entity.Order;
-import com.example.finalproject.entity.enums.Role;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.finalproject.entity.enums.*;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -49,11 +42,11 @@ public class UserDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("orders")
-    List<OrderDto> ordersDTO;
+    Set<OrderDto> ordersDTO;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("favorites")
-    List<FavoriteDto> favoritesDTO;
+    Set<FavoriteDto> favoritesDTO;
 }
 
 

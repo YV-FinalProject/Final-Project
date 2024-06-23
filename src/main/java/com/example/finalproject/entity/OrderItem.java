@@ -1,15 +1,12 @@
 package com.example.finalproject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.math.BigDecimal;
+import java.math.*;
 
 @Entity
-@Table(name = "Oders")
+@Table(name = "OrderItems")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,11 +24,11 @@ public class OrderItem {
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "OrderID")
+    @ManyToOne
+    @JoinColumn(name = "OrderID", nullable = false)
     private Order order;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "ProductID")
+//    @ManyToOne
+//    @JoinColumn(name = "ProductID", nullable = false)
 //    private Product product;
 }

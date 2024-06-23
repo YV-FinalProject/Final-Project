@@ -1,13 +1,10 @@
 package com.example.finalproject.entity;
 
-import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.entity.enums.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "Users")
@@ -37,12 +34,13 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
-    @OneToOne(mappedBy = "Users")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "CartID", nullable = false)
     private Cart cart;
 
-    @OneToMany(mappedBy = "Users")
-    private List<Order> orders;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(mappedBy = "Users")
-    private List<Favorite> favorites;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Favorite> favorites = new HashSet<>();
 }

@@ -1,16 +1,13 @@
 package com.example.finalproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.Valid;
+import com.example.finalproject.entity.enums.*;
+import com.fasterxml.jackson.annotation.*;
+import jakarta.validation.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.sql.Timestamp;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +17,7 @@ public class OrderDto {
 
     @Valid
     @NotEmpty(message = "Items list cannot be empty")
-    private List<OrderItemDto> items;
+    private Set<OrderItemDto> items;
 
     @NotBlank(message = "Delivery address cannot be blank")
     @Size(max = 255, message = "Delivery address must be less than or equal to 255 characters")
@@ -34,7 +31,7 @@ public class OrderDto {
     private Long orderId;
     private Timestamp createdAt;
     private String contactPhone;
-//    private Status status;
+    private Status status;
     private Timestamp updatedAt;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
