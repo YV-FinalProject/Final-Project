@@ -34,8 +34,7 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "CartID", nullable = false)
+    @OneToOne(mappedBy = "user")
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -13,6 +13,10 @@ public class FavoriteDto {
     private Long  productId;
 
 //    @JsonInclude(JsonInclude.Include.NON_NULL)
+//    @JsonProperty("product")
+//    private ProductDto product;
+
+//    @JsonInclude(JsonInclude.Include.NON_NULL)
 //    @JsonProperty("user")
 //    private UserDto user;
 

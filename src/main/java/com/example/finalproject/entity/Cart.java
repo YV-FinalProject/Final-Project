@@ -14,14 +14,14 @@ import java.util.*;
 public class Cart {
 
     @Id
-    @Column(name = "CartID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long cartId;
+    @Column(name = "CartID")
+    private long cartID;
 
-    @OneToMany(mappedBy = "Cart", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<CartItem> cartItems = new HashSet<>();
+    @OneToMany(mappedBy = "cart")
+    private List<CartItem> cartItems;
 
-    @OneToOne(mappedBy = "CartId")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "UserID", referencedColumnName = "UserID")
     private User user;
-
 }

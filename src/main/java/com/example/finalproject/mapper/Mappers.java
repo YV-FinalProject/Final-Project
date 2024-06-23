@@ -31,7 +31,7 @@ public class Mappers {
 //        return modelMapper.map(usersDto, Users.class);
 //    }
 
-    public FavoriteDto convertToFavoritesDto(Favorite favorites) {
+    public FavoriteDto convertToFavoriteResponseDto(Favorite favorites) {
         return modelMapper.map(favorites, FavoriteDto.class);
     }
 
@@ -39,7 +39,7 @@ public class Mappers {
         return modelMapper.map(favoritesDto, Favorite.class);
     }
 
-    public CartDto convertToCartDto(Cart cart) {
+    public CartDto convertToCartRequestDto(Cart cart) {
         CartDto cartDto = modelMapper.map(cart, CartDto.class);
 //        //Разруливаем вручную двухстороннюю связь один-к-одному
 //        Users users = cart.getUser();
@@ -54,7 +54,7 @@ public class Mappers {
         return modelMapper.map(cartDto, Cart.class);
     }
 
-    public CartItemDto convertToCartItemsDto(CartItem cartItems) {
+    public CartItemDto convertToCartItemRequestDto(CartItem cartItems) {
         return modelMapper.map(cartItems, CartItemDto.class);
     }
 
