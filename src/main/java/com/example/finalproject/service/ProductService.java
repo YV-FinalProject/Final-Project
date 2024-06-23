@@ -63,8 +63,9 @@ public class ProductService {
                         productToUpdate.setProductId(id);
                         productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                         productRepository.save(productToUpdate);
-        }
-        else {
+        } else {
+               throw new DataNotFoundInDataBaseException("Data not found in database.");
+           } } else {
              throw new InvalidValueExeption("The value you entered is not valid."); }
-    }}
+    }
 }

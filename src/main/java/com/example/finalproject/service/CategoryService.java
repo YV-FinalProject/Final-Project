@@ -48,8 +48,10 @@ public class CategoryService {
             if (category != null) {
                 categoryDto.setCategoryId(id);
                 categoryRepository.save(mappers.convertToCategory(categoryDto));
-        }}
-        else {
+            } else {
+                throw new DataNotFoundInDataBaseException("Data not found in database.");
+            }
+        } else {
             throw new InvalidValueExeption("The value you entered is not valid."); }
         }
 }
