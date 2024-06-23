@@ -27,6 +27,7 @@ public class CategoryService {
         return MapperUtil.convertList(categoryList, mappers::convertToCategoryDto);
     }
 
+
     public void deleteCategoryById(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
@@ -43,9 +44,11 @@ public class CategoryService {
 
     public void updateCategory(CategoryDto categoryDto, Long id) {
         if (id > 0) {
-            categoryDto.setCategoryId(id);
-            categoryRepository.save(mappers.convertToCategory(categoryDto));
-        }
+            Category category = categoryRepository.findById(id).orElse(null);
+            if (category !=null) {
+                categoryDto.setCategoryId(id);
+                categoryRepository.save(mappers.convertToCategory(categoryDto));
+        }}
         else {
             throw new InvalidValueExeption("The value you entered is not valid."); }
         }
