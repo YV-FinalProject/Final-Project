@@ -1,8 +1,7 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.CategoryCreateDto;
-import com.example.finalproject.entity.CategoryEntity;
-import com.example.finalproject.exceptions.CategoryInvalidArgumentException;
+import com.example.finalproject.entity.Category;
 import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
 import com.example.finalproject.repository.CategoryJpaRepository;
@@ -29,8 +28,8 @@ public class CategoryServiceImplTest {
     private CategoryServiceImpl categoryServiceImpl;
     @Test
     void getAllCategories(){
-        when(categoryJpaRepository.findAll()).thenReturn(Arrays.asList(new CategoryEntity(),new CategoryEntity()));
-        List<CategoryEntity> result = categoryServiceImpl.getAll();
+        when(categoryJpaRepository.findAll()).thenReturn(Arrays.asList(new Category(),new Category()));
+        List<Category> result = categoryServiceImpl.getAll();
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(categoryJpaRepository).findAll();
@@ -38,9 +37,9 @@ public class CategoryServiceImplTest {
     @Test
     void getCategoryById_WhenCategoryExists(){
         Long id = 1L;
-        CategoryEntity categoryEntity = new CategoryEntity();
-        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(categoryEntity));
-        CategoryEntity result = categoryServiceImpl.getById(id);
+        Category category = new Category();
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(category));
+        Category result = categoryServiceImpl.getById(id);
         assertNotNull(result);
         verify(categoryJpaRepository).findById(id);
     }
@@ -55,30 +54,30 @@ public class CategoryServiceImplTest {
     void createCategory(){
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto();
         categoryCreateDto.setName("Test Category");
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(1L);
-        categoryEntity.setName("Test Category");
-        when(categoryMapper.createDtoToEntity(any(CategoryCreateDto.class))).thenReturn(categoryEntity);
-        when(categoryJpaRepository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
-        CategoryEntity result = categoryServiceImpl.create(categoryCreateDto);
+        Category category = new Category();
+        category.setId(1L);
+        category.setName("Test Category");
+        when(categoryMapper.createDtoToEntity(any(CategoryCreateDto.class))).thenReturn(category);
+        when(categoryJpaRepository.save(any(Category.class))).thenReturn(category);
+        Category result = categoryServiceImpl.create(categoryCreateDto);
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Test Category", result.getName());
         verify(categoryMapper).createDtoToEntity(any(CategoryCreateDto.class));
-        verify(categoryJpaRepository).save(any(CategoryEntity.class));
+        verify(categoryJpaRepository).save(any(Category.class));
     }
     @Test
     void editCategory_WhenCategoryExists(){
         Long id = 1L;
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto();
         categoryCreateDto.setName("Updated Name");
-        CategoryEntity categoryEntity = new CategoryEntity();
-        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(categoryEntity));
-        when(categoryJpaRepository.save(any(CategoryEntity.class))).thenReturn(categoryEntity);
-        CategoryEntity result = categoryServiceImpl.edit(id, categoryCreateDto);
+        Category category = new Category();
+        when(categoryJpaRepository.findById(id)).thenReturn(Optional.of(category));
+        when(categoryJpaRepository.save(any(Category.class))).thenReturn(category);
+        Category result = categoryServiceImpl.edit(id, categoryCreateDto);
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
-        verify(categoryJpaRepository).save(categoryEntity);
+        verify(categoryJpaRepository).save(category);
         verify(categoryJpaRepository).findById(id);
     }
     @Test

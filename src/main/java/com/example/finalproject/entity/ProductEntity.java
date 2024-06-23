@@ -19,5 +19,5 @@ public class ProductEntity {
     private BigDecimal discountPrice;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryID")
-    private CategoryEntity category;
+    private Category category;
 }

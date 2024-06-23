@@ -2,10 +2,10 @@ package com.example.finalproject.controller;
 
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.dto.CategoryDto;
-import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.entity.Category;
 import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
-import com.example.finalproject.service.CategoryService;
+import com.example.finalproject.service.CategoryServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 public class CategoryControllerTest {
     @Mock
-    private CategoryService categoryService;
+    private CategoryServiceImpl categoryService;
     @Mock
     private CategoryMapper categoryMapper;
     @InjectMocks
@@ -43,14 +43,14 @@ public class CategoryControllerTest {
     }
     @Test
     public void getAllCategoriesTest() throws Exception{
-        CategoryEntity categoryOneEntity = new CategoryEntity(1L, "Sapa", null);
-        CategoryEntity categoryTwoEntity = new CategoryEntity(2L, "Kosa", null);
-        List<CategoryEntity> categoryEntityList = Arrays.asList(categoryOneEntity, categoryTwoEntity);
+        Category categoryOneEntity = new Category(1L, "Sapa", null);
+        Category categoryTwoEntity = new Category(2L, "Kosa", null);
+        List<Category> categoryList = Arrays.asList(categoryOneEntity, categoryTwoEntity);
         CategoryDto categoryOneDto = new CategoryDto(1L,"Sapa");
         CategoryDto categoryTwoDto = new CategoryDto(2L, "Kosa");
         List<CategoryDto> categoryDtoList = Arrays.asList(categoryOneDto, categoryTwoDto);
-        given(categoryService.getAll()).willReturn(categoryEntityList);
-        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(categoryOneDto, categoryTwoDto);
+        given(categoryService.getAll()).willReturn(categoryList);
+        given(categoryMapper.toDto(any(Category.class))).willReturn(categoryOneDto, categoryTwoDto);
         mockMvc.perform(get("/v1/categories"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
@@ -63,10 +63,10 @@ public class CategoryControllerTest {
     @Test
     public void getCategoryByIdTest() throws Exception{
         Long id = 1L;
-        CategoryEntity categoryEntity = new CategoryEntity(id, "Sapa",null);
+        Category category = new Category(id, "Sapa",null);
         CategoryDto categoryDto = new CategoryDto(id, "Sapa");
-        given(categoryService.getById(id)).willReturn(categoryEntity);
-        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(categoryDto);
+        given(categoryService.getById(id)).willReturn(category);
+        given(categoryMapper.toDto(any(Category.class))).willReturn(categoryDto);
         mockMvc.perform(get("/v1/categories/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(id.intValue())))
@@ -83,11 +83,11 @@ public class CategoryControllerTest {
     }
     @Test
     public void createCategoryTest() throws Exception{
-        CategoryEntity categoryEntity = new CategoryEntity(1L,"Sapa",null);
+        Category category = new Category(1L,"Sapa",null);
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto("Sapa");
         CategoryDto categoryDto = new CategoryDto(1L, "Sapa");
-        given(categoryService.create(any(CategoryCreateDto.class))).willReturn(categoryEntity);
-        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(categoryDto);
+        given(categoryService.create(any(CategoryCreateDto.class))).willReturn(category);
+        given(categoryMapper.toDto(any(Category.class))).willReturn(categoryDto);
         mockMvc.perform(post("/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(categoryCreateDto)))
@@ -99,10 +99,10 @@ public class CategoryControllerTest {
     public void editCategoryTest() throws Exception{
         Long id = 1L;
         CategoryCreateDto categoryCreateDto = new CategoryCreateDto("Sapa2");
-        CategoryEntity updatedEntity = new CategoryEntity(id, "Sapa2", null);
+        Category updatedEntity = new Category(id, "Sapa2", null);
         CategoryDto updatedDto = new CategoryDto(id, "Sapa2");
         given(categoryService.edit(eq(id), any(CategoryCreateDto.class))).willReturn(updatedEntity);
-        given(categoryMapper.toDto(any(CategoryEntity.class))).willReturn(updatedDto);
+        given(categoryMapper.toDto(any(Category.class))).willReturn(updatedDto);
         mockMvc.perform(put("/v1/categories/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(new ObjectMapper().writeValueAsString(categoryCreateDto)))

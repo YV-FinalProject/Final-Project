@@ -2,11 +2,11 @@ package com.example.finalproject.controller;
 
 import com.example.finalproject.dto.CategoryCreateDto;
 import com.example.finalproject.dto.CategoryDto;
-import com.example.finalproject.entity.CategoryEntity;
+import com.example.finalproject.entity.Category;
 import com.example.finalproject.exceptions.CategoryInvalidArgumentException;
 import com.example.finalproject.exceptions.CategoryNotFoundException;
 import com.example.finalproject.mapper.CategoryMapper;
-import com.example.finalproject.service.CategoryService;
+import com.example.finalproject.service.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
-    private final CategoryService categoryService;
+    private final CategoryServiceImpl categoryService;
     private final CategoryMapper categoryMapper;
     @GetMapping
     public ResponseEntity<List<CategoryDto>> getAll(){
@@ -39,22 +39,22 @@ public class CategoryController {
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getById(@PathVariable Long id){
         log.debug("Получен запрос на получение категории по идентификатору ID: {}", id);
-        CategoryEntity categoryEntity = categoryService.getById(id);
-        return ResponseEntity.ok(categoryMapper.toDto(categoryEntity));
+        Category category = categoryService.getById(id);
+        return ResponseEntity.ok(categoryMapper.toDto(category));
     }
     @PostMapping
     public ResponseEntity<CategoryDto> create(@RequestBody CategoryCreateDto categoryCreateDto){
         log.debug("Получен запрос на создание новой категории: {}", categoryCreateDto.getName());
-        CategoryEntity createdCategoryEntity = categoryService.create(categoryCreateDto);
-        CategoryDto categoryDto = categoryMapper.toDto(createdCategoryEntity);
-        log.debug("Категория успешно создана с идентификатором: {}",createdCategoryEntity.getId());
+        Category createdCategory = categoryService.create(categoryCreateDto);
+        CategoryDto categoryDto = categoryMapper.toDto(createdCategory);
+        log.debug("Категория успешно создана с идентификатором: {}", createdCategory.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryDto);
     }
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> edit(@PathVariable Long id,
                                             @Valid @RequestBody CategoryCreateDto categoryCreateDto){
         log.debug("Получен запрос на редактирование категории с идентификатором: {}",id);
-        CategoryEntity updateCategory = categoryService.edit(id, categoryCreateDto);
+        Category updateCategory = categoryService.edit(id, categoryCreateDto);
         log.debug("Категория с идентификатором: {} успешно обновлена", updateCategory.getId());
         return ResponseEntity.ok(categoryMapper.toDto(updateCategory));
     }
