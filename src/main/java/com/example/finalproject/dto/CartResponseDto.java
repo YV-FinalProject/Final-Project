@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartDto {
+public class CartResponseDto {
 
     private Long cartId;
 

@@ -7,7 +7,8 @@ import java.math.*;
 
 @Entity
 @Table(name = "OrderItems")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

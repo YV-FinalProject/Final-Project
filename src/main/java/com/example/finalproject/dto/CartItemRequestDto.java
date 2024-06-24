@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CartItemDto {
+public class CartItemRequestDto {
 
 
 //    @NotBlank(message = "Invalid Id: Empty Id")
@@ -23,7 +23,7 @@ public class CartItemDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("cart")
-    private CartDto cart;
+    private CartResponseDto cart;
 
     @NotBlank(message = "Invalid Id: Empty Id")
     @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid Id: not a number")

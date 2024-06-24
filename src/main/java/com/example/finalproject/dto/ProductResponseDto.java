@@ -1,5 +1,6 @@
 package com.example.finalproject.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -24,12 +25,7 @@ public class ProductResponseDto {
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private String imageURL;
-    private Long CategoryId;
 
-
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("category")
-//    private CategoriesDto category;
-
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private CategoryResponseDto categoryResponseDto;
 }
