@@ -2,8 +2,8 @@ package com.example.finalproject.service;
 
 
 import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.CategoryRequestDto;
-import com.example.finalproject.dto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.CategoryRequestDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;

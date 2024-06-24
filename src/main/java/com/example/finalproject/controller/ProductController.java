@@ -1,7 +1,7 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.ProductRequestDto;
-import com.example.finalproject.dto.ProductResponseDto;
+import com.example.finalproject.dto.requestdto.ProductRequestDto;
+import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

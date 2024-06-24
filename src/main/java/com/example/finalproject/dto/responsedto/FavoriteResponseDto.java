@@ -1,18 +1,16 @@
-package com.example.finalproject.dto;
+package com.example.finalproject.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FavoriteResponseDto {
 
     private Long favoriteId;
-    private Long  productId;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("product")

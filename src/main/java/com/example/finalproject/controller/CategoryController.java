@@ -1,8 +1,8 @@
 package com.example.finalproject.controller;
 
 
-import com.example.finalproject.dto.CategoryRequestDto;
-import com.example.finalproject.dto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.CategoryRequestDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
