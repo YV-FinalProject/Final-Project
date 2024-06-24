@@ -20,16 +20,13 @@ public class UserResponseDto {
     private Role role;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("cart")
-    CartDto cartDto;
+    CartResponseDto cartDto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("orders")
     Set<OrderResponseDto> ordersDto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("favorites")
-    Set<FavoriteDto> favoritesDto;
+    Set<FavoriteResponseDto> favoritesDto;
 }
 
 

@@ -20,7 +20,7 @@ public class Favorite {
     @JoinColumn(name="UserID", nullable=false)
     private User user;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name="ProductID", nullable=false)
-//    private Product product;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="ProductID", nullable=false)
+    private Product product;
 }

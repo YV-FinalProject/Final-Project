@@ -12,32 +12,33 @@ public class Mappers {
 
     private final ModelMapper modelMapper;
 
-//    public UsersDto convertToUsersDto(Users users) {
-//        UsersDto usersDto = modelMapper.map(users, UsersDto.class);
-//    Разруливаем вручную двухстороннюю связь один-к-одному
-//    Cart cart = user.getCart();
-//        if (cart!=null) {
-//        cart.setUser(null);
-//        usersDto.setCartDto(convertToCartDto(cart));
-//    }
-//        usersDto.setPasswordHash("***"); // замещаем пароль фиктивнім значением
-//        return usersDto;
-//    }
+    public UserResponseDto convertToUserResponseDto(User user) {
+        modelMapper.typeMap(User.class, UserResponseDto.class)
+                .addMappings(mapper -> mapper.skip(UserResponseDto::setCartDto));
+        modelMapper.typeMap(User.class, UserResponseDto.class)
+                .addMappings(mapper -> mapper.skip(UserResponseDto::setOrdersDto));
+        modelMapper.typeMap(User.class, UserResponseDto.class)
+                .addMappings(mapper -> mapper.skip(UserResponseDto::setFavoritesDto));
 
-//    public Users convertToUsers(UsersDto usersDto) {
-//        return modelMapper.map(usersDto, Users.class);
-//    }
-
-    public FavoriteDto convertToFavoriteResponseDto(Favorite favorites) {
-        return modelMapper.map(favorites, FavoriteDto.class);
+        UserResponseDto usersResponseDto = modelMapper.map(user, UserResponseDto.class);
+        usersResponseDto.setPassword("***");
+        return usersResponseDto;
     }
 
-    public Favorite convertToFavorites(FavoriteDto favoritesDto) {
+    public User convertToUser(UserRequestDto userRequestDto) {
+        return modelMapper.map(userRequestDto, User.class);
+    }
+
+    public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorites) {
+        return modelMapper.map(favorites, FavoriteResponseDto.class);
+    }
+
+    public Favorite convertToFavorites(FavoriteResponseDto favoritesDto) {
         return modelMapper.map(favoritesDto, Favorite.class);
     }
 
-    public CartDto convertToCartRequestDto(Cart cart) {
-        CartDto cartDto = modelMapper.map(cart, CartDto.class);
+    public CartResponseDto convertToCartRequestDto(Cart cart) {
+        CartResponseDto cartDto = modelMapper.map(cart, CartResponseDto.class);
 //        //Разруливаем вручную двухстороннюю связь один-к-одному
 //        Users users = cart.getUser();
 //        if(users!=null) {
@@ -47,15 +48,15 @@ public class Mappers {
         return cartDto;
     }
 
-    public Cart convertToCart(CartDto cartDto) {
+    public Cart convertToCart(CartResponseDto cartDto) {
         return modelMapper.map(cartDto, Cart.class);
     }
 
-    public CartItemDto convertToCartItemRequestDto(CartItem cartItems) {
-        return modelMapper.map(cartItems, CartItemDto.class);
+    public CartItemRequestDto convertToCartItemRequestDto(CartItem cartItems) {
+        return modelMapper.map(cartItems, CartItemRequestDto.class);
     }
 
-    public CartItem convertToCartItems(CartItemDto cartItemsDto) {
+    public CartItem convertToCartItems(CartItemRequestDto cartItemsDto) {
         return modelMapper.map(cartItemsDto, CartItem.class);
     }
 
@@ -82,6 +83,8 @@ public class Mappers {
     }
 
     public ProductResponseDto convertToProductResponseDto(Product product) {
+        modelMapper.typeMap(Product.class, ProductResponseDto.class)
+                .addMappings(mapper -> mapper.skip(ProductResponseDto::setCategoryResponseDto));
         return modelMapper.map(product, ProductResponseDto.class);
     }
 

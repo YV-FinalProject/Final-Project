@@ -9,7 +9,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "Orders")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

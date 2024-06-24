@@ -51,7 +51,4 @@ public class Product {
    @JoinColumn(name = "CategoryId")
     private Category category;
 
-
-//    @Column(name = "CategoryID")
-//    private Long categoryId;
 }
