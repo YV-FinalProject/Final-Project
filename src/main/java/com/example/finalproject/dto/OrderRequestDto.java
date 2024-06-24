@@ -22,7 +22,7 @@ public class OrderRequestDto {
     private String deliveryAddress;
 
     @NotBlank(message = "Delivery method cannot be blank")
-    @Size(min = 3, max = 30, message = "Invalid Delivery method: Must be of 3 - 30 characters")
+    @Size(min = 3, max = 30, message = "Invalid Delivery method: Must be one of: COURIER_DELIVERY or CUSTOMER_PICKUP")
     private String deliveryMethod;
 }
 

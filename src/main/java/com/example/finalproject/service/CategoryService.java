@@ -2,7 +2,8 @@ package com.example.finalproject.service;
 
 
 import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.CategoryDto;
+import com.example.finalproject.dto.CategoryRequestDto;
+import com.example.finalproject.dto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
@@ -12,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +21,9 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
 
-    public List<CategoryDto> getCategories() {
+    public List<CategoryResponseDto> getCategories() {
         List<Category> categoryList = categoryRepository.findAll();
-        return MapperUtil.convertList(categoryList, mappers::convertToCategoryDto);
+        return MapperUtil.convertList(categoryList, mappers::convertToCategoryResponseDto);
     }
 
 
@@ -36,18 +35,19 @@ public class CategoryService {
         }
     }
 
-    public void insertCategories(CategoryDto categoryDto) {
+    public void insertCategories(CategoryRequestDto categoryRequestDto) {
 
-        categoryDto.setCategoryId(0L);
-        categoryRepository.save(mappers.convertToCategory(categoryDto));
+        Category category = mappers.convertToCategory(categoryRequestDto);
+        category.setCategoryId(0L);
+        categoryRepository.save(category);
     }
 
-    public void updateCategory(CategoryDto categoryDto, Long id) {
+    public void updateCategory(CategoryRequestDto categoryRequestDto, Long id) {
         if (id > 0) {
             Category category = categoryRepository.findById(id).orElse(null);
             if (category != null) {
-                categoryDto.setCategoryId(id);
-                categoryRepository.save(mappers.convertToCategory(categoryDto));
+                category.setName(categoryRequestDto.getName());
+                categoryRepository.save(category);
             } else {
                 throw new DataNotFoundInDataBaseException("Data not found in database.");
             }

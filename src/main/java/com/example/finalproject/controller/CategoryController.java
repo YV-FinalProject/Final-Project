@@ -1,7 +1,8 @@
 package com.example.finalproject.controller;
 
 
-import com.example.finalproject.dto.CategoryDto;
+import com.example.finalproject.dto.CategoryRequestDto;
+import com.example.finalproject.dto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class CategoryController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CategoryDto> getCategories() {
+    public List<CategoryResponseDto> getCategories() {
         return categoryService.getCategories();
     }
 
@@ -30,13 +31,13 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void insertCategories(@RequestBody @Valid CategoryDto categoryDto) {
-        categoryService.insertCategories(categoryDto);
+    public void insertCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
+        categoryService.insertCategories(categoryRequestDto);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCategories(@RequestBody @Valid CategoryDto categoryDto, @PathVariable Long id) {
-         categoryService.updateCategory(categoryDto,id);
+    public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto, @PathVariable Long id) {
+         categoryService.updateCategory(categoryRequestDto,id);
     }
 }
