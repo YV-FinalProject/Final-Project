@@ -30,7 +30,8 @@ public class Order {
     private String contactPhone;
 
     @Column(name = "DeliveryMethod")
-    private String deliveryMethod;
+    @Enumerated(EnumType.STRING)
+    private DeliveryMethod deliveryMethod;
 
     @Column(name = "Status")
     @Enumerated(EnumType.STRING)

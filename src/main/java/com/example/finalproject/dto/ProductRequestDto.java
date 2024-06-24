@@ -1,7 +1,5 @@
 package com.example.finalproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +17,6 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ProductRequestDto {
-
 
     @NotBlank(message = "Invalid name: Empty name")
     private String name;
@@ -39,17 +36,7 @@ public class ProductRequestDto {
     @Pattern(regexp = "^https?://([-a-z0-9]{2,256}\\.){1,20}[a-z]{2,4}/[-a-zA-Z0-9_.#?&=%/]*$", message = "Invalid URL")
     private String imageURL;
 
-  //  private Long CategoryId;
-
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("category")
-    @NotBlank(message = "Invalid Category: Empty Category")
+    @NotBlank(message = "Invalid Category: Empty category")
     private String category;
-
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("category")
-//    private CategoryDto categoryDto;
-
 
 }
