@@ -1,8 +1,7 @@
-package com.example.finalproject.dto;
+package com.example.finalproject.dto.responsedto;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
-
 import java.math.*;
 
 @Data
