@@ -3,6 +3,8 @@ package com.example.finalproject.service;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
+import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +18,7 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -35,11 +36,14 @@ class CategoryServiceTest {
     private ModelMapper modelMapperMock;
 
     @InjectMocks
-    private CategoryService categoryServiceTest;
+    private CategoryService categoryServiceMock;
 
     private CategoryResponseDto categoryResponseDto;
-    private CategoryRequestDto categoryRequestDto;
+    private CategoryRequestDto categoryRequestDto, wrongCategoryRequestDto;
     private Category category;
+
+    DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    InvalidValueExeption invalidValueExeption;
 
     @BeforeEach
     void setUp() {
@@ -56,13 +60,17 @@ class CategoryServiceTest {
         categoryRequestDto = CategoryRequestDto.builder()
                 .name("Test category")
                 .build();
+
+        wrongCategoryRequestDto = CategoryRequestDto.builder()
+                .name("Wrong category")
+                .build();
     }
 
     @Test
     void getCategories() {
         when(categoryRepositoryMock.findAll()).thenReturn(List.of(category));
         when(mappersMock.convertToCategoryResponseDto(any(Category.class))).thenReturn(categoryResponseDto);
-        List<CategoryResponseDto> actualList = categoryServiceTest.getCategories();
+        List<CategoryResponseDto> actualList = categoryServiceMock.getCategories();
         verify(mappersMock, times(1)).convertToCategoryResponseDto(any(Category.class));
 
         assertFalse(actualList.isEmpty());
@@ -72,26 +80,43 @@ class CategoryServiceTest {
     @Test
     void deleteCategoryById() {
         Long id = 1L;
+        Long wrongId = 10L;
         when(categoryRepositoryMock.findById(id)).thenReturn(Optional.of(category));
-        categoryServiceTest.deleteCategoryById(id);
+        categoryServiceMock.deleteCategoryById(id);
         verify(categoryRepositoryMock,times(1)).findById(id);
         verify(categoryRepositoryMock,times(1)).deleteById(id);
+
+        when(categoryRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> categoryServiceMock.deleteCategoryById(wrongId));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
     void insertCategories() {
         category.setCategoryId(0L);
         when(mappersMock.convertToCategory(any(CategoryRequestDto.class))).thenReturn(category);
-        categoryServiceTest.insertCategories(categoryRequestDto);
+        categoryServiceMock.insertCategories(categoryRequestDto);
         verify(categoryRepositoryMock, times(1)).save(any(Category.class));
     }
 
     @Test
     void updateCategory() {
         Long id = 1L;
+        Long wrongId = 10L;
+        Long negativeId = -5L;
         when(categoryRepositoryMock.findById(anyLong())).thenReturn(Optional.of(category));
         category.setName(categoryRequestDto.getName());
-        categoryServiceTest.updateCategory(categoryRequestDto,id);
+        categoryServiceMock.updateCategory(categoryRequestDto,id);
         verify(categoryRepositoryMock, times(1)).save(category);
+
+        when(categoryRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> categoryServiceMock.updateCategory(wrongCategoryRequestDto, wrongId));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+        invalidValueExeption = assertThrows(InvalidValueExeption.class,
+                () -> categoryServiceMock.updateCategory(wrongCategoryRequestDto, negativeId));
+        assertEquals("The value you entered is not valid.", invalidValueExeption.getMessage());
     }
 }
