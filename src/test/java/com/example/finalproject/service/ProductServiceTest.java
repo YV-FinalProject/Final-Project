@@ -6,6 +6,7 @@ import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
@@ -50,6 +51,7 @@ class ProductServiceTest {
     private ProductService productServiceMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    InvalidValueExeption invalidValueExeption;
 
     private ProductResponseDto productResponseDto;
     private ProductRequestDto productRequestDto, wrongProductRequestDto;
@@ -125,11 +127,11 @@ class ProductServiceTest {
         verify(productRepositoryMock, times(1)).findById(id);
         assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
 
-//        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
-//        productServiceMock.getProductById(wrongId);
-//        assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> productServiceMock.getProductById(wrongId));
-//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> productServiceMock.getProductById(wrongId));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+
     }
 
     @Test
@@ -141,11 +143,10 @@ class ProductServiceTest {
         productServiceMock.deleteProductById(id);
         verify(productRepositoryMock,times(1)).delete(product);
 
-//        when(productRepositoryMock.findById(anyLong())).thenReturn(Optional.empty());
-//        productServiceMock.getProductById(wrongId);
-//        assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> productServiceMock.getProductById(wrongId));
-//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> productServiceMock.deleteProductById(wrongId));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
@@ -160,17 +161,17 @@ class ProductServiceTest {
         verify(mappersMock, times(1)).convertToProduct(any(ProductRequestDto.class));
         verify(productRepositoryMock, times(1)).save(productToInsert);
 
-//        when(categoryRepositoryMock.findCategoryByName(wrongProductRequestDto.getCategory()).thenReturn(null);
-//        productServiceMock.insertProduct(wrongProductRequestDto);
-//        assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> productServiceMock.getProductById(wrongId));
-//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        when(categoryRepositoryMock.findCategoryByName(wrongProductRequestDto.getCategory())).thenReturn(null);
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> productServiceMock.insertProduct(wrongProductRequestDto));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
     void updateProduct() {
         Long id = 1L;
-        Long wrongId = 35L;
+        Long wrongId = 58L;
+        Long negativeId = -5L;
 
         when(productRepositoryMock.findById(id)).thenReturn(Optional.of(product));
         when(categoryRepositoryMock.findCategoryByName(anyString())).thenReturn(category);
@@ -184,14 +185,14 @@ class ProductServiceTest {
         product.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         productServiceMock.updateProduct(productRequestDto,id);
-
         verify(productRepositoryMock, times(1)).save(any(Product.class));
 
-//        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
-//        when(categoryRepositoryMock.findCategoryByName(wrongProductRequestDto.getCategory()).thenReturn(null);
-//        productServiceMock.insertProduct(wrongProductRequestDto, wrongId);
-//        assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> productServiceMock.getProductById(wrongId));
-//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> productServiceMock.updateProduct(wrongProductRequestDto, wrongId));
+        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+        invalidValueExeption = assertThrows(InvalidValueExeption.class,
+                () -> productServiceMock.updateProduct(wrongProductRequestDto, negativeId));
+        assertEquals("The value you entered is not valid.", invalidValueExeption.getMessage());
     }
 }

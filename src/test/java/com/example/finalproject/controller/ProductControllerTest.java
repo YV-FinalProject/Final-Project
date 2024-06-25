@@ -39,9 +39,6 @@ class ProductControllerTest {
     private ProductResponseDto productResponseDto;
     private ProductRequestDto  productRequestDto;
 
-    @Autowired
-    private ProductService productService;
-
     @BeforeEach
     void setUp() {
 
