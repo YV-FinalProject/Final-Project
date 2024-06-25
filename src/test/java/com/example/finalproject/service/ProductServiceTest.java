@@ -152,13 +152,13 @@ class ProductServiceTest {
     void insertProduct() {
         when(categoryRepositoryMock.findCategoryByName(productRequestDto.getCategory())).thenReturn(category);
         when(mappersMock.convertToProduct(any(ProductRequestDto.class))).thenReturn(productToInsert);
-        product.setProductId(0L);
-        product.setCategory(category);
-        product.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        productToInsert.setProductId(0L);
+        productToInsert.setCategory(category);
+        productToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 
         productServiceMock.insertProduct(productRequestDto);
         verify(mappersMock, times(1)).convertToProduct(any(ProductRequestDto.class));
-        verify(productRepositoryMock, times(1)).save(product);
+        verify(productRepositoryMock, times(1)).save(productToInsert);
 
 //        when(categoryRepositoryMock.findCategoryByName(wrongProductRequestDto.getCategory()).thenReturn(null);
 //        productServiceMock.insertProduct(wrongProductRequestDto);

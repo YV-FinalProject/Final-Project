@@ -1,7 +1,7 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.dto.CategoryRequestDto;
-import com.example.finalproject.dto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.CategoryRequestDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
