@@ -12,18 +12,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
     @Autowired
@@ -35,27 +31,28 @@ class CategoryControllerTest {
     @MockBean
     private CategoryService categoryServiceMock;
 
-    private CategoryResponseDto categoryResponseExpectedDto;
-    private CategoryRequestDto categoryRequestExpectedDto;
+    private CategoryResponseDto categoryResponseDto;
+    private CategoryRequestDto categoryRequestDto;
 
 
     @BeforeEach
     void setUp() {
-        categoryResponseExpectedDto = CategoryResponseDto.builder()
+
+        categoryResponseDto = CategoryResponseDto.builder()
                 .categoryId(1L)
-                .name("Name 1")
+                .name("Name")
                 .build();
-        categoryRequestExpectedDto = CategoryRequestDto.builder()
-                .name("Name 1")
+        categoryRequestDto = CategoryRequestDto.builder()
+                .name("Name")
                 .build();
     }
 
     @Test
     void getCategories() throws Exception {
-        when(categoryServiceMock.getCategories()).thenReturn(List.of(categoryResponseExpectedDto));
+        when(categoryServiceMock.getCategories()).thenReturn(List.of(categoryResponseDto));
         this.mockMvc.perform(get("/categories")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..name").exists())
+                .andExpect(jsonPath("$..categoryId").value(1))
                 .andExpect(jsonPath("$..name").value("Name 1"));
     }
 
@@ -63,15 +60,16 @@ class CategoryControllerTest {
     void deleteProductsById() throws Exception {
         Long id = 1L;
         mockMvc.perform(delete("/categories/{id}", id)).andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryId").doesNotExist())
+                .andExpect(jsonPath("$.name").doesNotExist());;
     }
 
     @Test
     void insertProducts() throws Exception {
-        Long id=0L;
         mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryRequestExpectedDto))).andDo(print())
+                        .content(objectMapper.writeValueAsString(categoryRequestDto))).andDo(print())
                 .andExpect(status().isCreated());
     }
 
@@ -80,8 +78,7 @@ class CategoryControllerTest {
         Long id =1L;
         this.mockMvc.perform(put("/categories/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(categoryRequestExpectedDto))).andDo(print())
+                        .content(objectMapper.writeValueAsString(categoryRequestDto))).andDo(print())
                 .andExpect(status().isOk());
-
     }
 }

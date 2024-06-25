@@ -36,7 +36,6 @@ public class CategoryService {
     }
 
     public void insertCategories(CategoryRequestDto categoryRequestDto) {
-
         Category category = mappers.convertToCategory(categoryRequestDto);
         category.setCategoryId(0L);
         categoryRepository.save(category);

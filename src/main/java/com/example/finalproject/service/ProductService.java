@@ -25,13 +25,13 @@ public class ProductService {
     private final Mappers mappers;
 
     public ProductResponseDto getProductById(Long id) {
-            Product productResponse = productRepository.findById(id).orElse(null);
-            if (productResponse != null) {
-                return mappers.convertToProductResponseDto(productResponse);
+        Product productResponse = productRepository.findById(id).orElse(null);
+        if (productResponse != null) {
+            return mappers.convertToProductResponseDto(productResponse);
 
-            } else {
+        } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
-            }
+        }
     }
 
     public void deleteProductById(Long id) {
@@ -45,8 +45,9 @@ public class ProductService {
     public void insertProduct(ProductRequestDto productRequestDto) {
         Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
         if (category != null) {
-            Product productToInsert = mappers.convertToProductRequest(productRequestDto);
+            Product productToInsert = mappers.convertToProduct(productRequestDto);
             productToInsert.setProductId(0L);
+            productToInsert.setCategory(category);
             productToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             productRepository.save(productToInsert);
         } else {
@@ -58,19 +59,20 @@ public class ProductService {
         if (id > 0) {
             Product productToUpdate = productRepository.findById(id).orElse(null);
             Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
-           if  (productToUpdate != null && category != null ){
-                        productToUpdate.setName(productRequestDto.getName());
-                        productToUpdate.setDescription(productRequestDto.getDescription());
-                        productToUpdate.setImageURL(productRequestDto.getImageURL());
-                        productToUpdate.setPrice(productRequestDto.getPrice());
-                        productToUpdate.setDiscountPrice(productRequestDto.getDiscountPrice());
-                        productToUpdate.setCategory(category);
-                        productToUpdate.setProductId(id);
-                        productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-                        productRepository.save(productToUpdate);
+            if (productToUpdate != null && category != null) {
+                productToUpdate.setName(productRequestDto.getName());
+                productToUpdate.setDescription(productRequestDto.getDescription());
+                productToUpdate.setPrice(productRequestDto.getPrice());
+                productToUpdate.setDiscountPrice(productRequestDto.getDiscountPrice());
+                productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setCategory(category);
+                productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+                productRepository.save(productToUpdate);
+            } else {
+                throw new DataNotFoundInDataBaseException("Data not found in database.");
+            }
         } else {
-               throw new DataNotFoundInDataBaseException("Data not found in database.");
-           } } else {
-             throw new InvalidValueExeption("The value you entered is not valid."); }
+            throw new InvalidValueExeption("The value you entered is not valid.");
+        }
     }
 }

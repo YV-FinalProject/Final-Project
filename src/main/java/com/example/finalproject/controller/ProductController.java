@@ -20,13 +20,13 @@ public class ProductController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive(message = "fffff") @Min(1) Long id) {
+    public ProductResponseDto getProductsById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable @Valid @Positive @Min(1) Long id) {
+    public void deleteProductsById(@PathVariable Long id) {
         productService.deleteProductById(id);
     }
 
