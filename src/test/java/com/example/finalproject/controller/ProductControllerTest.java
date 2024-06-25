@@ -1,9 +1,8 @@
 package com.example.finalproject.controller;
 
-
-import com.example.finalproject.dto.CategoryResponseDto;
-import com.example.finalproject.dto.ProductRequestDto;
-import com.example.finalproject.dto.ProductResponseDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.ProductRequestDto;
+import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
