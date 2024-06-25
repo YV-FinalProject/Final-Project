@@ -5,6 +5,7 @@ import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CategoryController {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable Long id) {
+    public void deleteCategoriesById(@PathVariable @Valid @Positive @Min(1) Long id) {
         categoryService.deleteCategoryById(id);
     }
 
@@ -37,7 +38,8 @@ public class CategoryController {
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto, @PathVariable Long id) {
+    public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
+                                 @PathVariable @Valid  @Min(1) Long id) {
          categoryService.updateCategory(categoryRequestDto,id);
     }
 }

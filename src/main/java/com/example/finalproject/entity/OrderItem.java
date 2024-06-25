@@ -11,7 +11,6 @@ import java.math.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class OrderItem {
 
     @Id
