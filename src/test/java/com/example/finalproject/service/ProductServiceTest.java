@@ -1,8 +1,8 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.dto.CategoryResponseDto;
-import com.example.finalproject.dto.ProductRequestDto;
-import com.example.finalproject.dto.ProductResponseDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.ProductRequestDto;
+import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
