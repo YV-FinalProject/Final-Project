@@ -1,7 +1,7 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.CategoryRequestDto;
-import com.example.finalproject.dto.CategoryResponseDto;
+import com.example.finalproject.dto.requestdto.CategoryRequestDto;
+import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +53,7 @@ class CategoryControllerTest {
         this.mockMvc.perform(get("/categories")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..categoryId").value(1))
-                .andExpect(jsonPath("$..name").value("Name 1"));
+                .andExpect(jsonPath("$..name").value("Name"));
     }
 
     @Test

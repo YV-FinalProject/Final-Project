@@ -76,7 +76,7 @@ class ProductControllerTest {
         this.mockMvc.perform(get("/products/{id}",id)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
-                .andExpect(jsonPath("$.name").value("Name 1"));
+                .andExpect(jsonPath("$.name").value("Name"));
     }
 
     @Test
