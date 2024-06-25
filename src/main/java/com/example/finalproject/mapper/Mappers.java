@@ -88,12 +88,11 @@ public class Mappers {
         return modelMapper.map(product, ProductResponseDto.class);
     }
 
-
     public CategoryResponseDto convertToCategoryResponseDto(Category category) {
         return modelMapper.map(category, CategoryResponseDto.class);
     }
 
-    public Category convertToCategory(CategoryRequestDto categoriyRequestDto) {
-        return modelMapper.map(categoriyRequestDto, Category.class);
+    public Category convertToCategory(CategoryRequestDto categoryRequestDto) {
+        return modelMapper.map(categoryRequestDto, Category.class);
     }
 }

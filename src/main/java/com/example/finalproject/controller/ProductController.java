@@ -4,7 +4,11 @@ import com.example.finalproject.dto.ProductRequestDto;
 import com.example.finalproject.dto.ProductResponseDto;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.processing.Pattern;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,13 +20,13 @@ public class ProductController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive(message = "fffff") @Min(1) Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable Long id) {
+    public void deleteProductsById(@PathVariable @Valid @Positive @Min(1) Long id) {
         productService.deleteProductById(id);
     }
 
@@ -35,7 +39,8 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto, @PathVariable Long id) {
+    public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
+                              @PathVariable @Valid @Min(1) Long id) {
         productService.updateProduct(productRequestDto,id);
     }
 }
