@@ -1,10 +1,7 @@
 package com.example.finalproject.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -32,11 +29,11 @@ public class Product {
     @Column(name = "Price")
     private BigDecimal price;
 
-    @Column(name = "ImageURL")
-    private String imageURL;
-
     @Column(name = "DiscountPrice")
     private BigDecimal discountPrice;
+
+    @Column(name = "ImageURL")
+    private String imageURL;
 
     @CreationTimestamp
     @Column(name = "CreatedAt")
@@ -45,7 +42,6 @@ public class Product {
     @CreationTimestamp
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
-
 
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "CategoryId")

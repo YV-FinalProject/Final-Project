@@ -72,22 +72,21 @@ public class Mappers {
     }
 
 
-    public Product convertToProductRequest(ProductRequestDto productRequestDto) {
+    public Product convertToProduct(ProductRequestDto productRequestDto) {
         return modelMapper.map(productRequestDto, Product.class);
     }
 
     public ProductResponseDto convertToProductResponseDto(Product product) {
-        modelMapper.typeMap(Product.class, ProductResponseDto.class)
-                .addMappings(mapper -> mapper.skip(ProductResponseDto::setCategoryResponseDto));
+        modelMapper.typeMap(Product.class, ProductResponseDto.class);
+//                .addMappings(mapper -> mapper.skip(ProductResponseDto::setCategoryResponseDto));
         return modelMapper.map(product, ProductResponseDto.class);
     }
-
 
     public CategoryResponseDto convertToCategoryResponseDto(Category category) {
         return modelMapper.map(category, CategoryResponseDto.class);
     }
 
-    public Category convertToCategory(CategoryRequestDto categoriyRequestDto) {
-        return modelMapper.map(categoriyRequestDto, Category.class);
+    public Category convertToCategory(CategoryRequestDto categoryRequestDto) {
+        return modelMapper.map(categoryRequestDto, Category.class);
     }
 }
