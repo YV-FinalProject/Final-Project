@@ -10,23 +10,25 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.processing.Pattern;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive(message = "Product ID must be a positive number") Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable Long id) {
+    public void deleteProductsById(@PathVariable @Positive(message = "Product ID must be a positive number")Long id) {
         productService.deleteProductById(id);
     }
 
@@ -40,7 +42,7 @@ public class ProductController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
-                              @PathVariable @Valid @Min(1) Long id) {
+                              @PathVariable @Valid @Positive(message = "Product ID must be a positive number") Long id) {
         productService.updateProduct(productRequestDto,id);
     }
 }

@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
+@Validated
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -26,7 +28,7 @@ public class CategoryController {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable @Valid @Positive @Min(1) Long id) {
+    public void deleteCategoriesById(@PathVariable @Valid @Positive(message = "Category ID must be a positive number") Long id) {
         categoryService.deleteCategoryById(id);
     }
 
@@ -39,7 +41,7 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                                 @PathVariable @Valid  @Min(1) Long id) {
-         categoryService.updateCategory(categoryRequestDto,id);
+                                 @PathVariable @Valid @Positive(message = "Category ID must be a positive number") Long id) {
+        categoryService.updateCategory(categoryRequestDto, id);
     }
 }

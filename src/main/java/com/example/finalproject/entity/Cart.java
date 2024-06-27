@@ -9,6 +9,7 @@ import java.util.*;
 @Table(name = "Cart")
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {
@@ -21,7 +22,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private List<CartItem> cartItems;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "UserID", referencedColumnName = "UserID")
     private User user;
 }

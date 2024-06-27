@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode
 public class Product {
 
     @Id
@@ -43,7 +44,7 @@ public class Product {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne
    @JoinColumn(name = "CategoryId")
     private Category category;
 
