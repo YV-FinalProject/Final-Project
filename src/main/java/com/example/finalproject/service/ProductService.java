@@ -7,7 +7,6 @@ import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCount;
-import com.example.finalproject.entity.query.ProductTest;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -15,7 +14,6 @@ import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 //import com.example.finalproject.repository.customs.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -89,10 +87,12 @@ public class ProductService {
         return list;
     }
 
-    public List<ProductResponseDto> test() {
-        List list = productRepository.testSelectNative();
-
-        return null;}
-        //return mapperUtil.convertList(list, mappers::convertToProductResponseDto);}
-
+    public List findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
+        boolean isCategory = false;
+        if (category == null) {isCategory = true;}
+        if (minPrice == null) {minPrice = 0.00;}
+        if (maxPrice == null) {maxPrice = Double.MAX_VALUE;}
+        if (sort == null) {sort = "Name";}
+        return productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort);
+    }
 }
