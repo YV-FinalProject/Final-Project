@@ -1,23 +1,16 @@
 package com.example.finalproject.controller.advice;
 
-import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.exception.InvalidValueExeption;
-import com.example.finalproject.exception.UnauthorizedDataException;
+import com.example.finalproject.exception.*;
 import jakarta.validation.*;
-import org.modelmapper.spi.ErrorMessage;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.modelmapper.spi.*;
+import org.springframework.context.support.*;
+import org.springframework.http.*;
+import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.*;
 
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -25,6 +18,21 @@ public class AdviceController {
 
     @ExceptionHandler(DataNotFoundInDataBaseException.class)
     public ResponseEntity<ErrorMessage> exceptionHandler(DataNotFoundInDataBaseException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(UserNotFoundException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorMessage(exception.getMessage()));
+
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(UserAlreadyExistsException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorMessage(exception.getMessage()));
@@ -45,7 +53,7 @@ public class AdviceController {
     }
 
 
-// для обработки ошибок Validation
+    // для обработки ошибок Validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getFieldErrors()
@@ -68,7 +76,10 @@ public class AdviceController {
     public ResponseEntity<Map<String, String>> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         Map<String, String> errors = new HashMap<>();
         String parameterName = ex.getParameter().getParameterName();
-        String errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, ex.getRequiredType().getSimpleName());
+        String errorMessage = "Invalid parameter type";
+        if (ex.getRequiredType() != null) {
+            errorMessage = String.format("The parameter '%s' should be of type '%s'", parameterName, ex.getRequiredType().getSimpleName());
+        }
         errors.put("errors", errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
@@ -79,11 +90,11 @@ public class AdviceController {
         return errorResponse;
     }
 
-// по умолчанию для всех остальных исключений
-        @ExceptionHandler(Exception.class)
-        public ResponseEntity<ErrorMessage> exceptionHandler(Exception exception) {
-            return ResponseEntity
-                    .status(HttpStatus.I_AM_A_TEAPOT)
-                    .body(new ErrorMessage("Sorry, something went wrong!"));
-        }
+    // по умолчанию для всех остальных исключений
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(Exception exception) {
+        return ResponseEntity
+                .status(HttpStatus.I_AM_A_TEAPOT)
+                .body(new ErrorMessage("Sorry, something went wrong!"));
+    }
 }

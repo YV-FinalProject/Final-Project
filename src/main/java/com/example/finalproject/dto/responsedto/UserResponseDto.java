@@ -9,11 +9,11 @@ import lombok.*;
 @Builder
 public class UserResponseDto {
 
+    private Long userId;
     private String name;
-    private String email;
     private String phone;
+    private String email;
     private String password;
-    private Long userID;
     private Role role;
 
 }

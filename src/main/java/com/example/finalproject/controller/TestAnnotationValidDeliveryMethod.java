@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class TestAnnotationValidDeliveryMethod {
 
     @PostMapping("/orders")
-    public ResponseEntity<String> validateStatus(@Valid @RequestBody OrderRequestDto requestDto) {
+    public ResponseEntity<String> validateStatus(@RequestBody @Valid OrderRequestDto requestDto) {
         return new ResponseEntity<>("Valid status: " + requestDto.getDeliveryMethod(), HttpStatus.OK);
     }
 }
