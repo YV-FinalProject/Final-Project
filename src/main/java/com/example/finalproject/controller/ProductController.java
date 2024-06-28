@@ -4,12 +4,10 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.processing.Pattern;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +18,7 @@ public class ProductController {
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
         return productService.getProductById(id);
     }
 
@@ -39,8 +37,9 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Validated
     public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
-                              @PathVariable @Valid @Min(1) Long id) {
+                              @PathVariable Long id) {
         productService.updateProduct(productRequestDto,id);
     }
 }
