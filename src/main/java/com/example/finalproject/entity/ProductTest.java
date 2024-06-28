@@ -1,20 +1,21 @@
 package com.example.finalproject.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.HashSet;
 
-@Entity
-@Table(name = "Products")
+//@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Product {
+public class ProductTest {
 
     @Id
     @Column(name = "ProductID")
@@ -24,30 +25,30 @@ public class Product {
     @Column(name = "Name")
     private String name;
 
-    @Column(name = "Description")
-    private String description;
-
-    @Column(name = "Price")
-    private BigDecimal price;
-
-    @Column(name = "DiscountPrice")
-    private BigDecimal discountPrice;
-
-    @Column(name = "ImageURL")
-    private String imageURL;
-
-    @CreationTimestamp
-    @Column(name = "CreatedAt")
-    private Timestamp createdAt;
-
-    @CreationTimestamp
-    @Column(name = "UpdatedAt")
-    private Timestamp updatedAt;
-
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "CategoryId")
-    private Category category;
-
+//    @Column(name = "Description")
+//    private String description;
+//
+//    @Column(name = "Price")
+//    private BigDecimal price;
+//
+//    @Column(name = "DiscountPrice")
+//    private BigDecimal discountPrice;
+//
+//    @Column(name = "ImageURL")
+//    private String imageURL;
+//
+//    @CreationTimestamp
+//    @Column(name = "CreatedAt")
+//    private Timestamp createdAt;
+//
+//    @CreationTimestamp
+//    @Column(name = "UpdatedAt")
+//    private Timestamp updatedAt;
+//
+//   @ManyToOne(fetch = FetchType.LAZY)
+//   @JoinColumn(name = "CategoryId")
+//    private Category category;
+//
 //    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить связанные объекты, например favorites
 //    private Set<Favorite> favorites = new HashSet<>();
 //

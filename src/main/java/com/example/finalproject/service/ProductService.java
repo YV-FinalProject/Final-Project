@@ -1,28 +1,36 @@
 package com.example.finalproject.service;
 
 
+import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCount;
+import com.example.finalproject.entity.query.ProductTest;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
+//import com.example.finalproject.repository.customs.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+ //   private final ProductCustomRepository productCustomRepository;
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
+    private final MapperUtil mapperUtil;
 
     public ProductResponseDto getProductById(Long id) {
         Product productResponse = productRepository.findById(id).orElse(null);
@@ -75,4 +83,16 @@ public class ProductService {
             throw new InvalidValueExeption("The value you entered is not valid.");
         }
     }
+
+    public List<ProductCount> getTop10Products(String status) {
+        List<ProductCount> list = (List<ProductCount>)(List<?>)productRepository.findTop10Products(status);
+        return list;
+    }
+
+    public List<ProductResponseDto> test() {
+        List list = productRepository.testSelectNative();
+
+        return null;}
+        //return mapperUtil.convertList(list, mappers::convertToProductResponseDto);}
+
 }
