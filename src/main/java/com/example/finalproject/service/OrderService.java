@@ -63,7 +63,7 @@ public class OrderService {
         }
     }
 
-    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {// пока не работает (((((((((((((((((
+    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
         Order orderToInsert = new Order();
 
         User user = userRepository.findById(userId).orElse(null);
@@ -75,7 +75,7 @@ public class OrderService {
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
-//            orderRepository.save(orderToInsert);
+            orderRepository.save(orderToInsert);
 
             System.out.println(orderToInsert);
 
