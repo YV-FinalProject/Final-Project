@@ -24,7 +24,6 @@ import java.util.Set;
 public class OrderService {
 
     private final UserRepository userRepository;
-    private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderItemsRepository orderItemsRepository;
@@ -76,8 +75,6 @@ public class OrderService {
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
             orderToInsert = orderRepository.save(orderToInsert);
-
-            System.out.println(orderToInsert);
 
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
