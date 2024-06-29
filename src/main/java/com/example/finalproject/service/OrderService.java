@@ -77,8 +77,6 @@ public class OrderService {
             orderToInsert.setStatus(Status.CREATED);
             orderToInsert = orderRepository.save(orderToInsert);
 
-            System.out.println(orderToInsert);
-
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
         }
