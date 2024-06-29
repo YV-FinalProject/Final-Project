@@ -63,7 +63,7 @@ public class OrderService {
         }
     }
 
-    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {// пока не работает (((((((((((((((((
+    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
         Order orderToInsert = new Order();
 
         User user = userRepository.findById(userId).orElse(null);

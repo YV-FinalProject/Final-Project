@@ -75,7 +75,10 @@ class ProductServiceTest {
                 "http://localhost/img/1.jpg",
                 Timestamp.valueOf(LocalDateTime.now()),
                 Timestamp.valueOf(LocalDateTime.now()),
-                new Category(1L,"Category",null));
+                new Category(1L,"Category",null),
+                null,
+                null,
+                null);
 
         productToInsert = new Product(null,
                 "Name",
@@ -85,7 +88,10 @@ class ProductServiceTest {
                 "http://localhost/img/1.jpg",
                 null,
                 null,
-                new Category(1L,"Category",null));
+                new Category(1L,"Category",null),
+                null,
+                null,
+                null);
 
         category = new Category(1L,
                 "Category",
