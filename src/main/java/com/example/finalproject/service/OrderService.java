@@ -75,17 +75,18 @@ public class OrderService {
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
-            orderRepository.save(orderToInsert);
+            orderToInsert = orderRepository.save(orderToInsert);
 
             System.out.println(orderToInsert);
 
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
         }
+
         Set<OrderItemRequestDto> orderItemsRequestDtoSet = orderRequestDto.getOrderItemsSet();
         Set<OrderItem> orderItemToInsertSet = new HashSet<>();
         OrderItem orderItemToInsert = new OrderItem();
-        System.out.println(orderItemsRequestDtoSet);
+
         for (OrderItemRequestDto orderItem : orderItemsRequestDtoSet) {
             Product product = productRepository.findById(orderItem.getProductId()).orElse(null);
             if (product != null) {
@@ -95,19 +96,16 @@ public class OrderService {
                 } else {
                     orderItemToInsert.setPriceAtPurchase(product.getDiscountPrice());
                 }
-
                 orderItemToInsert.setQuantity(orderItem.getQuantity());
-//                orderItemToInsert.setOrder(orderToInsert);
-                System.out.println(orderItemToInsert);
-//                orderItemsRepository.save(orderItemToInsert);
+                orderItemToInsert.setOrder(orderToInsert);
+                orderItemsRepository.save(orderItemToInsert);
+
                 orderItemToInsertSet.add(orderItemToInsert);
             } else {
                 throw new DataNotFoundInDataBaseException("Data not found in database.");
             }
         }
-        System.out.println(orderItemToInsertSet);
         orderToInsert.setOrderItems(orderItemToInsertSet);
-        System.out.println(orderToInsert);
         orderRepository.save(orderToInsert);
     }
 }
