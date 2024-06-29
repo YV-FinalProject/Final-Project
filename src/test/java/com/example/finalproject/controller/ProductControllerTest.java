@@ -50,7 +50,7 @@ class ProductControllerTest {
                 .discountPrice(new BigDecimal("100.00"))
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
-                .imageURL("http://localhost/img/1.jpg")
+                .imageURL("https://example.com/images/deroma_white_garden_pot.jpg")
                 .categoryResponseDto(CategoryResponseDto.builder()
                         .categoryId(1L)
                         .name("Test category")
@@ -61,7 +61,7 @@ class ProductControllerTest {
                 .description("Description")
                 .price(new BigDecimal("101.00"))
                 .discountPrice(new BigDecimal("101.00"))
-                .imageURL("http://localhost/img/2.jpg")
+                .imageURL("https://example.com/images/magic_garden_seeds.jpg")
                 .category("Test category")
                 .build();
     }

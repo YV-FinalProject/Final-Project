@@ -16,12 +16,12 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CartID")
-    private long cartID;
+    private Long cartId;
 
     @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems;
+    private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "UserID", referencedColumnName = "UserID")
     private User user;
 }

@@ -1,5 +1,6 @@
 package com.example.finalproject.dto.requestdto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -28,7 +29,8 @@ public class ProductRequestDto {
     private BigDecimal discountPrice;
 
     @NotBlank(message = "Invalid image: Empty imageURL")
-//    @Pattern(regexp = "^https?://([-a-z0-9]{2,256}\\.){1,20}[a-z]{2,4}/[-a-zA-Z0-9_.#?&=%/]*$", message = "Invalid URL")
+    @Pattern(regexp = "^https?://([-a-z0-9]{2,256}\\.){1,20}[a-z]{2,4}/[-a-zA-Z0-9_.#?&=%/]*$", message = "Invalid URL")
+    @JsonProperty("image")
     private String imageURL;
 
     @NotBlank(message = "Invalid Category: Empty category")

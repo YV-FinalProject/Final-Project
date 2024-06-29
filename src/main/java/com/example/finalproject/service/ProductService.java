@@ -31,9 +31,9 @@ public class ProductService {
     private final MapperUtil mapperUtil;
 
     public ProductResponseDto getProductById(Long id) {
-        Product productResponse = productRepository.findById(id).orElse(null);
-        if (productResponse != null) {
-            return mappers.convertToProductResponseDto(productResponse);
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            return mappers.convertToProductResponseDto(product);
 
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");

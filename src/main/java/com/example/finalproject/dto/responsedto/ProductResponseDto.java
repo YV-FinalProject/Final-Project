@@ -17,7 +17,10 @@ public class ProductResponseDto {
     private String name;
     private String description;
     private BigDecimal price;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private BigDecimal discountPrice;
+
     private Timestamp createdAt;
     private Timestamp updatedAt;
     private String imageURL;
