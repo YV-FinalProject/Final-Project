@@ -21,7 +21,7 @@ ProductID BIGINT  NULL, Quantity INT NULL, CONSTRAINT PK_CARTITEMS PRIMARY KEY (
 CREATE TABLE Favorites (FavoriteID BIGINT AUTO_INCREMENT NOT NULL, ProductID BIGINT  NULL, UserID BIGINT  NULL, CONSTRAINT PK_FAVORITES PRIMARY KEY (FavoriteID));
 
 -- changeset yulia:create_table_orders
-CREATE TABLE Orders (OrderID BIGINT AUTO_INCREMENT NOT NULL, UserID BIGINT NULL, CreatedAt datetime NULL, DeliveryAddress VARCHAR(255) NULL, ContactPhone VARCHAR(255) NULL, DeliveryMethod ENUM('COURIER_DELIVERY','CUSTOMER_PICKUP') NULL, Status ENUM('CREATED','PENDING PAYMENT', 'PAID', 'ON THE WAY', 'DELIVERED', 'CANCELED') NULL, UpdatedAt datetime NULL, CONSTRAINT PK_ORDERS PRIMARY KEY (OrderID));
+CREATE TABLE Orders (OrderID BIGINT AUTO_INCREMENT NOT NULL, UserID BIGINT NULL, CreatedAt datetime NULL, DeliveryAddress VARCHAR(255) NULL, ContactPhone VARCHAR(255) NULL, DeliveryMethod ENUM('COURIER_DELIVERY','CUSTOMER_PICKUP') NULL, Status ENUM('CREATED','PENDING_PAYMENT', 'PAID', 'ON_THE_WAY', 'DELIVERED', 'CANCELED') NULL, UpdatedAt datetime NULL, CONSTRAINT PK_ORDERS PRIMARY KEY (OrderID));
 
 -- changeset yulia:create_table_orderitems
 CREATE TABLE OrderItems (OrderItemID BIGINT AUTO_INCREMENT NOT NULL, OrderID BIGINT NULL, ProductID BIGINT NULL, Quantity INT NULL, PriceAtPurchase DECIMAL (10, 2) NULL, CONSTRAINT PK_ORDERITEMS PRIMARY KEY (OrderItemID));
@@ -29,7 +29,7 @@ CREATE TABLE OrderItems (OrderItemID BIGINT AUTO_INCREMENT NOT NULL, OrderID BIG
 
 
 -- changeset yulia:create_foreign_key_products_categories
-ALTER TABLE Products ADD CONSTRAINT foreign_key_products_categories FOREIGN KEY (CategoryID) REFERENCES Categories (CategoryID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE Products ADD CONSTRAINT foreign_key_products_categories FOREIGN KEY (CategoryID) REFERENCES Categories (CategoryID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 -- changeset yulia:create_foreign_key_favorites_users
 ALTER TABLE Favorites ADD CONSTRAINT foreign_key_favorites_users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
@@ -50,7 +50,7 @@ ALTER TABLE CartItems ADD CONSTRAINT foreign_key_cartitems_products FOREIGN KEY 
 ALTER TABLE Orders ADD CONSTRAINT foreign_key_orders_users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 -- changeset yulia:create_foreign_key_orderitems_orders
-ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_orders FOREIGN KEY (OrderID) REFERENCES Orders (OrderID) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_orders FOREIGN KEY (OrderID) REFERENCES Orders (OrderID) ON UPDATE CASCADE ON DELETE SET NULL;
 
 -- changeset yulia:create_foreign_key_orderitems_products
 ALTER TABLE OrderItems ADD CONSTRAINT foreign_key_orderitems_products FOREIGN KEY (ProductID) REFERENCES Products (ProductID) ON UPDATE CASCADE ON DELETE SET NULL;
