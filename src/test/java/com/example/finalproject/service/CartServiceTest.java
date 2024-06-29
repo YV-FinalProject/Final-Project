@@ -6,7 +6,6 @@ import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.Role;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -38,9 +36,6 @@ class CartServiceTest {
     private UserRepository userRepositoryMock;
 
     @Mock
-    private CategoryRepository categoryRepositoryMock;
-
-    @Mock
     private CartRepository cartRepositoryMock;
 
     @Mock
@@ -49,25 +44,17 @@ class CartServiceTest {
     @Mock
     private Mappers mappersMock;
 
-    @Mock
-    private ModelMapper modelMapperMock;
-
-    @InjectMocks
-    private ProductService productServiceMock;
-
     @InjectMocks
     private CartService cartServiceMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
-    InvalidValueExeption invalidValueExeption;
 
     private User user;
     private Cart cart;
     private CartItem cartItem;
     private ProductResponseDto productResponseDto;
-    private ProductRequestDto productRequestDto, wrongProductRequestDto;
-    private Product product, productToInsert;
-    private Category category;
+    private ProductRequestDto productRequestDto;
+    private Product product;
     private CartItemResponseDto cartItemResponseDto;
     private CartResponseDto cartResponseDto;
     private UserResponseDto userResponseDto;

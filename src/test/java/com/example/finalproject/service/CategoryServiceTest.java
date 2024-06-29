@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +30,6 @@ class CategoryServiceTest {
 
     @Mock
     private Mappers mappersMock;
-
-    @Mock
-    private ModelMapper modelMapperMock;
 
     @InjectMocks
     private CategoryService categoryServiceMock;
