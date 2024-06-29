@@ -20,7 +20,7 @@ public class OrderItem {
     private Long orderItemID;
 
     @Column(name = "Quantity")
-    private Long quantity;
+    private Integer quantity;
 
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
@@ -32,4 +32,15 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "ProductID", nullable = false)
     private Product product;
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "orderItemID=" + orderItemID +
+                ", quantity=" + quantity +
+                ", priceAtPurchase=" + priceAtPurchase +
+                ", order=" + order +
+                ", product=" + product +
+                '}';
+    }
 }

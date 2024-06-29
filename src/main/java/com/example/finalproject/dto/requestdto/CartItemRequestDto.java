@@ -12,7 +12,7 @@ public class CartItemRequestDto {
 
     @NotBlank(message = "Invalid Id: Empty Id")
     @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid Id: not a number")
-    @JsonProperty("cart")
+    @JsonProperty("productId")
     private Long productId;
 
     @NotNull(message = "Invalid quantity: quantity is NULL")

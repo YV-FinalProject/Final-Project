@@ -24,4 +24,5 @@ public class Favorite {
     @ManyToOne
     @JoinColumn(name="ProductID", nullable=false)
     private Product product;
+
 }

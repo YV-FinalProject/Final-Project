@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode
 public class Category {
+  
     @Id
     @Column(name = "categoryId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +22,6 @@ public class Category {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Product> product = new HashSet<>();
 }

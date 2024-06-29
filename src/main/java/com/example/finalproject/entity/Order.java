@@ -47,4 +47,5 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "UserID", nullable = false)
     private User user;
+
 }

@@ -13,7 +13,7 @@ public class FavoriteRequestDto {
 
     @NotBlank(message = "Invalid Id: Empty Id")
     @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid Id: not a number")
-    @JsonProperty("cart")
+    @JsonProperty("productId")
     private Long productId;
 
 }
