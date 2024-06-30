@@ -1,31 +1,30 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.requestdto.*;
-import com.example.finalproject.dto.responsedto.*;
-import com.example.finalproject.service.*;
-import jakarta.validation.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.springframework.http.*;
-import org.springframework.validation.annotation.*;
+import com.example.finalproject.dto.requestdto.ProductRequestDto;
+import com.example.finalproject.dto.responsedto.ProductResponseDto;
+import com.example.finalproject.service.ProductService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
-@Validated
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
+    public void deleteProductsById(@PathVariable Long id) {
         productService.deleteProductById(id);
     }
 
@@ -38,8 +37,9 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @Validated
     public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
-                              @PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
-        productService.updateProduct(productRequestDto, id);
+                              @PathVariable Long id) {
+        productService.updateProduct(productRequestDto,id);
     }
 }

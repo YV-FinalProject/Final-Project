@@ -7,9 +7,9 @@ import lombok.*;
 @Table(name = "CartItems")
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+
 public class CartItem {
 
     @Id
@@ -17,15 +17,15 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartItemId;
 
-    @ManyToOne
-    @JoinColumn(name="CartID", nullable=false)
-    private Cart cart;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="ProductID", nullable=false)
     private Product product;
 
     @Column(name = "Quantity")
     private Integer quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="CartID", nullable=false)
+    private Cart cart;
 }
 
