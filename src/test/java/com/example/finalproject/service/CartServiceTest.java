@@ -1,7 +1,7 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.requestdto.CartItemRequestDto;
-import com.example.finalproject.dto.requestdto.ProductRequestDto;
+
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.Role;
@@ -55,10 +55,10 @@ class CartServiceTest {
     private Product product;
 
     private ProductResponseDto productResponseDto;
-    private ProductRequestDto productRequestDto;
     private CartItemResponseDto cartItemResponseDto;
     private CartResponseDto cartResponseDto;
     private UserResponseDto userResponseDto;
+
     private CartItemRequestDto cartItemRequestDto, wrongCartItemRequestDto;
 
     @BeforeEach
@@ -125,15 +125,6 @@ class CartServiceTest {
                 .cartResponseDto(cartResponseDto)
                 .productResponseDto(productResponseDto)
                 .quantity(5)
-                .build();
-
-        productRequestDto = ProductRequestDto.builder()
-                .name("Name")
-                .description("Description")
-                .price(new BigDecimal("100.00"))
-                .discountPrice(new BigDecimal("0.00"))
-                .imageURL("http://localhost/img/1.jpg")
-                .category("Category")
                 .build();
 
         cartItemRequestDto = CartItemRequestDto.builder()

@@ -26,7 +26,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final OrderItemsRepository orderItemsRepository;
+    private final OrderItemRepository orderItemRepository;
 
     private final Mappers mappers;
 
@@ -95,7 +95,7 @@ public class OrderService {
                 }
                 orderItemToInsert.setQuantity(orderItem.getQuantity());
                 orderItemToInsert.setOrder(orderToInsert);
-                orderItemsRepository.save(orderItemToInsert);
+                orderItemRepository.save(orderItemToInsert);
 
                 orderItemToInsertSet.add(orderItemToInsert);
             } else {

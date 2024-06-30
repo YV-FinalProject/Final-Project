@@ -1,10 +1,7 @@
 package com.example.finalproject.dto.responsedto;
 
-import com.example.finalproject.dto.requestdto.OrderItemRequestDto;
 import com.example.finalproject.entity.enums.*;
 import com.fasterxml.jackson.annotation.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import java.sql.*;
 import java.util.Set;

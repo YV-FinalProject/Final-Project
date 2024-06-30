@@ -1,6 +1,5 @@
 package com.example.finalproject.mapper;
 
-import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
