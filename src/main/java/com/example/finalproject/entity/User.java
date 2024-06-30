@@ -43,5 +43,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить favorites
     private Set<Favorite> favorites = new HashSet<>();
-
 }

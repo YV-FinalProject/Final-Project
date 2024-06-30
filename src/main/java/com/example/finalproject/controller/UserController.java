@@ -36,5 +36,6 @@ public class UserController {
     public void deleteUser(@PathVariable @Positive(message = "User ID must be a positive number") Long id) {
         userService.deleteUser(id);
     }
+
 }
 

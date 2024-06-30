@@ -89,4 +89,5 @@ public class AdviceController {
                 .status(HttpStatus.I_AM_A_TEAPOT)
                 .body(new ErrorMessage("Sorry, something went wrong!"));
     }
+
 }
