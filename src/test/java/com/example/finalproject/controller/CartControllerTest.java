@@ -39,18 +39,18 @@ class CartControllerTest {
     @MockBean
     private CartService cartServiceMock;
 
-    private CartItemResponseDto cartItemResponseDto;
     private UserResponseDto userResponseDto;
     private CartResponseDto cartResponseDto;
+    private CartItemResponseDto cartItemResponseDto;
     private ProductResponseDto productResponseDto;
-
+    private Set<CartItemResponseDto> cartItemResponseDtoSet = new HashSet<>();
 
     private CartItemRequestDto cartItemRequestDto;
 
     @BeforeEach
     void setUp() {
 
-        //ResponseDto
+//ResponseDto
         userResponseDto = UserResponseDto.builder()
                 .userID(1L)
                 .name("Arne Oswald")
@@ -82,6 +82,8 @@ class CartControllerTest {
                 .quantity(5)
                 .build();
 
+        cartItemResponseDtoSet.add(cartItemResponseDto);
+
 //RequestDto
         cartItemRequestDto = CartItemRequestDto.builder()
                 .productId(1L)
@@ -93,8 +95,7 @@ class CartControllerTest {
     @Test
     void getCartItemsByUserId() throws Exception {
         Long userId = 1L;
-        Set<CartItemResponseDto> cartItemResponseDtoSet = new HashSet<>();
-        cartItemResponseDtoSet.add(cartItemResponseDto);
+
         when(cartServiceMock.getCartItemsByUserId(anyLong())).thenReturn(cartItemResponseDtoSet);
 
         this.mockMvc.perform(get("/cart/{userId}",userId)).andDo(print())
