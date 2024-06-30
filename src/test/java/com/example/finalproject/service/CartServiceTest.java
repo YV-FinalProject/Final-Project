@@ -148,16 +148,16 @@ class CartServiceTest {
 
         when(userRepositoryMock.findById(id)).thenReturn(Optional.of(user));
         when(mappersMock.convertToCartItemResponseDto(any(CartItem.class))).thenReturn(cartItemResponseDto);
-        Set<CartItemResponseDto> cartItemRsponseDtoSet = new HashSet<>();
-        cartItemRsponseDtoSet.add(cartItemResponseDto);
+        Set<CartItemResponseDto> cartItemResponseDtoSet = new HashSet<>();
+        cartItemResponseDtoSet.add(cartItemResponseDto);
         Set<CartItemResponseDto> actualCartItemSet = cartServiceMock.getCartItemsByUserId(id);
 
         verify(userRepositoryMock, times(1)).findById(id);
         verify(mappersMock, times(1)).convertToCartItemResponseDto(any(CartItem.class));
 
         assertFalse(actualCartItemSet.isEmpty());
-        assertEquals(cartItemRsponseDtoSet.size(), actualCartItemSet.size());
-        assertEquals(cartItemRsponseDtoSet.hashCode(), actualCartItemSet.hashCode());
+        assertEquals(cartItemResponseDtoSet.size(), actualCartItemSet.size());
+        assertEquals(cartItemResponseDtoSet.hashCode(), actualCartItemSet.hashCode());
 
         when(userRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
