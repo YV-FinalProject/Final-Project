@@ -27,7 +27,8 @@ public class Mappers {
 
     public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
-//        favoriteResponseDto.setUserResponseDto(convertToUserResponseDto(favorite.getUser()));
+        modelMapper.typeMap(Favorite.class, FavoriteResponseDto.class)
+        .addMappings(mapper -> mapper.skip(FavoriteResponseDto::setUserResponseDto));
         favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
         return favoriteResponseDto;
     }

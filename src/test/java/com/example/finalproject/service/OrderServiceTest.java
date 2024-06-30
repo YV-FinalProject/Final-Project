@@ -32,9 +32,6 @@ import static org.mockito.Mockito.*;
 class OrderServiceTest {
 
     @Mock
-    private ProductRepository productRepositoryMock;
-
-    @Mock
     private UserRepository userRepositoryMock;
 
     @Mock
@@ -44,25 +41,28 @@ class OrderServiceTest {
     public OrderItemRepository orderItemRepositoryMock;
 
     @Mock
-    private Mappers mappersMock;
+    private ProductRepository productRepositoryMock;
 
     @InjectMocks
     private OrderService orderServiceMock;
 
+    @Mock
+    private Mappers mappersMock;
+
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
 
     private User user;
-    private Product product;
     private Order order;
     private OrderItem orderItem;
+    private Product product;
 
-    private ProductResponseDto productResponseDto;
+    private UserResponseDto userResponseDto;
     private OrderResponseDto orderResponseDto;
     private OrderItemResponseDto orderItemResponseDto;
-    private UserResponseDto userResponseDto;
+    private ProductResponseDto productResponseDto;
 
-    private OrderItemRequestDto orderItemRequestDto, wrongOrderItemRequestDto;
     private OrderRequestDto orderRequestDto, wrongOrderRequestDto;
+    private OrderItemRequestDto orderItemRequestDto, wrongOrderItemRequestDto;
 
     Set<OrderItemRequestDto> orderItemRequestDtoSet = new HashSet<>();
     Set<OrderItemRequestDto> wrongOrderItemRequestDtoSet = new HashSet<>();
@@ -227,16 +227,19 @@ class OrderServiceTest {
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
         when(mappersMock.convertToOrderResponseDto(any(Order.class))).thenReturn(orderResponseDto);
         when(mappersMock.convertToOrderItemResponseDto(any(OrderItem.class))).thenReturn(orderItemResponseDto);
-        Set<Order> ordersSet = user.getOrders();
+        Set<OrderResponseDto> ordersResponseDtoSet = new HashSet<>();
+        ordersResponseDtoSet.add(orderResponseDto);
 
         Set<OrderResponseDto> actualOrderResponseDtoSet = orderServiceMock.getOrderHistoryByUserId(userId);
 
         verify(userRepositoryMock, times(1)).findById(userId);
+        verify(mappersMock, times(1)).convertToOrderResponseDto(any(Order.class));
+        verify(mappersMock, times(1)).convertToOrderItemResponseDto(any(OrderItem.class));
 
-        for (Order order : ordersSet) {
-            verify(mappersMock, times(1)).convertToOrderResponseDto(any(Order.class));
-            verify(mappersMock, times(1)).convertToOrderItemResponseDto(any(OrderItem.class));
-        }
+        assertFalse(actualOrderResponseDtoSet.isEmpty());
+        assertEquals(ordersResponseDtoSet.size(), actualOrderResponseDtoSet.size());
+        assertEquals(ordersResponseDtoSet.hashCode(), actualOrderResponseDtoSet.hashCode());
+
 
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
@@ -264,6 +267,7 @@ class OrderServiceTest {
         orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
         orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
         orderToInsert.setStatus(Status.CREATED);
+
 
         for (OrderItemRequestDto orderItem : orderItemRequestDtoSet) {
             when(productRepositoryMock.findById(orderItem.getProductId())).thenReturn(Optional.of(product));
@@ -298,7 +302,7 @@ class OrderServiceTest {
                 () -> orderServiceMock.insertOrder(orderRequestDto, wrongUserId));
         assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
 
-        for(OrderItemRequestDto wrongOrderItemRequestDto : wrongOrderItemRequestDtoSet){
+        for (OrderItemRequestDto wrongOrderItemRequestDto : wrongOrderItemRequestDtoSet) {
             when(productRepositoryMock.findById(wrongOrderItemRequestDto.getProductId())).thenReturn(Optional.empty());
             dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                     () -> orderServiceMock.insertOrder(wrongOrderRequestDto, userId));
