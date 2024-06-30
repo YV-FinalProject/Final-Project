@@ -23,9 +23,9 @@ public class OrderResponseDto {
     private Status status;
     private Timestamp updatedAt;
 
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("user")
-//    private UserResponseDto userResponseDto;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("user")
+    private UserResponseDto userResponseDto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("items")

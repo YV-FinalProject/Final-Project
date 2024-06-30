@@ -52,9 +52,10 @@ class CartServiceTest {
     private User user;
     private Cart cart;
     private CartItem cartItem;
+    private Product product;
+
     private ProductResponseDto productResponseDto;
     private ProductRequestDto productRequestDto;
-    private Product product;
     private CartItemResponseDto cartItemResponseDto;
     private CartResponseDto cartResponseDto;
     private UserResponseDto userResponseDto;
