@@ -19,7 +19,7 @@ public class OrderItem {
     private Long orderItemID;
 
     @Column(name = "Quantity")
-    private Long quantity;
+    private Integer quantity;
 
     @Column(name = "PriceAtPurchase")
     private BigDecimal priceAtPurchase;
@@ -31,4 +31,5 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "ProductID", nullable = false)
     private Product product;
+
 }

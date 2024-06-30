@@ -25,14 +25,17 @@ public class Mappers {
 
 
 
-    public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorites) {
-        return modelMapper.map(favorites, FavoriteResponseDto.class);
+    public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorite) {
+        FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
+        modelMapper.typeMap(Favorite.class, FavoriteResponseDto.class)
+        .addMappings(mapper -> mapper.skip(FavoriteResponseDto::setUserResponseDto));
+        favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
+        return favoriteResponseDto;
     }
 
-    public Favorite convertToFavorite(FavoriteResponseDto favoritesDto) {
-        return modelMapper.map(favoritesDto, Favorite.class);
+    public Favorite convertToFavorite(FavoriteResponseDto favoriteDto) {
+        return modelMapper.map(favoriteDto, Favorite.class);
     }
-
 
 
     public CartResponseDto convertToCartResponseDto(Cart cart) {
@@ -44,9 +47,12 @@ public class Mappers {
     }
 
 
-
     public CartItemResponseDto convertToCartItemResponseDto(CartItem cartItem) {
-        return modelMapper.map(cartItem, CartItemResponseDto.class);
+        modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
+                .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
+        CartItemResponseDto cartItemResponseDto = modelMapper.map(cartItem, CartItemResponseDto.class);
+        cartItemResponseDto.setProductResponseDto(convertToProductResponseDto(cartItem.getProduct()));
+        return cartItemResponseDto;
     }
 
     public CartItem convertToCartItem(CartItemRequestDto cartItemsDto) {
@@ -55,7 +61,10 @@ public class Mappers {
 
 
     public OrderResponseDto convertToOrderResponseDto(Order order) {
+           modelMapper.typeMap(Order.class, OrderResponseDto.class)
+            .addMappings(mapper -> mapper.skip(OrderResponseDto::setUserResponseDto));
         return modelMapper.map(order, OrderResponseDto.class);
+
     }
 
     public Order convertToOrder(OrderRequestDto ordersRequestDto) {
@@ -64,7 +73,11 @@ public class Mappers {
 
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItem orderItem) {
-        return modelMapper.map(orderItem, OrderItemResponseDto.class);
+        modelMapper.typeMap(OrderItem.class, OrderItemResponseDto.class)
+                .addMappings(mapper -> mapper.skip(OrderItemResponseDto::setOrderResponseDto));
+        OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItem, OrderItemResponseDto.class);
+        orderItemResponseDto.setProductResponseDto(convertToProductResponseDto(orderItem.getProduct()));
+        return orderItemResponseDto;
     }
 
     public OrderItem convertToOrderItem(OrderItemRequestDto orderItemRequestDto) {
@@ -77,9 +90,9 @@ public class Mappers {
     }
 
     public ProductResponseDto convertToProductResponseDto(Product product) {
-        modelMapper.typeMap(Product.class, ProductResponseDto.class);
-//                .addMappings(mapper -> mapper.skip(ProductResponseDto::setCategoryResponseDto));
-        return modelMapper.map(product, ProductResponseDto.class);
+        ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
+        productResponseDto.setCategoryResponseDto(convertToCategoryResponseDto(product.getCategory()));
+        return productResponseDto;
     }
 
     public CategoryResponseDto convertToCategoryResponseDto(Category category) {
@@ -89,4 +102,10 @@ public class Mappers {
     public Category convertToCategory(CategoryRequestDto categoryRequestDto) {
         return modelMapper.map(categoryRequestDto, Category.class);
     }
+
+
+
+//   modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
+//            .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
+
 }

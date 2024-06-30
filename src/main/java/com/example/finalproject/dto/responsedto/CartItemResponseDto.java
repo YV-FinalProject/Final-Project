@@ -11,13 +11,14 @@ import lombok.*;
 public class CartItemResponseDto {
 
     private Long cartItemId;
-    private Integer quantity;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("cart")
     private CartResponseDto cartResponseDto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("cart")
+    @JsonProperty("product")
     private ProductResponseDto productResponseDto;
+
+    private Integer quantity;
 }

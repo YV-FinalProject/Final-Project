@@ -10,12 +10,16 @@ import java.math.*;
 @Builder
 public class OrderItemResponseDto {
 
-    private Long productId;
-    private Integer quantity;
     private Long orderItemId;
-    private BigDecimal priceAtPurchase;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("order")
-    private OrderResponseDto orderDto;
+    private OrderResponseDto orderResponseDto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("product")
+    private ProductResponseDto productResponseDto;
+
+    private BigDecimal priceAtPurchase;
+    private Integer quantity;
 }

@@ -26,7 +26,7 @@ public class CategoryController {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable @Valid @Positive @Min(1) Long id) {
+    public void deleteCategoriesById(@PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
         categoryService.deleteCategoryById(id);
     }
 
@@ -39,7 +39,7 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                                 @PathVariable @Valid  @Min(1) Long id) {
+                                 @PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
          categoryService.updateCategory(categoryRequestDto,id);
     }
 }

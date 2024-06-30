@@ -4,6 +4,7 @@ import com.example.finalproject.entity.enums.*;
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import java.sql.*;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -22,5 +23,9 @@ public class OrderResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("user")
     private UserResponseDto userResponseDto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("items")
+    private Set<OrderItemResponseDto> orderItemsSet;
 }
 
