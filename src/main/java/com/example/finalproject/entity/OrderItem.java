@@ -32,14 +32,4 @@ public class OrderItem {
     @JoinColumn(name = "ProductID", nullable = false)
     private Product product;
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "orderItemID=" + orderItemID +
-                ", quantity=" + quantity +
-                ", priceAtPurchase=" + priceAtPurchase +
-                ", order=" + order +
-                ", product=" + product +
-                '}';
-    }
 }
