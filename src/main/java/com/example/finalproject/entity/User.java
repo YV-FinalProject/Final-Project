@@ -26,7 +26,7 @@ public class User {
     private String email;
 
     @Column(name = "PhoneNumber")
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "PasswordHash")
     private String password;

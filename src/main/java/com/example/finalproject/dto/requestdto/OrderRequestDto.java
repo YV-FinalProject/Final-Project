@@ -14,6 +14,7 @@ import java.util.*;
 public class OrderRequestDto {
 
     @JsonProperty("items")
+    @NotNull(message = "Quantity cannot be null")
     @NotEmpty(message = "Items list cannot be empty")
     private Set<OrderItemRequestDto> orderItemsSet;
 
@@ -25,7 +26,6 @@ public class OrderRequestDto {
     @ValidDeliveryMethod
     @NotBlank(message = "Delivery method cannot be blank")
     @Size(min = 3, max = 30, message = "Invalid Delivery method: Must be one of: COURIER_DELIVERY or CUSTOMER_PICKUP")
-//найти нормальную валидацию для Enum
     private String deliveryMethod;
 }
 
