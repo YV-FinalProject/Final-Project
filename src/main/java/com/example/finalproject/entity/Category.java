@@ -9,7 +9,7 @@ import java.util.Set;
 @Table(name = "Categories")
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @Getter
 @Setter
 public class Category {

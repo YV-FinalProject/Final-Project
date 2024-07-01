@@ -9,7 +9,7 @@ import java.util.*;
 @Table(name = "Cart")
 @Getter
 @Setter
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {
@@ -22,7 +22,7 @@ public class Cart {
     @OneToMany(mappedBy = "cart")
     private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserID", referencedColumnName = "UserID")
+    @OneToOne
+    @JoinColumn(name = "UserID", nullable=false)
     private User user;
 }

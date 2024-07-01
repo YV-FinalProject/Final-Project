@@ -14,13 +14,12 @@ import java.util.*;
 public class OrderRequestDto {
 
     @JsonProperty("items")
-    @NotNull(message = "Quantity cannot be null")
     @NotEmpty(message = "Items list cannot be empty")
     private Set<OrderItemRequestDto> orderItemsSet;
 
     @NotBlank(message = "Delivery address cannot be blank")
     @Size(max = 255, message = "Delivery address must be less than or equal to 255 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9.,\\s]+$", message = "Delivery address contains invalid characters")
+//    @Pattern(regexp = "^[a-zA-Z0-9.,\\s]+$", message = "Delivery address contains invalid characters")
     private String deliveryAddress;
 
     @ValidDeliveryMethod
