@@ -62,6 +62,7 @@ public class OrderService {
         }
     }
 
+
     public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
         Order orderToInsert = new Order();
 
@@ -70,7 +71,7 @@ public class OrderService {
 
             orderToInsert.setUser(user);
             orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-            orderToInsert.setContactPhone(user.getPhoneNumber());
+            orderToInsert.setContactPhone(user.getPhone());
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);

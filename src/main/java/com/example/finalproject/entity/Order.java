@@ -11,6 +11,7 @@ import java.util.*;
 @Table(name = "Orders")
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {

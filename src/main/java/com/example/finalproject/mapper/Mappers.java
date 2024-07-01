@@ -23,8 +23,6 @@ public class Mappers {
         return modelMapper.map(userRequestDto, User.class);
     }
 
-
-
     public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
         modelMapper.typeMap(Favorite.class, FavoriteResponseDto.class)
