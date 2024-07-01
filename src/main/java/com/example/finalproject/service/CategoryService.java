@@ -5,6 +5,7 @@ import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -39,9 +40,14 @@ public class CategoryService {
 
     @Transactional
     public void insertCategories(CategoryRequestDto categoryRequestDto) {
-        Category category = mappers.convertToCategory(categoryRequestDto);
-        category.setCategoryId(0L);
-        categoryRepository.save(category);
+        Category checkCategory = categoryRepository.findCategoryByName(categoryRequestDto.getName());
+        if(checkCategory == null){
+            Category category = mappers.convertToCategory(categoryRequestDto);
+            category.setCategoryId(0L);
+            categoryRepository.save(category);
+        } else {
+            throw new DataAlreadyExistsException("The category with this name already exists.");
+        }
     }
 
     @Transactional

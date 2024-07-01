@@ -219,7 +219,6 @@ class CartServiceTest {
             verify(cartItemRepositoryMock, times(1)).delete(item);
         }
 
-
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
 
