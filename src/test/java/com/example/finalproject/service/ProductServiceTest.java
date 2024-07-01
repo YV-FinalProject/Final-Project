@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -41,9 +40,6 @@ class ProductServiceTest {
 
     @Mock
     private Mappers mappersMock;
-
-    @Mock
-    private ModelMapper modelMapperMock;
 
     @InjectMocks
     private ProductService productServiceMock;
@@ -77,7 +73,10 @@ class ProductServiceTest {
                 "http://localhost/img/1.jpg",
                 Timestamp.valueOf(LocalDateTime.now()),
                 Timestamp.valueOf(LocalDateTime.now()),
-                new Category(1L,"Category",null));
+                new Category(1L,"Category",null),
+                null,
+                null,
+                null);
 
         productToInsert = new Product(null,
                 "Name",
@@ -87,7 +86,10 @@ class ProductServiceTest {
                 "http://localhost/img/1.jpg",
                 null,
                 null,
-                new Category(1L,"Category",null));
+                new Category(1L,"Category",null),
+                null,
+                null,
+                null);
 
         category = new Category(1L,
                 "Category",
@@ -194,6 +196,7 @@ class ProductServiceTest {
         assertEquals("The value you entered is not valid.", invalidValueExeption.getMessage());
     }
 
+
     @Test
     void getTop10Products() {
 
@@ -230,3 +233,4 @@ class ProductServiceTest {
 
     }
 }
+

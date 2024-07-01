@@ -19,18 +19,19 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable Long id) {
+    public void deleteProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
         productService.deleteProductById(id);
     }
 
@@ -45,8 +46,8 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @Validated
     public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
-                              @PathVariable Long id) {
-        productService.updateProduct(productRequestDto,id);
+                              @PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
+        productService.updateProduct(productRequestDto, id);
     }
 
     @ResponseStatus(HttpStatus.OK)

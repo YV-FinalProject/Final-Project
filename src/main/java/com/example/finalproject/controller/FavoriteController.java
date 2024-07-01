@@ -1,5 +1,6 @@
 package com.example.finalproject.controller;
 
+import org.springframework.validation.annotation.*;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
 import com.example.finalproject.dto.responsedto.FavoriteResponseDto;
 import com.example.finalproject.service.FavoriteService;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/favorites")

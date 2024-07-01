@@ -10,6 +10,7 @@ import java.util.*;
 @Table(name = "Users")
 @Getter
 @Setter
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -25,7 +26,7 @@ public class User {
     private String email;
 
     @Column(name = "PhoneNumber")
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "PasswordHash")
     private String password;
@@ -34,7 +35,7 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user")
     private Cart cart;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -42,5 +43,4 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить favorites
     private Set<Favorite> favorites = new HashSet<>();
-
 }

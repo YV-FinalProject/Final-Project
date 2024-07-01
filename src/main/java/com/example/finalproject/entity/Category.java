@@ -12,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class Category {
+  
     @Id
     @Column(name = "categoryId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
