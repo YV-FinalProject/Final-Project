@@ -122,7 +122,7 @@ class OrderServiceTest {
 
 //ResponseDto
         userResponseDto = UserResponseDto.builder()
-                .userID(1L)
+                .userId(1L)
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
@@ -261,7 +261,7 @@ class OrderServiceTest {
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
 
         Order orderToInsert = new Order();
-        orderToInsert.setUser(user);
+//        orderToInsert.setUser(user);
         orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         orderToInsert.setContactPhone(user.getPhoneNumber());
         orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
@@ -284,7 +284,7 @@ class OrderServiceTest {
         }
 
         orderItemToInsert.setQuantity(orderItem.getQuantity());
-        orderItemToInsert.setOrder(orderToInsert);
+//        orderItemToInsert.setOrder(orderToInsert);
         when(orderItemRepositoryMock.save(any(OrderItem.class))).thenReturn(orderItemToInsert);
 
 
