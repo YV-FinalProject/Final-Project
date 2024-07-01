@@ -11,7 +11,6 @@ import org.springframework.web.method.annotation.*;
 
 import java.util.*;
 import java.util.stream.*;
-import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 
 @RestControllerAdvice
@@ -24,8 +23,8 @@ public class AdviceController {
                 .body(new ErrorMessage(exception.getMessage()));
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorMessage> exceptionHandler(UserAlreadyExistsException exception) {
+    @ExceptionHandler(DataAlreadyExistsException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(DataAlreadyExistsException exception) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorMessage(exception.getMessage()));

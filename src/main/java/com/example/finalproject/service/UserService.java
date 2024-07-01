@@ -22,7 +22,7 @@ public class UserService {
     @Transactional
     public void registerUser(UserRequestDto userRequestDto) {
         if (userRepository.existsByEmail(userRequestDto.getEmail())) {
-            throw new UserAlreadyExistsException("User already exists");
+            throw new DataAlreadyExistsException("User already exists");
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.CLIENT);

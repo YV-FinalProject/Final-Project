@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
@@ -26,6 +25,7 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userServiceMock;
+
     private UserRequestDto userRequestDto;
 
     @BeforeEach
@@ -43,8 +43,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -53,8 +52,7 @@ public class UserControllerTest {
         mockMvc.perform(put("/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -62,7 +60,6 @@ public class UserControllerTest {
         Long userId = 1L;
         doNothing().when(userServiceMock).deleteUser(anyLong());
         mockMvc.perform(delete("/users/{id}", userId))
-                .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(status().isOk());
     }
 }
