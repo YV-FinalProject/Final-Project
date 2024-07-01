@@ -1,28 +1,35 @@
 package com.example.finalproject.service;
 
 
+import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
+//import com.example.finalproject.repository.customs.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+ //   private final ProductCustomRepository productCustomRepository;
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
+    private final MapperUtil mapperUtil;
 
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
@@ -74,5 +81,20 @@ public class ProductService {
         } else {
             throw new InvalidValueExeption("The value you entered is not valid.");
         }
+    }
+
+    public List<ProductCountDto> getTop10Products(String status) {
+        List<ProductCount> list = productRepository.findTop10Products(status);
+        return mapperUtil.convertList(list, mappers::convertToProductCountDto);
+    }
+
+    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
+        boolean isCategory = false;
+        if (category == null) {isCategory = true;}
+        if (minPrice == null) {minPrice = 0.00;}
+        if (maxPrice == null) {maxPrice = Double.MAX_VALUE;}
+        if (sort == null) {sort = "Name";}
+        List<Product> list = productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort );
+        return  mapperUtil.convertList(list,mappers::convertToProductResponseDto);
     }
 }
