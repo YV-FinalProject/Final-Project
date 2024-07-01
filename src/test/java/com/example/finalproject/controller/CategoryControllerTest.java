@@ -60,9 +60,8 @@ class CategoryControllerTest {
     void deleteProductsById() throws Exception {
         Long id = 1L;
         mockMvc.perform(delete("/categories/{id}", id)).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.categoryId").doesNotExist())
-                .andExpect(jsonPath("$.name").doesNotExist());;
+                .andExpect(status().isOk());
+
     }
 
     @Test

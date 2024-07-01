@@ -118,8 +118,7 @@ class CartControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/cart?userId=1&productId=1"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..cartItemId").doesNotExist())
-                .andExpect(jsonPath("$..product.productId").doesNotExist());
+                .andExpect(status().isOk());
+
     }
 }

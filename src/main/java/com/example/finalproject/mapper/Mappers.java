@@ -1,6 +1,5 @@
 package com.example.finalproject.mapper;
 
-import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.*;
@@ -93,8 +92,7 @@ public class Mappers {
     public ProductResponseDto convertToProductResponseDto(Product product) {
         modelMapper.typeMap(Product.class, ProductResponseDto.class)
                 .addMappings(mapper -> mapper.skip(ProductResponseDto::setCategoryResponseDto));
-        ProductResponseDto productResponseDto = modelMapper.map(product, ProductResponseDto.class);
-        return productResponseDto;
+        return modelMapper.map(product, ProductResponseDto.class);
     }
 
     public CategoryResponseDto convertToCategoryResponseDto(Category category) {
@@ -104,6 +102,7 @@ public class Mappers {
     public Category convertToCategory(CategoryRequestDto categoryRequestDto) {
         return modelMapper.map(categoryRequestDto, Category.class);
     }
+
 
     public ProductCountDto convertToProductCountDto(ProductCount productCount) {
         return modelMapper.map(productCount,ProductCountDto.class);

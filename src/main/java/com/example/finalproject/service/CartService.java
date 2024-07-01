@@ -12,6 +12,7 @@ import com.example.finalproject.repository.ProductRepository;
 import com.example.finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class CartService {
 
     private final Mappers mappers;
 
-
+    @Transactional
     public Set<CartItemResponseDto> getCartItemsByUserId(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -37,6 +38,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void insertCartItem(CartItemRequestDto cartItemRequestDto, Long userId) {
 
         CartItem cartItemToInsert = new CartItem();
@@ -62,6 +64,7 @@ public class CartService {
         }
     }
 
+    @Transactional
     public void deleteCarItemByProductId(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElse(null);
         Product product = productRepository.findById(productId).orElse(null);

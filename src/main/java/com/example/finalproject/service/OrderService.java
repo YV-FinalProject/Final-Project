@@ -13,6 +13,7 @@ import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,6 +31,7 @@ public class OrderService {
 
     private final Mappers mappers;
 
+    @Transactional
     public OrderResponseDto getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
@@ -42,6 +44,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public Set<OrderResponseDto> getOrderHistoryByUserId(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
@@ -62,7 +65,7 @@ public class OrderService {
         }
     }
 
-
+    @Transactional
     public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
         Order orderToInsert = new Order();
 

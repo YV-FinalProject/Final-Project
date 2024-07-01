@@ -282,11 +282,9 @@ class OrderServiceTest {
         } else {
             orderItemToInsert.setPriceAtPurchase(product.getDiscountPrice());
         }
-
         orderItemToInsert.setQuantity(orderItem.getQuantity());
 //        orderItemToInsert.setOrder(orderToInsert);
         when(orderItemRepositoryMock.save(any(OrderItem.class))).thenReturn(orderItemToInsert);
-
 
         orderItemToInsertSet.add(orderItemToInsert);
         orderToInsert.setOrderItems(orderItemToInsertSet);
