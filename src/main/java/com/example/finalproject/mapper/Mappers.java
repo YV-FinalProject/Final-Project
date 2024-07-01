@@ -1,6 +1,5 @@
 package com.example.finalproject.mapper;
 
-import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
@@ -26,7 +25,8 @@ public class Mappers {
 
     public FavoriteResponseDto convertToFavoriteResponseDto(Favorite favorite) {
         FavoriteResponseDto favoriteResponseDto = modelMapper.map(favorite, FavoriteResponseDto.class);
-//        favoriteResponseDto.setUserResponseDto(convertToUserResponseDto(favorite.getUser()));
+        modelMapper.typeMap(Favorite.class, FavoriteResponseDto.class)
+        .addMappings(mapper -> mapper.skip(FavoriteResponseDto::setUserResponseDto));
         favoriteResponseDto.setProductResponseDto(convertToProductResponseDto(favorite.getProduct()));
         return favoriteResponseDto;
     }
@@ -46,8 +46,9 @@ public class Mappers {
 
 
     public CartItemResponseDto convertToCartItemResponseDto(CartItem cartItem) {
+        modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
+                .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
         CartItemResponseDto cartItemResponseDto = modelMapper.map(cartItem, CartItemResponseDto.class);
-        cartItemResponseDto.setCartResponseDto(convertToCartResponseDto(cartItem.getCart()));
         cartItemResponseDto.setProductResponseDto(convertToProductResponseDto(cartItem.getProduct()));
         return cartItemResponseDto;
     }
@@ -58,7 +59,10 @@ public class Mappers {
 
 
     public OrderResponseDto convertToOrderResponseDto(Order order) {
+           modelMapper.typeMap(Order.class, OrderResponseDto.class)
+            .addMappings(mapper -> mapper.skip(OrderResponseDto::setUserResponseDto));
         return modelMapper.map(order, OrderResponseDto.class);
+
     }
 
     public Order convertToOrder(OrderRequestDto ordersRequestDto) {
@@ -67,8 +71,9 @@ public class Mappers {
 
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItem orderItem) {
+        modelMapper.typeMap(OrderItem.class, OrderItemResponseDto.class)
+                .addMappings(mapper -> mapper.skip(OrderItemResponseDto::setOrderResponseDto));
         OrderItemResponseDto orderItemResponseDto = modelMapper.map(orderItem, OrderItemResponseDto.class);
-//        orderItemResponseDto.setOrderResponseDto(convertToOrderResponseDto(orderItem.getOrder()));
         orderItemResponseDto.setProductResponseDto(convertToProductResponseDto(orderItem.getProduct()));
         return orderItemResponseDto;
     }

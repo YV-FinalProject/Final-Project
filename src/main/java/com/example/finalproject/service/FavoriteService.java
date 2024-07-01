@@ -12,7 +12,6 @@ import com.example.finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Set;
 
 @Service
@@ -34,7 +33,7 @@ public class FavoriteService {
         }
     }
 
-    public void insertFavorite (FavoriteRequestDto favoriteRequestDto,Long userId){
+    public void insertFavorite (FavoriteRequestDto favoriteRequestDto, Long userId){
         Favorite favorite = new Favorite();
         User user = userRepository.findById(userId).orElse(null);
         Product product = productRepository.findById(favoriteRequestDto.getProductId()).orElse(null);
@@ -56,7 +55,6 @@ public class FavoriteService {
             for(Favorite item : favoritesSet){
                 if(item.getProduct().getProductId() == productId){
                     favoriteRepository.delete(item);
-                    return;
                 }
             }
         } else {

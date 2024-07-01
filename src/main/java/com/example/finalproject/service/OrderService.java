@@ -24,10 +24,9 @@ import java.util.Set;
 public class OrderService {
 
     private final UserRepository userRepository;
-    private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final OrderItemsRepository orderItemsRepository;
+    private final OrderItemRepository orderItemRepository;
 
     private final Mappers mappers;
 
@@ -63,8 +62,8 @@ public class OrderService {
         }
     }
 
-    public void
-    insertOrder(OrderRequestDto orderRequestDto, Long userId) {// пока не работает (((((((((((((((((
+
+    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
         Order orderToInsert = new Order();
 
         User user = userRepository.findById(userId).orElse(null);
@@ -76,17 +75,16 @@ public class OrderService {
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
-//            orderRepository.save(orderToInsert);
-
-            System.out.println(orderToInsert);
+            orderToInsert = orderRepository.save(orderToInsert);
 
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
         }
+
         Set<OrderItemRequestDto> orderItemsRequestDtoSet = orderRequestDto.getOrderItemsSet();
         Set<OrderItem> orderItemToInsertSet = new HashSet<>();
         OrderItem orderItemToInsert = new OrderItem();
-        System.out.println(orderItemsRequestDtoSet);
+
         for (OrderItemRequestDto orderItem : orderItemsRequestDtoSet) {
             Product product = productRepository.findById(orderItem.getProductId()).orElse(null);
             if (product != null) {
@@ -96,19 +94,16 @@ public class OrderService {
                 } else {
                     orderItemToInsert.setPriceAtPurchase(product.getDiscountPrice());
                 }
-
                 orderItemToInsert.setQuantity(orderItem.getQuantity());
-//                orderItemToInsert.setOrder(orderToInsert);
-                System.out.println(orderItemToInsert);
-//                orderItemsRepository.save(orderItemToInsert);
+                orderItemToInsert.setOrder(orderToInsert);
+                orderItemRepository.save(orderItemToInsert);
+
                 orderItemToInsertSet.add(orderItemToInsert);
             } else {
                 throw new DataNotFoundInDataBaseException("Data not found in database.");
             }
         }
-        System.out.println(orderItemToInsertSet);
         orderToInsert.setOrderItems(orderItemToInsertSet);
-        System.out.println(orderToInsert);
         orderRepository.save(orderToInsert);
     }
 }

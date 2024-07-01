@@ -12,9 +12,9 @@ public class OrderItemResponseDto {
 
     private Long orderItemId;
 
-//    @JsonInclude(JsonInclude.Include.NON_NULL)
-//    @JsonProperty("order")
-//    private OrderResponseDto orderResponseDto;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("order")
+    private OrderResponseDto orderResponseDto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("product")
