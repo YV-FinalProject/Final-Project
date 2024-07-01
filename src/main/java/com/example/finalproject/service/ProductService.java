@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 
 import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
@@ -82,17 +83,18 @@ public class ProductService {
         }
     }
 
-    public List<ProductCount> getTop10Products(String status) {
-        List<ProductCount> list = (List<ProductCount>)(List<?>)productRepository.findTop10Products(status);
-        return list;
+    public List<ProductCountDto> getTop10Products(String status) {
+        List<ProductCount> list = productRepository.findTop10Products(status);
+        return mapperUtil.convertList(list, mappers::convertToProductCountDto);
     }
 
-    public List findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
+    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
         boolean isCategory = false;
         if (category == null) {isCategory = true;}
         if (minPrice == null) {minPrice = 0.00;}
         if (maxPrice == null) {maxPrice = Double.MAX_VALUE;}
         if (sort == null) {sort = "Name";}
-        return productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort);
+        List<Product> list = productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort );
+        return  mapperUtil.convertList(list,mappers::convertToProductResponseDto);
     }
 }
