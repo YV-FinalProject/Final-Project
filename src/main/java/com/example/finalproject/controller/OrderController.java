@@ -3,6 +3,7 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.requestdto.OrderRequestDto;
 import com.example.finalproject.dto.responsedto.OrderResponseDto;
 import com.example.finalproject.service.OrderService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class OrderController {
 
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void insertOrder(@RequestBody OrderRequestDto orderRequestDto,
+    public void insertOrder(@RequestBody @Valid OrderRequestDto orderRequestDto,
                             @PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
         orderService.insertOrder(orderRequestDto, userId);
     }

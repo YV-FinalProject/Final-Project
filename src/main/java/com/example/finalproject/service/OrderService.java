@@ -76,6 +76,7 @@ public class OrderService {
             orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             orderToInsert.setContactPhone(user.getPhoneNumber());
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
+
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
             orderToInsert = orderRepository.save(orderToInsert);

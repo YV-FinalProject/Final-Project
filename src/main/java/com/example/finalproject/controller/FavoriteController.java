@@ -1,5 +1,6 @@
 package com.example.finalproject.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.*;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
@@ -26,7 +27,7 @@ public class FavoriteController {
 
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void insertFavorite(@RequestBody FavoriteRequestDto favoriteRequestDto,
+    public void insertFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto,
                                @PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
         favoriteService.insertFavorite(favoriteRequestDto, userId);
     }

@@ -3,6 +3,7 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.requestdto.CartItemRequestDto;
 import com.example.finalproject.dto.responsedto.CartItemResponseDto;
 import com.example.finalproject.service.CartService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,7 @@ public class CartController {
 
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public void insertCartItem(@RequestBody CartItemRequestDto cartItemRequestDto,
+    public void insertCartItem(@RequestBody @Valid CartItemRequestDto cartItemRequestDto,
                                @PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
         cartService.insertCartItem(cartItemRequestDto, userId);
     }
