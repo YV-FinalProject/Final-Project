@@ -7,7 +7,6 @@ import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -70,7 +68,6 @@ public class ProductService {
 
     @Transactional
     public void updateProduct(ProductRequestDto productRequestDto, Long id) {
-        if (id > 0) {
             Product productToUpdate = productRepository.findById(id).orElse(null);
             Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
             if (productToUpdate != null && category != null) {
@@ -85,9 +82,6 @@ public class ProductService {
             } else {
                 throw new DataNotFoundInDataBaseException("Data not found in database.");
             }
-        } else {
-            throw new InvalidValueExeption("The value you entered is not valid.");
-        }
     }
 
     @Transactional
