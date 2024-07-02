@@ -1,13 +1,11 @@
 package com.example.finalproject.service;
 
-
 import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -19,11 +17,10 @@ import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
-import lombok.val;
+
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
