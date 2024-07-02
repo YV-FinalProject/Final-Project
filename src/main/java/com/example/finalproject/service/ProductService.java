@@ -16,6 +16,8 @@ import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
