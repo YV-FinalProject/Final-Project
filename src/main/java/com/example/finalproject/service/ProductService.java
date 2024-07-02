@@ -14,7 +14,10 @@ import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 //import com.example.finalproject.repository.customs.ProductCustomRepository;
+
 import com.fasterxml.jackson.core.io.BigDecimalParser;
+import org.springframework.transaction.annotation.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
@@ -37,6 +40,7 @@ public class ProductService {
     private final MapperUtil mapperUtil;
     private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
 
+    @Transactional
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
@@ -47,6 +51,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void deleteProductById(Long id) {
         if (productRepository.findById(id).isPresent()) {
             productRepository.findById(id).ifPresent(productRepository::delete);
@@ -55,6 +60,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void insertProduct(ProductRequestDto productRequestDto) {
         Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
         if (category != null) {
@@ -68,6 +74,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public void updateProduct(ProductRequestDto productRequestDto, Long id) {
         if (id > 0) {
             Product productToUpdate = productRepository.findById(id).orElse(null);
@@ -89,6 +96,7 @@ public class ProductService {
         }
     }
 
+    @Transactional
     public List<ProductCountDto> getTop10Products(String status) {
         List<String> temporyList = productRepository.findTop10Products(status);
         List<ProductCountDto> list1 = new ArrayList<>();
@@ -104,6 +112,7 @@ public class ProductService {
         return list1;
     }
 
+    @Transactional
     public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
         boolean isCategory = false;
         if (category == null) {isCategory = true;}

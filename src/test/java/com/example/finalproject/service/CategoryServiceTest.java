@@ -3,6 +3,7 @@ package com.example.finalproject.service;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -40,6 +41,7 @@ class CategoryServiceTest {
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
     InvalidValueExeption invalidValueExeption;
+    DataAlreadyExistsException dataAlreadyExistsException;
 
     @BeforeEach
     void setUp() {
@@ -90,10 +92,16 @@ class CategoryServiceTest {
 
     @Test
     void insertCategories() {
-        category.setCategoryId(0L);
+
+        when(categoryRepositoryMock.findCategoryByName(categoryRequestDto.getName())).thenReturn(null);
         when(mappersMock.convertToCategory(any(CategoryRequestDto.class))).thenReturn(category);
+        category.setCategoryId(0L);
         categoryServiceMock.insertCategories(categoryRequestDto);
         verify(categoryRepositoryMock, times(1)).save(any(Category.class));
+
+        when(categoryRepositoryMock.findCategoryByName(wrongCategoryRequestDto.getName())).thenReturn(category);
+        dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
+                () -> categoryServiceMock.insertCategories(wrongCategoryRequestDto));
     }
 
     @Test

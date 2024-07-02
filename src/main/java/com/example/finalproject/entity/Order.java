@@ -11,7 +11,7 @@ import java.util.*;
 @Table(name = "Orders")
 @Getter
 @Setter
-@EqualsAndHashCode
+//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
@@ -41,7 +41,7 @@ public class Order {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne

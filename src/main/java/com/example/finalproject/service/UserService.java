@@ -39,7 +39,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found"));
         user.setName(userUpdateDto.getName());
-        user.setPhone(userUpdateDto.getPhone());
+        user.setPhoneNumber(userUpdateDto.getPhone());
         userRepository.save(user);
     }
 

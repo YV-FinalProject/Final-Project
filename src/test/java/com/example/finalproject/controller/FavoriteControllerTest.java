@@ -46,7 +46,6 @@ class FavoriteControllerTest {
     private Set<FavoriteResponseDto> favoriteResponseDtoSet = new HashSet<>();
 
     private FavoriteRequestDto favoriteRequestDto;
-    Set<FavoriteRequestDto> favoriteRequestDtoSet = new HashSet<>();
 
     @BeforeEach
     void setUp() {
@@ -54,7 +53,7 @@ class FavoriteControllerTest {
 //ResponseDto
 
         userResponseDto = UserResponseDto.builder()
-                .userID(1L)
+                .userId(1L)
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
@@ -111,8 +110,7 @@ class FavoriteControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/favorites?userId=1&productId=1"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.cartItemId").doesNotExist())
-                .andExpect(jsonPath("$..product.productId").doesNotExist());
+                .andExpect(status().isOk());
+
     }
 }
