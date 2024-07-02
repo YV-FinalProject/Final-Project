@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class ProductCountDto {
     private Long productId;
@@ -17,4 +16,10 @@ public class ProductCountDto {
     private Integer count;
     private BigDecimal sum;
 
+    public ProductCountDto(Long productId, String name, Integer count, BigDecimal sum) {
+        this.productId = productId;
+        this.name = name;
+        this.count = count;
+        this.sum = sum;
+    }
 }
