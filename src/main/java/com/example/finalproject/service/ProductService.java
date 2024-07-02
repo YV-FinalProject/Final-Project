@@ -90,7 +90,8 @@ public class ProductService {
 
     @Transactional
     public List<ProductCountDto> getTop10Products(String status) {
-        List<ProductCount> list = productRepository.findTop10Products(status);
+        List<ProductCount> list = (List<ProductCount>) (List<?>) productRepository.findTop10Products(status);
+
         return mapperUtil.convertList(list, mappers::convertToProductCountDto);
     }
 
