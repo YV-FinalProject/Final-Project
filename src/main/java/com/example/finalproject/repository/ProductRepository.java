@@ -1,5 +1,6 @@
 package com.example.finalproject.repository;
 
+import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
 
@@ -14,11 +15,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends CrudRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     @Query(value =
-            "SELECT p.ProductID, p.Name, SUM(Quantity) Count, SUM(Quantity*Price) Sum " +
+            "SELECT  p.ProductID as productId, p.Name as name, SUM(Quantity) as count, SUM(Quantity*Price) as sum " +
                     "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
                     "JOIN Orders o ON oi.OrderId = o.OrderID " +
                     "WHERE o.Status  = ?1 " +
@@ -27,7 +28,7 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
                     "LIMIT 10"
             , nativeQuery = true
     )
-    List<ProductCount> findTop10Products(String status);
+    List<String> findTop10Products(String status);
 
 
     @Query(value =

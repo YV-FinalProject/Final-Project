@@ -14,12 +14,19 @@ import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 //import com.example.finalproject.repository.customs.ProductCustomRepository;
+
+import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.transaction.annotation.*;
+
 import lombok.RequiredArgsConstructor;
+import lombok.val;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,6 +38,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
     private final MapperUtil mapperUtil;
+    private final DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
 
     @Transactional
     public ProductResponseDto getProductById(Long id) {
@@ -90,8 +98,18 @@ public class ProductService {
 
     @Transactional
     public List<ProductCountDto> getTop10Products(String status) {
-        List<ProductCount> list = productRepository.findTop10Products(status);
-        return mapperUtil.convertList(list, mappers::convertToProductCountDto);
+        List<String> temporyList = productRepository.findTop10Products(status);
+        List<ProductCountDto> list1 = new ArrayList<>();
+        for (String entry : temporyList )
+        {
+           String[] stringEntry = entry.split(",");
+            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
+                                                        stringEntry[1],
+                                                        Integer.valueOf(stringEntry[2]),
+                                                        BigDecimalParser.parseWithFastParser(stringEntry[3]) );
+            list1.add(productCount);
+        }
+        return list1;
     }
 
     @Transactional
