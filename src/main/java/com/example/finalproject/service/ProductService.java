@@ -1,28 +1,25 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
-import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -91,19 +88,19 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductCountDto> getTop10Products(String status) {
-        List<String> temporyList = productRepository.findTop10Products(status);
-        List<ProductCountDto> list1 = new ArrayList<>();
-        for (String entry : temporyList )
-        {
-           String[] stringEntry = entry.split(",");
-            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
-                                                        stringEntry[1],
-                                                        Integer.valueOf(stringEntry[2]),
-                                                        BigDecimalParser.parseWithFastParser(stringEntry[3]) );
-            list1.add(productCount);
-        }
-        return list1;
+    public List<ProductCountInterface> getTop10Products(String status) {
+        List<ProductCountInterface> temporyList = productRepository.findTop10Products(status);
+//        List<ProductCountDto> list1 = new ArrayList<>();
+//        for (String entry : temporyList )
+//        {
+//           String[] stringEntry = entry.split(",");
+//            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
+//                                                        stringEntry[1],
+//                                                        Integer.valueOf(stringEntry[2]),
+//                                                        BigDecimalParser.parseWithFastParser(stringEntry[3]) );
+//            list1.add(productCount);
+//        }
+        return temporyList;
     }
 
     @Transactional

@@ -1,15 +1,12 @@
 package com.example.finalproject.repository;
 
-import com.example.finalproject.dto.ProductCountDto;
-import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
 
-import com.example.finalproject.entity.query.ProductCount;
-import com.example.finalproject.service.ProductService;
-import jakarta.persistence.SqlResultSetMapping;
+
+import com.example.finalproject.entity.query.ProductCountInterface;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,7 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     "LIMIT 10"
             , nativeQuery = true
     )
-    List<String> findTop10Products(String status);
+    List<ProductCountInterface> findTop10Products(String status);
 
 
     @Query(value =
