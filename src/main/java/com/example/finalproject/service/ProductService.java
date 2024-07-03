@@ -90,16 +90,6 @@ public class ProductService {
     @Transactional
     public List<ProductCountInterface> getTop10Products(String status) {
         List<ProductCountInterface> temporyList = productRepository.findTop10Products(status);
-//        List<ProductCountDto> list1 = new ArrayList<>();
-//        for (String entry : temporyList )
-//        {
-//           String[] stringEntry = entry.split(",");
-//            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
-//                                                        stringEntry[1],
-//                                                        Integer.valueOf(stringEntry[2]),
-//                                                        BigDecimalParser.parseWithFastParser(stringEntry[3]) );
-//            list1.add(productCount);
-//        }
         return temporyList;
     }
 
