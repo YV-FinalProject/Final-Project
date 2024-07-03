@@ -3,10 +3,10 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
-import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -49,6 +50,21 @@ public class ProductController {
                               @PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
         productService.updateProduct(productRequestDto, id);
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    @Validated
+    public void setDiscountPrice(@RequestParam("productId") @Positive(message = "Product ID must be a positive number") Long productId,
+                                 @RequestParam("discountPrice") @DecimalMin(value = "0.0") @Digits(integer=4, fraction=2) BigDecimal discountPrice){
+        productService.setDiscountPrice(productId,discountPrice);
+    }
+
+    @GetMapping(value = "/maxDiscount")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponseDto getMaxDiscountProduct(){
+        return productService.getMaxDiscountProduct();
+    }
+
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping

@@ -5,7 +5,6 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -21,7 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -99,7 +97,7 @@ class ProductServiceTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("100.00"))
-                .discountPrice(new BigDecimal("0.00"))
+//                .discountPrice(new BigDecimal("0.00"))
                 .imageURL("http://localhost/img/1.jpg")
                 .category("Category")
                 .build();
@@ -108,7 +106,7 @@ class ProductServiceTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("100.00"))
-                .discountPrice(new BigDecimal("0.00"))
+//                .discountPrice(new BigDecimal("0.00"))
                 .imageURL("http://localhost/img/1.jpg")
                 .category("WrongCategory")
                 .build();
@@ -179,7 +177,6 @@ class ProductServiceTest {
         product.setName(productRequestDto.getName());
         product.setDescription(productRequestDto.getDescription());
         product.setPrice(productRequestDto.getPrice());
-        product.setDiscountPrice(productRequestDto.getDiscountPrice());
         product.setImageURL(productRequestDto.getImageURL());
         product.setCategory(category);
         product.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));

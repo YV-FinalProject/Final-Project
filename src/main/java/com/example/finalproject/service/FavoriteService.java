@@ -58,7 +58,7 @@ public class FavoriteService {
             Set<Favorite> favoritesSet = user.getFavorites();
             for(Favorite item : favoritesSet){
                 if(item.getProduct().getProductId() == productId){
-                    favoriteRepository.delete(item);
+                    favoriteRepository.deleteById(item.getFavoriteId());
                 }
             }
         } else {

@@ -18,10 +18,12 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -45,8 +47,9 @@ public class ProductService {
 
     @Transactional
     public void deleteProductById(Long id) {
-        if (productRepository.findById(id).isPresent()) {
-            productRepository.findById(id).ifPresent(productRepository::delete);
+        Product product = productRepository.findById(id).orElse(null);
+        if (product != null) {
+            productRepository.deleteById(product.getProductId());
         } else {
             throw new DataNotFoundInDataBaseException("Data not found in database.");
         }
@@ -62,39 +65,63 @@ public class ProductService {
             productToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             productRepository.save(productToInsert);
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Category not found in database.");
         }
     }
 
     @Transactional
     public void updateProduct(ProductRequestDto productRequestDto, Long id) {
+        Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
+        if (category != null){
             Product productToUpdate = productRepository.findById(id).orElse(null);
-            Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
-            if (productToUpdate != null && category != null) {
+            if (productToUpdate != null) {
                 productToUpdate.setName(productRequestDto.getName());
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
-                productToUpdate.setDiscountPrice(productRequestDto.getDiscountPrice());
                 productToUpdate.setImageURL(productRequestDto.getImageURL());
-                productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
             } else {
-                throw new DataNotFoundInDataBaseException("Data not found in database.");
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
+        } else {
+            throw new DataNotFoundInDataBaseException("Category not found in database.");
+        }
+
+    }
+
+    @Transactional
+    public void setDiscountPrice(Long productId, BigDecimal discountPrice) {
+        Product productToUpdate = productRepository.findById(productId).orElse(null);
+        if (productToUpdate != null) {
+            productToUpdate.setDiscountPrice(discountPrice);
+            productRepository.save(productToUpdate);
+        } else {
+            throw new DataNotFoundInDataBaseException("Data not found in database.");
+        }
+    }
+
+    public ProductResponseDto getMaxDiscountProduct(){
+        List<Product> maxDiscountProductList = productRepository.getMaxDiscountProduct();
+        if(maxDiscountProductList.size() > 1){
+            Random random = new Random();
+            int randomNumber = random.nextInt(maxDiscountProductList.size());
+             return mappers.convertToProductResponseDto(maxDiscountProductList.get(randomNumber));
+        } else {
+            return mappers.convertToProductResponseDto(maxDiscountProductList.getFirst());
+        }
     }
 
     @Transactional
     public List<ProductCountDto> getTop10Products(String status) {
         List<String> temporyList = productRepository.findTop10Products(status);
         List<ProductCountDto> list1 = new ArrayList<>();
-        for (String entry : temporyList )
-        {
-           String[] stringEntry = entry.split(",");
+        for (String entry : temporyList) {
+            String[] stringEntry = entry.split(",");
             ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
-                                                        stringEntry[1],
-                                                        Integer.valueOf(stringEntry[2]),
-                                                        BigDecimalParser.parseWithFastParser(stringEntry[3]) );
+                    stringEntry[1],
+                    Integer.valueOf(stringEntry[2]),
+                    BigDecimalParser.parseWithFastParser(stringEntry[3]));
             list1.add(productCount);
         }
         return list1;
@@ -103,11 +130,19 @@ public class ProductService {
     @Transactional
     public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
         boolean isCategory = false;
-        if (category == null) {isCategory = true;}
-        if (minPrice == null) {minPrice = 0.00;}
-        if (maxPrice == null) {maxPrice = Double.MAX_VALUE;}
-        if (sort == null) {sort = "Name";}
-        List<Product> list = productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort );
-        return  mapperUtil.convertList(list,mappers::convertToProductResponseDto);
+        if (category == null) {
+            isCategory = true;
+        }
+        if (minPrice == null) {
+            minPrice = 0.00;
+        }
+        if (maxPrice == null) {
+            maxPrice = Double.MAX_VALUE;
+        }
+        if (sort == null) {
+            sort = "Name";
+        }
+        List<Product> list = productRepository.findProductsByFilter(isCategory, category, minPrice, maxPrice, !isDiscount, sort);
+        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
     }
 }
