@@ -32,7 +32,7 @@ public class FavoriteService {
             Set<Favorite> favoritesList = user.getFavorites();
             return MapperUtil.convertSet(favoritesList, mappers::convertToFavoriteResponseDto);
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 
@@ -46,7 +46,7 @@ public class FavoriteService {
                 Set<Favorite> favoriteSet = user.getFavorites();
                 for (Favorite item : favoriteSet) {
                     if (item.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
-                        throw new DataAlreadyExistsException("This product is already in Favorites.");
+                        throw new DataAlreadyExistsException("This product is already in favorites.");
                     }
                 }
                 favorite.setProduct(product);
@@ -73,7 +73,7 @@ public class FavoriteService {
                 }
             }
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 }

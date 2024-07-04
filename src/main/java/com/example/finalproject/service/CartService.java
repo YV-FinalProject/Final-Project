@@ -35,7 +35,7 @@ public class CartService {
             Set<CartItem> cartItemsSet = user.getCart().getCartItems();
             return MapperUtil.convertSet(cartItemsSet, mappers::convertToCartItemResponseDto);
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 
@@ -91,11 +91,11 @@ public class CartService {
             Set<CartItem> cartItemSet = user.getCart().getCartItems();
             for (CartItem item : cartItemSet) {
                 if (item.getProduct().getProductId().equals(productId)) {
-                    cartItemRepository.delete(item);
+                    cartItemRepository.deleteById(item.getCartItemId());
                 }
             }
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 }

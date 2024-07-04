@@ -16,10 +16,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     void deleteById(Long id);
 
 
-    @Query(value =
-            "SELECT * FROM Products WHERE DiscountPrice IS NOT NULL AND " +
-                    "(SELECT MAX(Price / DiscountPrice) from Products) = (Price / DiscountPrice)", nativeQuery = true)
+    @Query("SELECT product FROM Product product WHERE product.discountPrice IS NOT NULL AND (SELECT MAX(product.price / product.discountPrice) FROM Product product) = (product.price / product.discountPrice)")
     List<Product> getMaxDiscountProduct();
+
 
 
     @Query(value =
@@ -40,9 +39,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
                     "WHERE (?1 OR CategoryID = ?2) " +
                     "AND Price between ?3 and ?4 " +
                     "AND (?5 OR DiscountPrice IS NOT NULL) " +
-                    "ORDER BY ?6 ASC "
+                    "ORDER BY ?6 ASC"
             , nativeQuery = true)
     List<Product> findProductsByFilter(Boolean isCategory, Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort);
-
 
 }

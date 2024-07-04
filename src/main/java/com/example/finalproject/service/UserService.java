@@ -22,7 +22,7 @@ public class UserService {
     @Transactional
     public void registerUser(UserRequestDto userRequestDto) {
         if (userRepository.existsByEmail(userRequestDto.getEmail())) {
-            throw new DataAlreadyExistsException("User already exists");
+            throw new DataAlreadyExistsException("User already exists.");
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.CLIENT);
@@ -37,7 +37,7 @@ public class UserService {
     @Transactional
     public void updateUser(Long id, UserRequestDto userUpdateDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found"));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found in database."));
         user.setName(userUpdateDto.getName());
         user.setPhoneNumber(userUpdateDto.getPhone());
         userRepository.save(user);
@@ -46,7 +46,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found"));
+                .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found in database."));
         if (user.getCart() != null) {
             cartRepository.delete(user.getCart());
         }

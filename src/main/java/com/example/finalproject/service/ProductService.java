@@ -41,7 +41,7 @@ public class ProductService {
             return mappers.convertToProductResponseDto(product);
 
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Product not found in database.");
         }
     }
 
@@ -51,7 +51,7 @@ public class ProductService {
         if (product != null) {
             productRepository.deleteById(product.getProductId());
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Product not found in database.");
         }
     }
 
@@ -97,7 +97,7 @@ public class ProductService {
             productToUpdate.setDiscountPrice(discountPrice);
             productRepository.save(productToUpdate);
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Product not found in database.");
         }
     }
 

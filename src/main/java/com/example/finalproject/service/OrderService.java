@@ -40,7 +40,7 @@ public class OrderService {
             orderResponseDto.setOrderItemsSet(orderItemResponseDto);
             return orderResponseDto;
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Order not found in database.");
         }
     }
 
@@ -59,9 +59,9 @@ public class OrderService {
                 }
                 return orderResponseDtoSet;
             }
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("No orders were placed yet.");
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 
@@ -82,7 +82,7 @@ public class OrderService {
             orderToInsert = orderRepository.save(orderToInsert);
 
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
 
         Set<OrderItemRequestDto> orderItemsRequestDtoSet = orderRequestDto.getOrderItemsSet();
@@ -104,7 +104,7 @@ public class OrderService {
 
                 orderItemToInsertSet.add(orderItemToInsert);
             } else {
-                throw new DataNotFoundInDataBaseException("Data not found in database.");
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
         }
         orderToInsert.setOrderItems(orderItemToInsertSet);
