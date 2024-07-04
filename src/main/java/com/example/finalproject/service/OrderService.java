@@ -110,4 +110,16 @@ public class OrderService {
         orderToInsert.setOrderItems(orderItemToInsertSet);
         orderRepository.save(orderToInsert);
     }
+
+    public void cancelOrder(Long orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            order.setStatus(Status.CANCELED);
+            orderRepository.save(order);
+        } else {
+            throw new DataNotFoundInDataBaseException("Order not found in database.");
+        }
+    }
+
+
 }
