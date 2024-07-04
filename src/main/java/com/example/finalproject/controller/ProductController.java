@@ -72,16 +72,10 @@ public class ProductController {
             @RequestParam(value = "category", required = false) Long categoryId,
             @RequestParam(value = "minPrice", required = false)  Double minPrice,
             @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
-            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean isDiscount,
-            @RequestParam(value = "sort", required = false)  String sort
-    ) {
-        return productService.findProductsByFilter(
-                categoryId,
-                minPrice,
-                maxPrice,
-                isDiscount,
-                sort
-        );
+            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
+            @RequestParam(value = "sort", required = false)  String[] sort) {
+
+        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
 
     @ResponseStatus(HttpStatus.OK)

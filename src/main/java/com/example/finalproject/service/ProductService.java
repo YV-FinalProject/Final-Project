@@ -12,6 +12,7 @@ import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
 import com.fasterxml.jackson.core.io.BigDecimalParser;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,7 @@ public class ProductService {
     @Transactional
     public void updateProduct(ProductRequestDto productRequestDto, Long id) {
         Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
-        if (category != null){
+        if (category != null) {
             Product productToUpdate = productRepository.findById(id).orElse(null);
             if (productToUpdate != null) {
                 productToUpdate.setName(productRequestDto.getName());
@@ -101,12 +102,12 @@ public class ProductService {
         }
     }
 
-    public ProductResponseDto getMaxDiscountProduct(){
+    public ProductResponseDto getMaxDiscountProduct() {
         List<Product> maxDiscountProductList = productRepository.getMaxDiscountProduct();
-        if(maxDiscountProductList.size() > 1){
+        if (maxDiscountProductList.size() > 1) {
             Random random = new Random();
             int randomNumber = random.nextInt(maxDiscountProductList.size());
-             return mappers.convertToProductResponseDto(maxDiscountProductList.get(randomNumber));
+            return mappers.convertToProductResponseDto(maxDiscountProductList.get(randomNumber));
         } else {
             return mappers.convertToProductResponseDto(maxDiscountProductList.getFirst());
         }
@@ -127,11 +128,15 @@ public class ProductService {
         return list1;
     }
 
+
     @Transactional
-    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
-        boolean isCategory = false;
+    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
+        boolean ascending = true;
+        Sort sortObject = orderBy("name", true);// по умолчанию
+        boolean hasCategory = false;
+
         if (category == null) {
-            isCategory = true;
+            hasCategory = true;
         }
         if (minPrice == null) {
             minPrice = 0.00;
@@ -139,10 +144,22 @@ public class ProductService {
         if (maxPrice == null) {
             maxPrice = Double.MAX_VALUE;
         }
-        if (sort == null) {
-            sort = "Name";
+        if (sort != null) {
+            if (sort[1].equals("desc")) {
+                ascending = false;
+            }
+            sortObject = orderBy(sort[0], ascending);
         }
-        List<Product> list = productRepository.findProductsByFilter(isCategory, category, minPrice, maxPrice, !isDiscount, sort);
+        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
         return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
     }
+
+    private Sort orderBy(String sort, Boolean ascending) {
+        if (!ascending) {
+            return Sort.by(Sort.Direction.DESC, sort);
+        } else {
+            return Sort.by(Sort.Direction.ASC, sort);
+        }
+    }
+
 }

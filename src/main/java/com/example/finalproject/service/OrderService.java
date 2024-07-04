@@ -30,6 +30,8 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
 
     private final Mappers mappers;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Transactional
     public OrderResponseDto getOrderById(Long orderId) {
@@ -109,6 +111,13 @@ public class OrderService {
         }
         orderToInsert.setOrderItems(orderItemToInsertSet);
         orderRepository.save(orderToInsert);
+        Cart cart = cartRepository.findById(user.getCart().getCartId()).orElse(null);
+        if(cart != null){
+            Set <CartItem> cartItemSet = cart.getCartItems();
+            for(CartItem item : cartItemSet){
+                cartItemRepository.deleteById(item.getCartItemId());
+            }
+        }
     }
 
     public void cancelOrder(Long orderId){
