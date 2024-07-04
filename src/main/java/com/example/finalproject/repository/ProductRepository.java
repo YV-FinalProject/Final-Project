@@ -14,15 +14,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     @Modifying
-    @Query(value = "DELETE FROM Products " +
-            "WHERE productId = ?1", nativeQuery = true)
+    @Query("DELETE FROM Product product " +
+            "WHERE product.productId = :id")
     void deleteById(Long id);
 
 
-    @Query(value = "SELECT * FROM Products " +
-            "WHERE discountPrice IS NOT NULL " +
-            "AND (SELECT MAX(price / discountPrice) " +
-            "FROM Products) = (price / discountPrice)", nativeQuery = true)
+    @Query("SELECT product FROM Product product " +
+            "WHERE product.discountPrice IS NOT NULL " +
+            "AND (SELECT MAX(product.price / product.discountPrice) " +
+            "FROM Product product) = (product.price / product.discountPrice)")
     List<Product> getMaxDiscountProduct();
 
 
@@ -52,5 +52,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "AND product.price BETWEEN :minPrice and :maxPrice " +
             "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
     List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
-
 }

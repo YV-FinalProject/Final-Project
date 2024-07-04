@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface FavoriteRepository extends JpaRepository<Favorite,Long> {
 
     @Modifying
-    @Query(value = "DELETE FROM Favorites " +
-                    "WHERE favoriteId = ?1", nativeQuery = true)
+    @Query("DELETE FROM Favorite favorite " +
+            "WHERE favorite.favoriteId = :id")
     void deleteById(Long id);
 }
