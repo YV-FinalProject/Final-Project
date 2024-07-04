@@ -1,6 +1,7 @@
 package com.example.finalproject.controller;
 
 import com.example.finalproject.dto.requestdto.*;
+import com.example.finalproject.exception.*;
 import com.example.finalproject.service.*;
 import com.fasterxml.jackson.databind.*;
 import org.junit.jupiter.api.*;
@@ -16,10 +17,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -39,27 +41,75 @@ public class UserControllerTest {
     }
 
     @Test
-    void testRegisterUser() throws Exception {
+    void registerUser() throws Exception {
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
                 .andExpect(status().isCreated());
+
+        verify(userServiceMock).registerUser(any(UserRequestDto.class));
     }
 
     @Test
-    void testUpdateUser() throws Exception {
+    void registerUser_ShouldThrowException_WhenEmailAlreadyExists() throws Exception {
+        doThrow(new DataAlreadyExistsException("User already exists"))
+                .when(userServiceMock).registerUser(any(UserRequestDto.class));
+
+        mockMvc.perform(post("/users/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("User already exists"));
+
+        verify(userServiceMock).registerUser(any(UserRequestDto.class));
+    }
+
+    @Test
+    void updateUser() throws Exception {
         Long userId = 1L;
         mockMvc.perform(put("/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
                 .andExpect(status().isOk());
+
+        verify(userServiceMock).updateUser(eq(userId), any(UserRequestDto.class));
     }
 
     @Test
-    void testDeleteUser() throws Exception {
+    void updateUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
+        Long userId = 1L;
+        doThrow(new DataNotFoundInDataBaseException("User not found"))
+                .when(userServiceMock).updateUser(anyLong(), any(UserRequestDto.class));
+
+        mockMvc.perform(put("/users/{id}", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(userServiceMock).updateUser(eq(userId), any(UserRequestDto.class));
+    }
+
+    @Test
+    void deleteUser() throws Exception {
         Long userId = 1L;
         doNothing().when(userServiceMock).deleteUser(anyLong());
         mockMvc.perform(delete("/users/{id}", userId))
                 .andExpect(status().isOk());
+        verify(userServiceMock).deleteUser(userId);
+
+    }
+
+    @Test
+    void deleteUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
+        Long userId = 1L;
+        doThrow(new DataNotFoundInDataBaseException("User not found"))
+                .when(userServiceMock).deleteUser(anyLong());
+
+        mockMvc.perform(delete("/users/{id}", userId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
+
+        verify(userServiceMock).deleteUser(userId);
     }
 }
