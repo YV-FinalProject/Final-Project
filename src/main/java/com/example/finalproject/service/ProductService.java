@@ -6,12 +6,16 @@ import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.entity.query.ProductPendingInterface;
+import com.example.finalproject.entity.query.ProductProfitInterface;
+import com.example.finalproject.entity.query.ProductSortInterface;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
@@ -94,13 +98,40 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean isDiscount, String sort) {
-        boolean isCategory = false;
-        if (category == null) {isCategory = true;}
-        if (minPrice == null) {minPrice = 0.00;}
-        if (maxPrice == null) {maxPrice = Double.MAX_VALUE;}
-        if (sort == null) {sort = "Name";}
-        List<Product> list = productRepository.findProductsByFilter(isCategory,category, minPrice, maxPrice, !isDiscount,  sort );
-        return  mapperUtil.convertList(list,mappers::convertToProductResponseDto);
+    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
+        boolean ascending = true;
+        Sort sortObject = orderBy("name", true);// по умолчанию
+        boolean hasCategory = false;
+
+        if (category == null) { hasCategory = true; }
+        if (minPrice == null) { minPrice = 0.00; }
+        if (maxPrice == null) { maxPrice = Double.MAX_VALUE; }
+        if (sort != null) {
+            if (sort[1].equals("desc")) {
+                ascending = false;
+            }
+            sortObject = orderBy(sort[0], ascending);
+        }
+        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
+        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
+    }
+
+    @Transactional
+    public List<ProductPendingInterface> findProductPending(Integer day) {
+        return productRepository.findProductPending(day);
+    }
+
+    @Transactional
+    public List<ProductProfitInterface> findProductProfit(String type, Integer period) {
+        return productRepository.findProffitByPeriod(type, period);
+    }
+
+
+    private Sort orderBy(String sort, Boolean ascending) {
+        if (!ascending) {
+            return Sort.by(Sort.Direction.DESC, sort);
+        } else {
+            return Sort.by(Sort.Direction.ASC, sort);
+        }
     }
 }

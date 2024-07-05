@@ -3,10 +3,9 @@ package com.example.finalproject.entity.query;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-public interface ProductCountInterface {
+public interface ProductPendingInterface {
     Long getProductId();
     String getName();
     Integer getCount();
-    BigDecimal getSum();
-  //  Timestamp getCreatedAt();
+    Timestamp getCreatedAt();
 }
