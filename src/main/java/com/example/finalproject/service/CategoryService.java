@@ -5,12 +5,14 @@ import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.entity.Category;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,12 +23,13 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
 
+    @Transactional
     public List<CategoryResponseDto> getCategories() {
         List<Category> categoriesList = categoryRepository.findAll();
         return MapperUtil.convertList(categoriesList, mappers::convertToCategoryResponseDto);
     }
 
-
+    @Transactional
     public void deleteCategoryById(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
@@ -35,12 +38,19 @@ public class CategoryService {
         }
     }
 
+    @Transactional
     public void insertCategories(CategoryRequestDto categoryRequestDto) {
-        Category category = mappers.convertToCategory(categoryRequestDto);
-        category.setCategoryId(0L);
-        categoryRepository.save(category);
+        Category checkCategory = categoryRepository.findCategoryByName(categoryRequestDto.getName());
+        if(checkCategory == null){
+            Category category = mappers.convertToCategory(categoryRequestDto);
+            category.setCategoryId(0L);
+            categoryRepository.save(category);
+        } else {
+            throw new DataAlreadyExistsException("The category with this name already exists.");
+        }
     }
 
+    @Transactional
     public void updateCategory(CategoryRequestDto categoryRequestDto, Long id) {
         if (id > 0) {
             Category category = categoryRepository.findById(id).orElse(null);

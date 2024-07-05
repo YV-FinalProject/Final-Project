@@ -1,30 +1,37 @@
 package com.example.finalproject.controller;
 
+import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
+import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
     @GetMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ProductResponseDto getProductsById(@PathVariable @Valid @Positive (message = "Invalid Id: Id must be a whole positive number") Long id) {
+    public ProductResponseDto getProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
         return productService.getProductById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable Long id) {
+    public void deleteProductsById(@PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
         productService.deleteProductById(id);
     }
 
@@ -39,7 +46,32 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @Validated
     public void updateProduct(@RequestBody @Valid ProductRequestDto productRequestDto,
-                              @PathVariable Long id) {
-        productService.updateProduct(productRequestDto,id);
+                              @PathVariable @Positive(message = "Product ID must be a positive number") Long id) {
+        productService.updateProduct(productRequestDto, id);
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<ProductResponseDto> getProducts(
+            @RequestParam(value = "category", required = false) Long categoryId,
+            @RequestParam(value = "minPrice", required = false)  Double minPrice,
+            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
+            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean isDiscount,
+            @RequestParam(value = "sort", required = false)  String sort
+    ) {
+        return productService.findProductsByFilter(
+                categoryId,
+                minPrice,
+                maxPrice,
+                isDiscount,
+                sort
+        );
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/top10")
+    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
+        return  productService.getTop10Products(status);
+    }
+
 }

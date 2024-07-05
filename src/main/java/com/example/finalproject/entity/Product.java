@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+//@EqualsAndHashCode
 public class Product {
 
     @Id
@@ -45,8 +46,8 @@ public class Product {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-   @ManyToOne(fetch = FetchType.LAZY)
-   @JoinColumn(name = "CategoryId")
+   @ManyToOne
+   @JoinColumn(name = "CategoryId", nullable=false)
     private Category category;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить связанные объекты, например favorites

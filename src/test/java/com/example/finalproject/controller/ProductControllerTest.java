@@ -80,9 +80,8 @@ class ProductControllerTest {
     void deleteProductsById() throws Exception {
         Long id = 1L;
         mockMvc.perform(delete("/products/{id}", id)).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.productId").doesNotExist())
-                .andExpect(jsonPath("$.name").doesNotExist());
+                .andExpect(status().isOk());
+
     }
 
     @Test

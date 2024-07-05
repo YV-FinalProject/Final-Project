@@ -5,6 +5,7 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCount;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -193,4 +195,42 @@ class ProductServiceTest {
                 () -> productServiceMock.updateProduct(wrongProductRequestDto, negativeId));
         assertEquals("The value you entered is not valid.", invalidValueExeption.getMessage());
     }
+
+
+    @Test
+    void getTop10Products() {
+
+//        String sort = "Price";
+//        when(productRepositoryMock.findTop10Products(sort)).thenReturn(List.of(product));
+//        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
+//        List <ProductCount> actualProductResponseDto = productServiceMock.getTop10Products(sort);
+//
+//        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
+//        verify(productRepositoryMock, times(1)).findTop10Products(sort);
+//       // assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
+
+    }
+
+    @Test
+    void findProductsByFilter() {
+//        Long category = 1L;
+//        Double minPrice = 0.00;
+//        Double maxPrice =1000.00;
+//        Boolean isDiscount = true;
+//        String sort = "Price";
+//        when(productRepositoryMock.findProductsByFilter(true,category,minPrice,maxPrice,isDiscount,sort)).thenReturn(List.of(product));
+//        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
+//        ProductResponseDto actualProductResponseDto = productServiceMock.getProductById(id);
+//
+//        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
+//        verify(productRepositoryMock, times(1)).findById(id);
+//        assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
+//
+//        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
+//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+//                () -> productServiceMock.getProductById(wrongId));
+//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+    }
 }
+

@@ -99,7 +99,7 @@ class CartServiceTest {
 
 //ResponseDto
         userResponseDto = UserResponseDto.builder()
-                .userID(1L)
+                .userId(1L)
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
@@ -218,7 +218,6 @@ class CartServiceTest {
         for (CartItem item : cartItemSet) {
             verify(cartItemRepositoryMock, times(1)).delete(item);
         }
-
 
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());

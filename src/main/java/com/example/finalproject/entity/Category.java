@@ -9,9 +9,11 @@ import java.util.Set;
 @Table(name = "Categories")
 @AllArgsConstructor
 @NoArgsConstructor
+//@EqualsAndHashCode
 @Getter
 @Setter
 public class Category {
+  
     @Id
     @Column(name = "categoryId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

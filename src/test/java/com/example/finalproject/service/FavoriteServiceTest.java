@@ -101,7 +101,7 @@ class FavoriteServiceTest {
 //ResponseDto
 
         userResponseDto = UserResponseDto.builder()
-                .userID(1L)
+                .userId(1L)
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")

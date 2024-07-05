@@ -10,8 +10,8 @@ import lombok.*;
 @Builder
 public class CartItemRequestDto {
 
-    @NotBlank(message = "Invalid Id: Empty Id")
-    @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid Id: not a number")
+    @NotNull(message = "Invalid Id: Empty Id")
+//    @Pattern(regexp = "^[^0]\\d{1,18}$", message = "Invalid Id: not a number")
     @JsonProperty("productId")
     private Long productId;
 
