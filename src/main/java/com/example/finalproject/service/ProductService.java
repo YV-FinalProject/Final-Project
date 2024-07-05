@@ -122,8 +122,8 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductProfitInterface> findProductProfit(String type, Integer period) {
-        return productRepository.findProffitByPeriod(type, period);
+    public List<ProductProfitInterface> findProductProfit(String period, Integer value) {
+        return productRepository.findProffitByPeriod(period, value);
     }
 
 
