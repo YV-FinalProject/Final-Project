@@ -92,8 +92,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void setDiscountPrice(Long productId, BigDecimal discountPrice) {
-        Product productToUpdate = productRepository.findById(productId).orElse(null);
+    public void setDiscountPrice(Long id, BigDecimal discountPrice) {
+        Product productToUpdate = productRepository.findById(id).orElse(null);
         if (productToUpdate != null) {
             productToUpdate.setDiscountPrice(discountPrice);
             productRepository.save(productToUpdate);
@@ -129,37 +129,37 @@ public class ProductService {
     }
 
 
-    @Transactional
-    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
-        boolean ascending = true;
-        Sort sortObject = orderBy("name", true);// по умолчанию
-        boolean hasCategory = false;
-
-        if (category == null) {
-            hasCategory = true;
-        }
-        if (minPrice == null) {
-            minPrice = 0.00;
-        }
-        if (maxPrice == null) {
-            maxPrice = Double.MAX_VALUE;
-        }
-        if (sort != null) {
-            if (sort[1].equals("desc")) {
-                ascending = false;
-            }
-            sortObject = orderBy(sort[0], ascending);
-        }
-        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
-        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
-    }
-
-    private Sort orderBy(String sort, Boolean ascending) {
-        if (!ascending) {
-            return Sort.by(Sort.Direction.DESC, sort);
-        } else {
-            return Sort.by(Sort.Direction.ASC, sort);
-        }
-    }
+//    @Transactional
+//    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
+//        boolean ascending = true;
+//        Sort sortObject = orderBy("name", true);// по умолчанию
+//        boolean hasCategory = false;
+//
+//        if (category == null) {
+//            hasCategory = true;
+//        }
+//        if (minPrice == null) {
+//            minPrice = 0.00;
+//        }
+//        if (maxPrice == null) {
+//            maxPrice = Double.MAX_VALUE;
+//        }
+//        if (sort != null) {
+//            if (sort[1].equals("desc")) {
+//                ascending = false;
+//            }
+//            sortObject = orderBy(sort[0], ascending);
+//        }
+//        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
+//        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
+//    }
+//
+//    private Sort orderBy(String sort, Boolean ascending) {
+//        if (!ascending) {
+//            return Sort.by(Sort.Direction.DESC, sort);
+//        } else {
+//            return Sort.by(Sort.Direction.ASC, sort);
+//        }
+//    }
 
 }

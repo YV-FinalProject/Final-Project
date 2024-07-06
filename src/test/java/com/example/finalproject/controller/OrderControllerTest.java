@@ -24,8 +24,7 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -118,7 +117,7 @@ class OrderControllerTest {
     void getOrderById() throws Exception {
         Long orderId = 1L;
         when(orderServiceMock.getOrderById(anyLong())).thenReturn(orderResponseDto);
-        this.mockMvc.perform(get("/orders/{orderId}",orderId)).andDo(print())
+        this.mockMvc.perform(get("/orders/{orderId}", orderId)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(orderId));
     }
@@ -130,7 +129,7 @@ class OrderControllerTest {
         orderResponseDtoSet.add(orderResponseDto);
         when(orderServiceMock.getOrderHistoryByUserId(anyLong())).thenReturn(orderResponseDtoSet);
 
-        this.mockMvc.perform(get("/orders/history/{orderId}",userId)).andDo(print())
+        this.mockMvc.perform(get("/orders/history/{orderId}", userId)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..contactPhone").value(orderResponseDto.getContactPhone()));
     }
@@ -140,7 +139,17 @@ class OrderControllerTest {
         Long userId = 1L;
         mockMvc.perform(post("/orders/{userId}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequestDto))).andDo(print())
+                        .content(objectMapper.writeValueAsString(orderRequestDto)))
+                .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void cancelOrder() throws Exception {
+        Long orderId = 1L;
+        mockMvc.perform(put("/orders//{orderId}", orderId))
+                .andDo(print())
+                .andExpect(status().isOk());
+
     }
 }

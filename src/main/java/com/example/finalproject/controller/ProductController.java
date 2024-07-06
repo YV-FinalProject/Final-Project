@@ -54,9 +54,9 @@ public class ProductController {
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     @Validated
-    public void setDiscountPrice(@RequestParam("productId") @Positive(message = "Product ID must be a positive number") Long productId,
+    public void setDiscountPrice(@RequestParam("id") @Positive(message = "Product ID must be a positive number") Long id,
                                  @RequestParam("discountPrice") @DecimalMin(value = "0.0") @Digits(integer=4, fraction=2) BigDecimal discountPrice){
-        productService.setDiscountPrice(productId,discountPrice);
+        productService.setDiscountPrice(id,discountPrice);
     }
 
     @GetMapping(value = "/maxDiscount")
@@ -66,17 +66,17 @@ public class ProductController {
     }
 
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<ProductResponseDto> getProducts(
-            @RequestParam(value = "category", required = false) Long categoryId,
-            @RequestParam(value = "minPrice", required = false)  Double minPrice,
-            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
-            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
-            @RequestParam(value = "sort", required = false)  String[] sort) {
-
-        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
-    }
+//    @ResponseStatus(HttpStatus.OK)
+//    @GetMapping
+//    public List<ProductResponseDto> getProducts(
+//            @RequestParam(value = "category", required = false) Long categoryId,
+//            @RequestParam(value = "minPrice", required = false)  Double minPrice,
+//            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
+//            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
+//            @RequestParam(value = "sort", required = false)  String[] sort) {
+//
+//        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
+//    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")

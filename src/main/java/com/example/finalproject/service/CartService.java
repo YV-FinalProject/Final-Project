@@ -86,14 +86,19 @@ public class CartService {
     @Transactional
     public void deleteCarItemByProductId(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElse(null);
-        Product product = productRepository.findById(productId).orElse(null);
-        if (user != null && product != null) {
-            Set<CartItem> cartItemSet = user.getCart().getCartItems();
-            for (CartItem item : cartItemSet) {
-                if (item.getProduct().getProductId().equals(productId)) {
-                    cartItemRepository.deleteById(item.getCartItemId());
+        if (user != null) {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product != null) {
+                Set<CartItem> cartItemSet = user.getCart().getCartItems();
+                for (CartItem item : cartItemSet) {
+                    if (item.getProduct().getProductId().equals(productId)) {
+                        cartItemRepository.deleteById(item.getCartItemId());
+                    }
                 }
+            } else {
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
+
         } else {
             throw new DataNotFoundInDataBaseException("User not found in database.");
         }

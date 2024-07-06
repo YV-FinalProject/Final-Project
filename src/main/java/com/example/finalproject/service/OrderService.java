@@ -9,6 +9,7 @@ import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.DeliveryMethod;
 import com.example.finalproject.entity.enums.Status;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.OrderStatusException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -78,7 +79,6 @@ public class OrderService {
             orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
             orderToInsert.setContactPhone(user.getPhoneNumber());
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
-
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
             orderToInsert = orderRepository.save(orderToInsert);
@@ -111,20 +111,27 @@ public class OrderService {
         }
         orderToInsert.setOrderItems(orderItemToInsertSet);
         orderRepository.save(orderToInsert);
+
         Cart cart = cartRepository.findById(user.getCart().getCartId()).orElse(null);
         if(cart != null){
             Set <CartItem> cartItemSet = cart.getCartItems();
             for(CartItem item : cartItemSet){
                 cartItemRepository.deleteById(item.getCartItemId());
             }
+        } else {
+            throw new DataNotFoundInDataBaseException("Cart not found in database.");
         }
     }
 
     public void cancelOrder(Long orderId){
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
-            order.setStatus(Status.CANCELED);
-            orderRepository.save(order);
+            if(order.getStatus() == Status.CREATED || order.getStatus() == Status.PENDING_PAYMENT) {
+                order.setStatus(Status.CANCELED);
+                orderRepository.save(order);
+            } else {
+                throw new OrderStatusException("Order already paid and can not be canceled.");
+            }
         } else {
             throw new DataNotFoundInDataBaseException("Order not found in database.");
         }

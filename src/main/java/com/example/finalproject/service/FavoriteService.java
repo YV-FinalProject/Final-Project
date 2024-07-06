@@ -52,6 +52,8 @@ public class FavoriteService {
                 favorite.setProduct(product);
                 favorite.setUser(user);
                 favoriteRepository.save(favorite);
+                favoriteSet.add(favorite);
+
             } else {
                 throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
@@ -68,7 +70,7 @@ public class FavoriteService {
         if (user != null && product != null) {
             Set<Favorite> favoritesSet = user.getFavorites();
             for (Favorite item : favoritesSet) {
-                if (item.getProduct().getProductId() == productId) {
+                if (item.getProduct().getProductId().equals(productId)) {
                     favoriteRepository.deleteById(item.getFavoriteId());
                 }
             }

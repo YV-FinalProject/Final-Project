@@ -39,17 +39,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<String> findTop10Products(String status);
 
 
-//    @Query(value =
-//            "SELECT  ProductID, Name, Description, Price, DiscountPrice, CategoryID, ImageURL, CreatedAt, UpdatedAt FROM Products " +
-//                    "WHERE (?1 OR CategoryID = ?2) " +
-//                    "AND Price between ?3 and ?4 " +
-//                    "AND (?5 OR DiscountPrice IS NOT NULL) " +
-//            , nativeQuery = true)
+
+//    @Query("SELECT product from Product product " +
+//            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
+//            "AND product.price BETWEEN :minPrice and :maxPrice " +
+//            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
+//    List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
 
 
-    @Query("SELECT product from Product product " +
-            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
-            "AND product.price BETWEEN :minPrice and :maxPrice " +
-            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
-    List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
+
 }
