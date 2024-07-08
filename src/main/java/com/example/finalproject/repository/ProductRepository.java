@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
-    @Modifying
+    @Modifying(clearAutomatically=true, flushAutomatically=true)
     @Query("DELETE FROM Product product " +
             "WHERE product.productId = :id")
     void deleteById(Long id);
