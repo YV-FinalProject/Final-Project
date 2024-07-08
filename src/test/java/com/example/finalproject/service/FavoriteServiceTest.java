@@ -214,6 +214,7 @@ class FavoriteServiceTest {
         Long productId = 1L;
         Long wrongProductId = 58L;
 
+
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(productId)).thenReturn(Optional.of(product));
 
@@ -225,12 +226,14 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
 
+
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.deleteFavoriteByProductId(productId, wrongUserId));
-        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.deleteFavoriteByProductId(wrongProductId, userId));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+
     }
 }

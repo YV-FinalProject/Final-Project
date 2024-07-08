@@ -66,16 +66,23 @@ public class FavoriteService {
     @Transactional
     public void deleteFavoriteByProductId(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElse(null);
-        Product product = productRepository.findById(productId).orElse(null);
-        if (user != null && product != null) {
-            Set<Favorite> favoritesSet = user.getFavorites();
-            for (Favorite item : favoritesSet) {
-                if (item.getProduct().getProductId().equals(productId)) {
-                    favoriteRepository.deleteById(item.getFavoriteId());
+        if (user != null) {
+            Product product = productRepository.findById(productId).orElse(null);
+            if (product != null) {
+                Set<Favorite> favoritesSet = user.getFavorites();
+                for (Favorite item : favoritesSet) {
+                    if (item.getProduct().getProductId().equals(productId)) {
+                        favoriteRepository.deleteById(item.getFavoriteId());
+                    }else {
+                        throw new DataNotFoundInDataBaseException("Product not found in Favorites.");
+                    }
                 }
+            } else {
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
         } else {
             throw new DataNotFoundInDataBaseException("User not found in database.");
         }
+
     }
 }

@@ -5,32 +5,23 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.ProductCountInterface;
-import com.example.finalproject.entity.query.ProductPendingInterface;
-import com.example.finalproject.entity.query.ProductProfitInterface;
-import com.example.finalproject.entity.query.ProductSortInterface;
+import com.example.finalproject.entity.query.*;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
-import com.fasterxml.jackson.core.io.BigDecimalParser;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.*;
-
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 @Service
 @RequiredArgsConstructor
