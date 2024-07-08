@@ -263,7 +263,7 @@ class OrderServiceTest {
         Order orderToInsert = new Order();
 //        orderToInsert.setUser(user);
         orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        orderToInsert.setContactPhone(user.getPhoneNumber());
+        orderToInsert.setContactPhone(user.getPhone());
         orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
         orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
         orderToInsert.setStatus(Status.CREATED);

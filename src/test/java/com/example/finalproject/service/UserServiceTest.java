@@ -48,7 +48,7 @@ class UserServiceTest {
         createUser = new User();
         createUser.setName("Arne Oswald");
         createUser.setEmail("arnedroswa@ldexaple.com");
-        createUser.setPhoneNumber("+111111111111");
+        createUser.setPhone("+111111111111");
         createUser.setPassword("Secure!1!");
 
         userUpdateDto = UserRequestDto.builder()
@@ -58,7 +58,7 @@ class UserServiceTest {
 
         updateUser = new User();
         updateUser.setName("Old Arne Oswald");
-        updateUser.setPhoneNumber("+111111111111");
+        updateUser.setPhone("+111111111111");
     }
 
     @Test
@@ -97,7 +97,7 @@ class UserServiceTest {
         userService.updateUser(1L, userUpdateDto);
 
         assertEquals(userUpdateDto.getName(), updateUser.getName());
-        assertEquals(userUpdateDto.getPhone(), updateUser.getPhoneNumber());
+        assertEquals(userUpdateDto.getPhone(), updateUser.getPhone());
 
         verify(userRepository).save(updateUser);
     }

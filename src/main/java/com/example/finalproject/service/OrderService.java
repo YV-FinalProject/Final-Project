@@ -1,24 +1,20 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.requestdto.OrderItemRequestDto;
-import com.example.finalproject.dto.requestdto.OrderRequestDto;
-import com.example.finalproject.dto.responsedto.OrderItemResponseDto;
-import com.example.finalproject.dto.responsedto.OrderResponseDto;
+import com.example.finalproject.config.*;
+import com.example.finalproject.dto.requestdto.*;
+import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
-import com.example.finalproject.entity.enums.DeliveryMethod;
-import com.example.finalproject.entity.enums.Status;
-import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.mapper.Mappers;
+import com.example.finalproject.entity.enums.*;
+import com.example.finalproject.exception.*;
+import com.example.finalproject.mapper.*;
 import com.example.finalproject.repository.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.*;
+import java.time.*;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +70,7 @@ public class OrderService {
 
             orderToInsert.setUser(user);
             orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-            orderToInsert.setContactPhone(user.getPhoneNumber());
+            orderToInsert.setContactPhone(user.getPhone());
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
 
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));

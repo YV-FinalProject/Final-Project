@@ -29,7 +29,6 @@ public class UserService {
 //        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword())); ////это задел на Spring Security
         Cart cart = new Cart();
         cart.setUser(user);
-        cartRepository.save(cart);
         user.setCart(cart);
         userRepository.save(user);
     }
@@ -39,7 +38,7 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found"));
         user.setName(userUpdateDto.getName());
-        user.setPhoneNumber(userUpdateDto.getPhone());
+        user.setPhone(userUpdateDto.getPhone());
         userRepository.save(user);
     }
 
@@ -52,5 +51,4 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
-
 }
