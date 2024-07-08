@@ -1,6 +1,6 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.ProductCountDto;
+
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
@@ -67,31 +67,22 @@ public class ProductController {
 
     @GetMapping(value = "/maxDiscount")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping
-    public List<ProductResponseDto> getProducts(
-            @RequestParam(value = "category", required = false) Long categoryId,
-            @RequestParam(value = "minPrice", required = false)  Double minPrice,
-            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
-            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
-            @RequestParam(value = "sort", required = false)  String[] sort) {
-
-        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     public ProductResponseDto getMaxDiscountProduct(){
         return productService.getMaxDiscountProduct();
     }
 
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping
-//    public List<ProductResponseDto> getProducts(
-//            @RequestParam(value = "category", required = false) Long categoryId,
-//            @RequestParam(value = "minPrice", required = false)  Double minPrice,
-//            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
-//            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
-//            @RequestParam(value = "sort", required = false)  String[] sort) {
-//
-//        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<ProductResponseDto> getProducts(
+        @RequestParam(value = "category", required = false) Long categoryId,
+        @RequestParam(value = "minPrice", required = false)  BigDecimal minPrice,
+        @RequestParam(value = "maxPrice", required = false)  BigDecimal maxPrice,
+        @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
+        @RequestParam(value = "sort", required = false)  String[] sort) {
+
+    return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")

@@ -8,5 +8,4 @@ public interface ProductCountInterface {
     String getName();
     Integer getCount();
     BigDecimal getSum();
-  //  Timestamp getCreatedAt();
 }

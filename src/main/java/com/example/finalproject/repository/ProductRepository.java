@@ -1,6 +1,5 @@
 package com.example.finalproject.repository;
 
-import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
 import org.springframework.data.domain.Sort;
 
@@ -8,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.entity.query.ProductPendingInterface;
 import com.example.finalproject.entity.query.ProductProfitInterface;
-import com.example.finalproject.entity.query.ProductSortInterface;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -52,7 +51,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
             "AND product.price BETWEEN :minPrice and :maxPrice " +
             "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
-    List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
+    List<Product> findProductsByFilter(Boolean hasCategory, Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Sort sortObject);
 
 
 
@@ -62,17 +61,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID "+
            "JOIN Orders o ON oi.OrderId = o.OrderID " +
            "where o.Status = 'PENDING_PAYMENT' and o.CreatedAt < Now() - INTERVAL :days DAY  " +
-           "GROUP BY p.ProductID, o.CreatedAt "+
-           "Order by p.Name", nativeQuery = true)
+           "GROUP BY  p.ProductID, o.CreatedAt "+
+           "Order by p.ProductID ", nativeQuery = true)
     List<ProductPendingInterface> findProductPending(Integer days);
-
-
-
-//    @Query("SELECT product from Product product " +
-//            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
-//            "AND product.price BETWEEN :minPrice and :maxPrice " +
-//            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
-//    List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
 
 
 
