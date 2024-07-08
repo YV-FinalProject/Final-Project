@@ -1,10 +1,8 @@
 package com.example.finalproject.mapper;
 
-import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
-import com.example.finalproject.entity.query.ProductCount;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -103,10 +101,6 @@ public class Mappers {
         return modelMapper.map(categoryRequestDto, Category.class);
     }
 
-
-    public ProductCountDto convertToProductCountDto(ProductCount productCount) {
-        return modelMapper.map(productCount,ProductCountDto.class);
-    }
 
 //   modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
 //            .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));

@@ -41,7 +41,7 @@ public class Order {
     @Column(name = "UpdatedAt")
     private Timestamp updatedAt;
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne

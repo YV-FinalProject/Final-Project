@@ -4,6 +4,7 @@ import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
 import com.example.finalproject.dto.responsedto.FavoriteResponseDto;
 import com.example.finalproject.entity.*;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.FavoriteRepository;
@@ -31,38 +32,50 @@ public class FavoriteService {
             Set<Favorite> favoritesList = user.getFavorites();
             return MapperUtil.convertSet(favoritesList, mappers::convertToFavoriteResponseDto);
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 
     @Transactional
-    public void insertFavorite (FavoriteRequestDto favoriteRequestDto, Long userId){
+    public void insertFavorite(FavoriteRequestDto favoriteRequestDto, Long userId) {
         Favorite favorite = new Favorite();
         User user = userRepository.findById(userId).orElse(null);
-        Product product = productRepository.findById(favoriteRequestDto.getProductId()).orElse(null);
-        if (user != null && product != null) {
-            favorite.setProduct(product);
-            favorite.setUser(user);
-            favoriteRepository.save(favorite);
+        if (user != null) {
+            Product product = productRepository.findById(favoriteRequestDto.getProductId()).orElse(null);
+            if (product != null) {
+                Set<Favorite> favoriteSet = user.getFavorites();
+                for (Favorite item : favoriteSet) {
+                    if (item.getProduct().getProductId().equals(favoriteRequestDto.getProductId())) {
+                        throw new DataAlreadyExistsException("This product is already in favorites.");
+                    }
+                }
+                favorite.setProduct(product);
+                favorite.setUser(user);
+                favoriteRepository.save(favorite);
+                favoriteSet.add(favorite);
 
+            } else {
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
+            }
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
+
     }
 
     @Transactional
-    public void deleteFavoriteByProductId(Long userId, Long productId){
+    public void deleteFavoriteByProductId(Long userId, Long productId) {
         User user = userRepository.findById(userId).orElse(null);
         Product product = productRepository.findById(productId).orElse(null);
         if (user != null && product != null) {
             Set<Favorite> favoritesSet = user.getFavorites();
-            for(Favorite item : favoritesSet){
-                if(item.getProduct().getProductId() == productId){
-                    favoriteRepository.delete(item);
+            for (Favorite item : favoritesSet) {
+                if (item.getProduct().getProductId().equals(productId)) {
+                    favoriteRepository.deleteById(item.getFavoriteId());
                 }
             }
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 }
