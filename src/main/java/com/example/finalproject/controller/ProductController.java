@@ -1,8 +1,13 @@
 package com.example.finalproject.controller;
 
-import com.example.finalproject.dto.ProductCountDto;
+
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
+import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.entity.query.ProductPendingInterface;
+import com.example.finalproject.entity.query.ProductProfitInterface;
+import com.example.finalproject.entity.query.ProductSortInterface;
 import com.example.finalproject.service.ProductService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
@@ -10,6 +15,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -66,22 +72,35 @@ public class ProductController {
     }
 
 
-//    @ResponseStatus(HttpStatus.OK)
-//    @GetMapping
-//    public List<ProductResponseDto> getProducts(
-//            @RequestParam(value = "category", required = false) Long categoryId,
-//            @RequestParam(value = "minPrice", required = false)  Double minPrice,
-//            @RequestParam(value = "maxPrice", required = false)  Double maxPrice,
-//            @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
-//            @RequestParam(value = "sort", required = false)  String[] sort) {
-//
-//        return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
-//    }
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<ProductResponseDto> getProducts(
+        @RequestParam(value = "category", required = false) Long categoryId,
+        @RequestParam(value = "minPrice", required = false)  BigDecimal minPrice,
+        @RequestParam(value = "maxPrice", required = false)  BigDecimal maxPrice,
+        @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
+        @RequestParam(value = "sort", required = false)  String[] sort) {
+
+    return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
+    }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
+    public List<ProductCountInterface> getTop10Products(@RequestParam(value = "status", required = false) String status) {
         return  productService.getTop10Products(status);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/pending")
+    public List<ProductPendingInterface> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
+        return  productService.findProductPending(day);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/profit")
+    public List<ProductProfitInterface> getProffitByPeriod(
+            @RequestParam(value = "type", required = false) String type,
+            @RequestParam(value = "period", required = false)  Integer period) {
+        return  productService.findProductProfit( type, period);
+    }
 }

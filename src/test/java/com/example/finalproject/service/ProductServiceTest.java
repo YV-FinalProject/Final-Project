@@ -5,6 +5,7 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -220,7 +222,9 @@ class ProductServiceTest {
 
     @Test
     void getTop10Products() {
-
+//        ProductCountInterface productCountInterfaceTest = new ProductCountInterface(1L, "sss", 3, 22.0)
+//
+//
 //        String sort = "Price";
 //        when(productRepositoryMock.findTop10Products(sort)).thenReturn(List.of(product));
 //        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
@@ -234,24 +238,28 @@ class ProductServiceTest {
 
     @Test
     void findProductsByFilter() {
-//        Long category = 1L;
-//        Double minPrice = 0.00;
-//        Double maxPrice =1000.00;
-//        Boolean isDiscount = true;
-//        String sort = "Price";
-//        when(productRepositoryMock.findProductsByFilter(true,category,minPrice,maxPrice,isDiscount,sort)).thenReturn(List.of(product));
-//        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-//        ProductResponseDto actualProductResponseDto = productServiceMock.getProductById(id);
-//
-//        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
-//        verify(productRepositoryMock, times(1)).findById(id);
-//        assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
-//
-//        when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
-//        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-//                () -> productServiceMock.getProductById(wrongId));
-//        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        Boolean hasCategory = true;
+        Long categoryId = 1L;
+        BigDecimal minPrice = BigDecimal.valueOf(0.00);
+        BigDecimal maxPrice = BigDecimal.valueOf(100.00);
+        Boolean hasDiscount = true;
+        Sort sortObject = orderBy("name", true);
+        when(productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject)).thenReturn(List.of(product));
+        List<Product> actualProductResponseDto = productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
+        assertTrue(actualProductResponseDto.size()>0);
+        verify(productRepositoryMock, times(1)).findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
+        assertEquals(product.getProductId(),actualProductResponseDto.get(0).getProductId());
+
 
     }
+
+    private Sort orderBy(String sort, Boolean ascending) {
+        if (!ascending) {
+            return Sort.by(Sort.Direction.DESC, sort);
+        } else {
+            return Sort.by(Sort.Direction.ASC, sort);
+        }
+    }
+
 }
 

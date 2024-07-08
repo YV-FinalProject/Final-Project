@@ -1,22 +1,28 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.ProductCountDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
+import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.entity.query.ProductPendingInterface;
+import com.example.finalproject.entity.query.ProductProfitInterface;
+import com.example.finalproject.entity.query.ProductSortInterface;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.InvalidValueExeption;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
 import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -80,6 +86,7 @@ public class ProductService {
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
                 productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
             } else {
@@ -114,52 +121,47 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductCountDto> getTop10Products(String status) {
-        List<String> temporyList = productRepository.findTop10Products(status);
-        List<ProductCountDto> list1 = new ArrayList<>();
-        for (String entry : temporyList) {
-            String[] stringEntry = entry.split(",");
-            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
-                    stringEntry[1],
-                    Integer.valueOf(stringEntry[2]),
-                    BigDecimalParser.parseWithFastParser(stringEntry[3]));
-            list1.add(productCount);
+    public List<ProductCountInterface> getTop10Products(String status) {
+        List<ProductCountInterface> temporyList = productRepository.findTop10Products(status);
+        return temporyList;
+    }
+
+    @Transactional
+    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String[] sort) {
+        boolean ascending = true;
+        Sort sortObject = orderBy("name", true);// по умолчанию
+        boolean hasCategory = false;
+
+        if (category == null) { hasCategory = true; }
+        if (minPrice == null) { minPrice =BigDecimal.valueOf( 0.00); }
+        if (maxPrice == null) { maxPrice =BigDecimal.valueOf( Double.MAX_VALUE); }
+        if (sort != null) {
+            if (sort[1].equals("desc")) {
+                ascending = false;
+            }
+            sortObject = orderBy(sort[0], ascending);
         }
-        return list1;
+        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
+        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
+    }
+
+    @Transactional
+    public List<ProductPendingInterface> findProductPending(Integer day) {
+        return productRepository.findProductPending(day);
+    }
+
+    @Transactional
+    public List<ProductProfitInterface> findProductProfit(String period, Integer value) {
+        return productRepository.findProffitByPeriod(period, value);
     }
 
 
-//    @Transactional
-//    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
-//        boolean ascending = true;
-//        Sort sortObject = orderBy("name", true);// по умолчанию
-//        boolean hasCategory = false;
-//
-//        if (category == null) {
-//            hasCategory = true;
-//        }
-//        if (minPrice == null) {
-//            minPrice = 0.00;
-//        }
-//        if (maxPrice == null) {
-//            maxPrice = Double.MAX_VALUE;
-//        }
-//        if (sort != null) {
-//            if (sort[1].equals("desc")) {
-//                ascending = false;
-//            }
-//            sortObject = orderBy(sort[0], ascending);
-//        }
-//        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
-//        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
-//    }
-//
-//    private Sort orderBy(String sort, Boolean ascending) {
-//        if (!ascending) {
-//            return Sort.by(Sort.Direction.DESC, sort);
-//        } else {
-//            return Sort.by(Sort.Direction.ASC, sort);
-//        }
-//    }
+    private Sort orderBy(String sort, Boolean ascending) {
+        if (!ascending) {
+            return Sort.by(Sort.Direction.DESC, sort);
+        } else {
+            return Sort.by(Sort.Direction.ASC, sort);
+        }
+    }
 
 }

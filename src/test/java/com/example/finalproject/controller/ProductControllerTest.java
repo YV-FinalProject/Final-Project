@@ -14,10 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -113,4 +115,47 @@ class ProductControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+
+    @Test
+    void getProducts() throws Exception {
+        Boolean hasCategory = true;
+        Long categoryId = 1L;
+        BigDecimal minPrice = BigDecimal.valueOf(0.00);
+        BigDecimal maxPrice = BigDecimal.valueOf(100.00);
+        Boolean hasDiscount = true;
+        String[] strSort = new String[]{"Name","asc"};
+
+        when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
+                (List.of(productResponseDto)));
+        this.mockMvc.perform(get("/products",categoryId,minPrice,maxPrice,hasDiscount,strSort)).andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void getTop10Products(String s) throws Exception {
+        String Status = "PAID";
+        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
+        this.mockMvc.perform(get("/products/top10","Paid")).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProductPending() throws Exception {
+        Integer days = 55;
+        when(productServiceMock.findProductPending(anyInt())).thenReturn(null);
+        this.mockMvc.perform(get("/products/pending",days)).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getProffitByPeriod() throws Exception {
+        String type = "WEEK";
+        Integer period = 55;
+        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);
+        this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
+                .andExpect(status().isOk());
+    }
+
 }
