@@ -1,11 +1,10 @@
 package com.example.finalproject.entity;
 
-import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.entity.enums.*;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "Users")
@@ -27,7 +26,7 @@ public class User {
     private String email;
 
     @Column(name = "PhoneNumber")
-    private String phoneNumber;
+    private String phone;
 
     @Column(name = "PasswordHash")
     private String password;
@@ -36,11 +35,13 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Favorite> favorites = new HashSet<>();

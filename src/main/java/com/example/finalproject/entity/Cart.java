@@ -23,6 +23,6 @@ public class Cart {
     private Set<CartItem> cartItems = new HashSet<>();
 
     @OneToOne
-    @JoinColumn(name = "UserID", nullable=false)
+    @JoinColumn(name = "UserID", nullable = false)
     private User user;
 }
