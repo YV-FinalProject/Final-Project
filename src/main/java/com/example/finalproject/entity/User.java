@@ -1,10 +1,11 @@
 package com.example.finalproject.entity;
 
-import com.example.finalproject.entity.enums.*;
+import com.example.finalproject.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "Users")
@@ -38,10 +39,9 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL,
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Order> orders = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-//убрала cascade = CascadeType.ALL, с ним невозможно удалить favorites
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Favorite> favorites = new HashSet<>();
 }

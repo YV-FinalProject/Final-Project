@@ -60,7 +60,6 @@ class ProductControllerTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("101.00"))
-                .discountPrice(new BigDecimal("101.00"))
                 .imageURL("https://example.com/images/magic_garden_seeds.jpg")
                 .category("Test category")
                 .build();
@@ -95,9 +94,23 @@ class ProductControllerTest {
     @Test
     void updateProducts() throws Exception {
         Long id =1L;
-        this.mockMvc.perform(put("/products/{id}",id)
+        mockMvc.perform(put("/products/{id}",id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequestDto))).andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void setDiscountPrice() throws Exception {
+        mockMvc.perform(put("/products?id=1&discountPrice=2.55"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getMaxDiscountProduct() throws Exception {
+        mockMvc.perform(get("/products/maxDiscount"))
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 }

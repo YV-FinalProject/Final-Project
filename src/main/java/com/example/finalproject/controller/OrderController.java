@@ -37,4 +37,10 @@ public class OrderController {
                             @PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
         orderService.insertOrder(orderRequestDto, userId);
     }
+
+    @PutMapping(value = "/{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void cancelOrder(@PathVariable @Positive(message = "User ID must be a positive number") Long orderId){
+        orderService.cancelOrder(orderId);
+    }
 }

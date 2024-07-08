@@ -24,9 +24,9 @@ public class ProductRequestDto {
     @Digits(integer=4, fraction=2)
     private BigDecimal price;
 
-    @DecimalMin(value = "0.0")
-    @Digits(integer=4, fraction=2)
-    private BigDecimal discountPrice;
+//    @DecimalMin(value = "0.0")
+//    @Digits(integer=4, fraction=2)
+//    private BigDecimal discountPrice;
 
     @NotBlank(message = "Invalid image: Empty imageURL")
     @Pattern(regexp = "^https?://([-a-z0-9]{2,256}\\.){1,20}[a-z]{2,4}/[-a-zA-Z0-9_.#?&=%/]*$", message = "Invalid URL")

@@ -50,12 +50,12 @@ public class Product {
    @JoinColumn(name = "CategoryId", nullable=false)
     private Category category;
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить связанные объекты, например favorites
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<Favorite> favorites = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить сами products
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<OrderItem> orderItems = new HashSet<>();
 
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)//убрала cascade = CascadeType.ALL, с ним невозможно удалить сами products
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<CartItem> cartItems = new HashSet<>();
 }

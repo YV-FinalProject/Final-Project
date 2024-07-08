@@ -8,6 +8,7 @@ import com.example.finalproject.entity.enums.DeliveryMethod;
 import com.example.finalproject.entity.enums.Role;
 import com.example.finalproject.entity.enums.Status;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
+import com.example.finalproject.exception.OrderStatusException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +44,12 @@ class OrderServiceTest {
     @Mock
     private ProductRepository productRepositoryMock;
 
+    @Mock
+    private CartRepository cartRepositoryMock;
+
+    @Mock
+    private CartItemRepository cartItemRepositoryMock;
+
     @InjectMocks
     private OrderService orderServiceMock;
 
@@ -50,16 +57,22 @@ class OrderServiceTest {
     private Mappers mappersMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    OrderStatusException orderStatusException;
 
     private User user;
-    private Order order;
+    private Order order, wrongStatusOrder;
     private OrderItem orderItem;
     private Product product;
+    private Cart cart;
+    private CartItem cartItem;
 
-    private UserResponseDto userResponseDto;
     private OrderResponseDto orderResponseDto;
     private OrderItemResponseDto orderItemResponseDto;
-    private ProductResponseDto productResponseDto;
+
+
+    Set<OrderItem> orderItemsSet = new HashSet<>();
+    Set<Order> ordersSet = new HashSet<>();
+    Set<CartItem> cartItemSet = new HashSet<>();
 
     private OrderRequestDto orderRequestDto, wrongOrderRequestDto;
     private OrderItemRequestDto orderItemRequestDto, wrongOrderItemRequestDto;
@@ -87,7 +100,7 @@ class OrderServiceTest {
                 "Am Hofacker 64c, 9 OG, 32312, Leiteritzdorf, Sachsen-Anhalt, GERMANY",
                 "+496921441",
                 DeliveryMethod.COURIER_DELIVERY,
-                Status.PAID,
+                Status.CREATED,
                 Timestamp.valueOf(LocalDateTime.now()),
                 null,
                 user);
@@ -111,25 +124,37 @@ class OrderServiceTest {
                 null,
                 product);
 
+        cartItem = new CartItem(1L,
+                product,
+                25,
+                cart);
 
-        Set<OrderItem> orderItemsSet = new HashSet<>();
+        cart = new Cart(1L,
+                null,
+                user);
+
         orderItemsSet.add(orderItem);
         order.setOrderItems(orderItemsSet);
 
-        Set<Order> ordersSet = new HashSet<>();
         ordersSet.add(order);
         user.setOrders(ordersSet);
 
-//ResponseDto
-        userResponseDto = UserResponseDto.builder()
-                .userId(1L)
-                .name("Arne Oswald")
-                .email("arneoswald@example.com")
-                .phone("+496151226")
-                .password("Pass1$trong")
-                .role(Role.CLIENT)
-                .build();
+        cartItemSet.add(cartItem);
+        cart.setCartItems(cartItemSet);
+        user.setCart(cart);
 
+
+        wrongStatusOrder = new Order(1L,
+                Timestamp.valueOf(LocalDateTime.now()),
+                "Am Hofacker 64c, 9 OG, 32312, Leiteritzdorf, Sachsen-Anhalt, GERMANY",
+                "+496921441",
+                DeliveryMethod.COURIER_DELIVERY,
+                Status.PAID,
+                Timestamp.valueOf(LocalDateTime.now()),
+                null,
+                user);
+
+//ResponseDto
         orderResponseDto = OrderResponseDto.builder()
                 .orderId(1L)
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
@@ -139,23 +164,14 @@ class OrderServiceTest {
                 .status(Status.PAID)
                 .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
                 .orderItemsSet(null)
-                .userResponseDto(userResponseDto)
+                .userResponseDto(new UserResponseDto())
                 .build();
 
-        productResponseDto = ProductResponseDto.builder()
-                .productId(1L)
-                .name("Name")
-                .description("Description")
-                .price(new BigDecimal("100.00"))
-                .imageURL("http://localhost/img/1.jpg")
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
-                .categoryResponseDto(new CategoryResponseDto(1L, "Category"))
-                .build();
 
         orderItemResponseDto = OrderItemResponseDto.builder()
                 .orderItemId(1L)
                 .orderResponseDto(null)
-                .productResponseDto(productResponseDto)
+                .productResponseDto(new ProductResponseDto())
                 .quantity(5)
                 .build();
 
@@ -170,24 +186,25 @@ class OrderServiceTest {
                 .build();
         orderItemRequestDtoSet.add(orderItemRequestDto);
 
-        wrongOrderItemRequestDto = OrderItemRequestDto.builder()
-                .productId(66L)
-                .quantity(5)
-                .build();
-        wrongOrderItemRequestDtoSet.add(wrongOrderItemRequestDto);
-
         orderRequestDto = OrderRequestDto.builder()
                 .orderItemsSet(orderItemRequestDtoSet)
                 .deliveryAddress("Am Hofacker 64c, 9 OG, 32312, Leiteritzdorf, Sachsen-Anhalt, GERMANY")
                 .deliveryMethod("COURIER_DELIVERY")
                 .build();
 
+
+        wrongOrderItemRequestDto = OrderItemRequestDto.builder()
+                .productId(66L)
+                .quantity(5)
+                .build();
+        wrongOrderItemRequestDtoSet.add(wrongOrderItemRequestDto);
+
         wrongOrderRequestDto = OrderRequestDto.builder()
                 .orderItemsSet(wrongOrderItemRequestDtoSet)
                 .deliveryAddress("Am Hofacker 64c, 9 OG, 32312, Leiteritzdorf, Sachsen-Anhalt, GERMANY")
                 .deliveryMethod("COURIER_DELIVERY")
+                .orderItemsSet(wrongOrderItemRequestDtoSet)
                 .build();
-
     }
 
     @Test
@@ -215,7 +232,7 @@ class OrderServiceTest {
         when(orderRepositoryMock.findById(wrongOrderId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> orderServiceMock.getOrderById(wrongOrderId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("Order not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
@@ -244,12 +261,14 @@ class OrderServiceTest {
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> orderServiceMock.getOrderHistoryByUserId(wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
-        when(user.getOrders() == null).thenThrow(dataNotFoundInDataBaseException);
+
+        user.setOrders(null);
+        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.getOrderHistoryByUserId(wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+                () -> orderServiceMock.getOrderHistoryByUserId(userId));
+        assertEquals("No orders were placed yet.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
@@ -259,52 +278,55 @@ class OrderServiceTest {
         Long wrongUserId = 58L;
 
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
-
-        Order orderToInsert = new Order();
-//        orderToInsert.setUser(user);
-        orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        orderToInsert.setContactPhone(user.getPhone());
-        orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
-        orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
-        orderToInsert.setStatus(Status.CREATED);
-
-
-        for (OrderItemRequestDto orderItem : orderItemRequestDtoSet) {
-            when(productRepositoryMock.findById(orderItem.getProductId())).thenReturn(Optional.of(product));
-        }
-
-        Set<OrderItem> orderItemToInsertSet = new HashSet<>();
-        OrderItem orderItemToInsert = new OrderItem();
-        orderItemToInsert.setProduct(product);
-
-        if (product.getDiscountPrice() == null) {
-            orderItemToInsert.setPriceAtPurchase(product.getPrice());
-        } else {
-            orderItemToInsert.setPriceAtPurchase(product.getDiscountPrice());
-        }
-        orderItemToInsert.setQuantity(orderItem.getQuantity());
-//        orderItemToInsert.setOrder(orderToInsert);
-        when(orderItemRepositoryMock.save(any(OrderItem.class))).thenReturn(orderItemToInsert);
-
-        orderItemToInsertSet.add(orderItemToInsert);
-        orderToInsert.setOrderItems(orderItemToInsertSet);
-        when(orderRepositoryMock.save(any(Order.class))).thenReturn(orderToInsert);
+        when(productRepositoryMock.findById(orderRequestDto.getOrderItemsSet().iterator().next().getProductId())).thenReturn(Optional.of(product));
+        when(orderRepositoryMock.save(any(Order.class))).thenReturn(order);
+        when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.of(cart));
 
         orderServiceMock.insertOrder(orderRequestDto, userId);
 
         verify(orderRepositoryMock, times(2)).save(any(Order.class));
         verify(orderItemRepositoryMock, times(1)).save(any(OrderItem.class));
+        verify(cartItemRepositoryMock, times(1)).deleteById(cart.getCartItems().iterator().next().getCartItemId());
+
 
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> orderServiceMock.insertOrder(orderRequestDto, wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
-        for (OrderItemRequestDto wrongOrderItemRequestDto : wrongOrderItemRequestDtoSet) {
-            when(productRepositoryMock.findById(wrongOrderItemRequestDto.getProductId())).thenReturn(Optional.empty());
-            dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                    () -> orderServiceMock.insertOrder(wrongOrderRequestDto, userId));
-            assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
-        }
+
+        when(productRepositoryMock.findById(wrongOrderRequestDto.getOrderItemsSet().iterator().next().getProductId())).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> orderServiceMock.insertOrder(wrongOrderRequestDto, userId));
+        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+
+        when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> orderServiceMock.insertOrder(orderRequestDto, userId));
+        assertEquals("Cart not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
+
+
+    @Test
+    void cancelOrder() {
+        Long orderId = 1L;
+        Long wrongOrderId = 150L;
+        when(orderRepositoryMock.findById(orderId)).thenReturn(Optional.of(order));
+
+        orderServiceMock.cancelOrder(orderId);
+
+        verify(orderRepositoryMock, times(1)).save(any(Order.class));
+
+        when(orderRepositoryMock.findById(wrongOrderId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> orderServiceMock.cancelOrder(wrongOrderId));
+        assertEquals("Order not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+        when(orderRepositoryMock.findById(orderId)).thenReturn(Optional.of(wrongStatusOrder));
+        orderStatusException = assertThrows(OrderStatusException.class,
+                () -> orderServiceMock.cancelOrder(orderId));
+        assertEquals("Order already paid and can not be canceled.", orderStatusException.getMessage());
+    }
+
 }
