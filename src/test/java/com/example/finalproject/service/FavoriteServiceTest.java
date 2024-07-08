@@ -1,11 +1,10 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
-import com.example.finalproject.dto.requestdto.ProductRequestDto;
-import com.example.finalproject.dto.requestdto.UserRequestDto;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
@@ -46,18 +45,17 @@ class FavoriteServiceTest {
     private Mappers mappersMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    DataAlreadyExistsException dataAlreadyExistsException;
 
     private User user;
-    private Product product;
+    private Product product, newProduct;
     private Favorite favorite;
 
     private UserResponseDto userResponseDto;
     private ProductResponseDto productResponseDto;
     private FavoriteResponseDto favoriteResponseDto;
 
-    private UserRequestDto userRequestDto;
-    private ProductRequestDto productRequestDto;
-    private FavoriteRequestDto favoriteRequestDto, wrongFavoriteRequestDto;
+    private FavoriteRequestDto favoriteRequestDto, wrongFavoriteRequestDto, existingFavoriteRequestDto;
 
     private Set<Favorite> favoriteSet = new HashSet<>();
     private Set<FavoriteResponseDto> favoriteResponseDtoSet = new HashSet<>();
@@ -91,6 +89,7 @@ class FavoriteServiceTest {
                 null,
                 null);
 
+
         favorite = new Favorite(1L,
                 user,
                 product);
@@ -98,8 +97,20 @@ class FavoriteServiceTest {
         favoriteSet.add(favorite);
         user.setFavorites(favoriteSet);
 
-//ResponseDto
+        newProduct = new Product(2L,
+                "Name2",
+                "Description2",
+                new BigDecimal("100.00"),
+                new BigDecimal("0.00"),
+                "http://localhost/img/1.jpg",
+                Timestamp.valueOf(LocalDateTime.now()),
+                Timestamp.valueOf(LocalDateTime.now()),
+                new Category(1L, "Category", null),
+                null,
+                null,
+                null);
 
+//ResponseDto
         userResponseDto = UserResponseDto.builder()
                 .userId(1L)
                 .name("Arne Oswald")
@@ -128,13 +139,16 @@ class FavoriteServiceTest {
         favoriteResponseDtoSet.add(favoriteResponseDto);
 
 //RequestDto
-
         favoriteRequestDto = FavoriteRequestDto.builder()
-                .productId(1L)
+                .productId(2L)
                 .build();
 
         wrongFavoriteRequestDto = FavoriteRequestDto.builder()
                 .productId(58L)
+                .build();
+
+        existingFavoriteRequestDto = FavoriteRequestDto.builder()
+                .productId(1L)
                 .build();
     }
 
@@ -159,7 +173,7 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.getFavoritesByUserId(wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
@@ -167,14 +181,9 @@ class FavoriteServiceTest {
 
         Long userId = 1L;
         Long wrongUserId = 58L;
-        Favorite favorite = new Favorite();
 
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
-        when(productRepositoryMock.findById(favoriteRequestDto.getProductId())).thenReturn(Optional.of(product));
-
-        favorite.setProduct(product);
-        favorite.setUser(user);
-        when(favoriteRepositoryMock.save(any(Favorite.class))).thenReturn(favorite);
+        when(productRepositoryMock.findById(favoriteRequestDto.getProductId())).thenReturn(Optional.of(newProduct));
 
         favoriteServiceMock.insertFavorite(favoriteRequestDto, userId);
 
@@ -183,12 +192,17 @@ class FavoriteServiceTest {
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.insertFavorite(favoriteRequestDto, wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
         when(productRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.insertFavorite(wrongFavoriteRequestDto, userId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+        when(productRepositoryMock.findById(existingFavoriteRequestDto.getProductId())).thenReturn(Optional.of(product));
+        dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
+                () -> favoriteServiceMock.insertFavorite(existingFavoriteRequestDto, userId));
+        assertEquals("This product is already in favorites.", dataAlreadyExistsException.getMessage());
     }
 
     @Test
@@ -205,19 +219,18 @@ class FavoriteServiceTest {
 
         favoriteServiceMock.deleteFavoriteByProductId(userId, productId);
 
-        for(Favorite favorite : favoriteSet){
-            verify(favoriteRepositoryMock, times(1)).delete(favorite);
-        }
+        verify(favoriteRepositoryMock, times(1)).deleteById(user.getFavorites().iterator().next().getFavoriteId());
+
 
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
         when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
 
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.deleteFavoriteByProductId(productId, wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> favoriteServiceMock.deleteFavoriteByProductId(wrongProductId, userId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 }
