@@ -5,6 +5,7 @@ import com.example.finalproject.dto.requestdto.CartItemRequestDto;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.exception.DataAlreadyExistsException;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
@@ -48,6 +49,7 @@ class CartServiceTest {
     private CartService cartServiceMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    DataAlreadyExistsException dataAlreadyExistsException;
 
     private User user;
     private Cart cart;
@@ -59,7 +61,7 @@ class CartServiceTest {
     private CartResponseDto cartResponseDto;
     private CartItemResponseDto cartItemResponseDto;
 
-    private CartItemRequestDto cartItemRequestDto, wrongCartItemRequestDto;
+    private CartItemRequestDto cartItemRequestDto, wrongCartItemRequestDto, existingCartItemRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -131,12 +133,17 @@ class CartServiceTest {
 
 //RequestDto
         cartItemRequestDto = CartItemRequestDto.builder()
-                .productId(1L)
+                .productId(2L)
                 .quantity(5)
                 .build();
 
         wrongCartItemRequestDto = CartItemRequestDto.builder()
                 .productId(66L)
+                .quantity(5)
+                .build();
+
+        existingCartItemRequestDto = CartItemRequestDto.builder()
+                .productId(1L)
                 .quantity(5)
                 .build();
     }
@@ -162,7 +169,7 @@ class CartServiceTest {
         when(userRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.getCartItemsByUserId(wrongId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
@@ -173,28 +180,27 @@ class CartServiceTest {
         when(userRepositoryMock.findById(id)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(cartItemRequestDto.getProductId())).thenReturn(Optional.of(product));
         when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.of(cart));
-        CartItem cartItemToInsert = new CartItem();
-        cartItemToInsert.setCart(cart);
-        cartItemToInsert.setCartItemId(0L);
-        cartItemToInsert.setProduct(product);
-        cartItemToInsert.setQuantity(cartItemRequestDto.getQuantity());
-        when(cartItemRepositoryMock.save(any(CartItem.class))).thenReturn(cartItemToInsert);
 
-       cartServiceMock.insertCartItem(cartItemRequestDto, id);
+        cartServiceMock.insertCartItem(cartItemRequestDto, id);
 
         verify(cartItemRepositoryMock, times(1)).save(any(CartItem.class));
 
 
         when(userRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
-        when(productRepositoryMock.findById(wrongCartItemRequestDto.getProductId())).thenReturn(Optional.empty());
-
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.insertCartItem(cartItemRequestDto, wrongId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
+        when(productRepositoryMock.findById(wrongCartItemRequestDto.getProductId())).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.insertCartItem(wrongCartItemRequestDto, id));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+
+        when(productRepositoryMock.findById(existingCartItemRequestDto.getProductId())).thenReturn(Optional.of(product));
+        dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
+                () -> cartServiceMock.insertCartItem(existingCartItemRequestDto, id));
+        assertEquals("This product is already in Cart.", dataAlreadyExistsException.getMessage());
     }
 
     @Test
@@ -208,26 +214,22 @@ class CartServiceTest {
 
         when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(productId)).thenReturn(Optional.of(product));
-        Set<CartItem> cartItemSet = user.getCart().getCartItems();
 
         cartServiceMock.deleteCarItemByProductId(userId, productId);
 
         verify(userRepositoryMock, times(1)).findById(userId);
         verify(productRepositoryMock, times(1)).findById(productId);
+        verify(cartItemRepositoryMock, times(1)).deleteById(user.getCart().getCartItems().iterator().next().getCartItemId());
 
-        for (CartItem item : cartItemSet) {
-            verify(cartItemRepositoryMock, times(1)).delete(item);
-        }
 
         when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
-        when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
-
-        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> cartServiceMock.deleteCarItemByProductId(userId, wrongUserId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
-
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.deleteCarItemByProductId(wrongUserId, productId));
-        assertEquals("Data not found in database.", dataNotFoundInDataBaseException.getMessage());
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+
+        when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
+        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+                () -> cartServiceMock.deleteCarItemByProductId(userId, wrongProductId));
+        assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 }

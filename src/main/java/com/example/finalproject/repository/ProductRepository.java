@@ -2,6 +2,7 @@ package com.example.finalproject.repository;
 
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Product;
+import org.springframework.data.domain.Sort;
 
 
 import com.example.finalproject.entity.query.ProductCountInterface;
@@ -10,6 +11,7 @@ import com.example.finalproject.entity.query.ProductProfitInterface;
 import com.example.finalproject.entity.query.ProductSortInterface;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,19 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+
+    @Modifying(clearAutomatically=true, flushAutomatically=true)
+    @Query("DELETE FROM Product product " +
+            "WHERE product.productId = :id")
+    void deleteById(Long id);
+
+
+    @Query("SELECT product FROM Product product " +
+            "WHERE product.discountPrice IS NOT NULL " +
+            "AND (SELECT MAX(product.price / product.discountPrice) " +
+            "FROM Product product) = (product.price / product.discountPrice)")
+    List<Product> getMaxDiscountProduct();
 
 
     @Query(value =
@@ -50,6 +65,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
            "GROUP BY p.ProductID, o.CreatedAt "+
            "Order by p.Name", nativeQuery = true)
     List<ProductPendingInterface> findProductPending(Integer days);
+
+
+
+//    @Query("SELECT product from Product product " +
+//            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
+//            "AND product.price BETWEEN :minPrice and :maxPrice " +
+//            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
+//    List<Product> findProductsByFilter(Boolean hasCategory, Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, Sort sortObject);
+
 
 
     @Query(value =

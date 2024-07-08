@@ -30,6 +30,13 @@ public class AdviceController {
                 .body(new ErrorMessage(exception.getMessage()));
     }
 
+    @ExceptionHandler(OrderStatusException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(OrderStatusException exception) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
     @ExceptionHandler(InvalidValueExeption.class)
     public ResponseEntity<ErrorMessage> exceptionHandler(InvalidValueExeption exception) {
         return ResponseEntity

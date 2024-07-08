@@ -19,7 +19,7 @@ public class Cart {
     @Column(name = "CartID")
     private Long cartId;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
 
     @OneToOne
