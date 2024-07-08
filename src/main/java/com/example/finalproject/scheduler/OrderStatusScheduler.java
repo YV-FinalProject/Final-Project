@@ -30,9 +30,9 @@ public class OrderStatusScheduler {
     public void updateOrderStatuses() {
         if (!active) return;
         List<Status> statusesToUpdate = Arrays.asList(Status.CREATED, Status.PENDING_PAYMENT, Status.PAID, Status.ON_THE_WAY);
-        long updatedOrders = orderRepository.updateOrderStatuses(START_DATE, statusesToUpdate);
+        Integer updatedOrders = orderRepository.updateOrderStatuses(START_DATE, statusesToUpdate);
         log.info("Number of orders updated: {}", updatedOrders);
-        long undeliveredOrders = orderRepository.countUndeliveredOrders(START_DATE);
+        Integer undeliveredOrders = orderRepository.countUndeliveredOrders(START_DATE);
         if (undeliveredOrders == 0) {
             stopScheduler();
         }
