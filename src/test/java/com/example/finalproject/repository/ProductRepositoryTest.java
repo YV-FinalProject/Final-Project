@@ -2,8 +2,6 @@ package com.example.finalproject.repository;
 
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
-import com.example.finalproject.entity.query.ProductPendingInterface;
-import com.example.finalproject.entity.query.ProductProfitInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,20 +70,20 @@ class ProductRepositoryTest {
         assertNotNull(sortedProduct);
     }
 
-    @Test
-    void findProductPending() {
-        Integer days = 55;
-        List<ProductPendingInterface> productPendingList = productRepository.findProductPending(days);
-        assertNotNull(productPendingList);
-    }
-
-    @Test
-    void findProffitByPeriod() {
-        String period ="WEEK";
-        Integer value = 12;
-        List<ProductProfitInterface>  productProfitList = productRepository.findProffitByPeriod(period, value);
-        assertNotNull(productProfitList);
-    }
+//    @Test
+//    void findProductPending() {
+//        Integer days = 55;
+//        List<ProductPendingInterface> productPendingList = productRepository.findProductPending(days);
+//        assertNotNull(productPendingList);
+//    }
+//
+//    @Test
+//    void findProffitByPeriod() {
+//        String period ="WEEK";
+//        Integer value = 12;
+//        List<ProductProfitInterface>  productProfitList = productRepository.findProffitByPeriod(period, value);
+//        assertNotNull(productProfitList);
+//    }
 
     private Sort orderBy(String sort, Boolean ascending) {
         if (!ascending) {

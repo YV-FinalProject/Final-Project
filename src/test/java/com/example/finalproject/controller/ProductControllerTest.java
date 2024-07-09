@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
-import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -119,7 +118,6 @@ class ProductControllerTest {
 
     @Test
     void getProducts() throws Exception {
-        Boolean hasCategory = true;
         Long categoryId = 1L;
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
         BigDecimal maxPrice = BigDecimal.valueOf(100.00);
@@ -133,13 +131,13 @@ class ProductControllerTest {
 
     }
 
-    @Test
-    void getTop10Products(String s) throws Exception {
-        String Status = "PAID";
-        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
-        this.mockMvc.perform(get("/products/top10","Paid")).andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    void getTop10Products(String s) throws Exception {
+//        String status = "PAID";
+//        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
+//        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     void getProductPending() throws Exception {

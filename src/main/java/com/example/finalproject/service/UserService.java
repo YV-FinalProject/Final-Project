@@ -29,6 +29,7 @@ public class UserService {
 //        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword())); ////это задел на Spring Security
         Cart cart = new Cart();
         cart.setUser(user);
+        cartRepository.save(cart);
         user.setCart(cart);
         userRepository.save(user);
     }
