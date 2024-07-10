@@ -1,8 +1,14 @@
 package com.example.finalproject.mapper;
 
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
+import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.entity.query.ProductPendingInterface;
+import com.example.finalproject.entity.query.ProductProfitInterface;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -102,7 +108,20 @@ public class Mappers {
     }
 
 
-//   modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
+    public ProductCountDto convertToProductCountDto(ProductCountInterface productCountInterface) {
+        return modelMapper.map(productCountInterface, ProductCountDto.class);
+    }
+
+    public ProductPendingDto convertToProductPendingDto(ProductPendingInterface productPendingInterface) {
+        return modelMapper.map(productPendingInterface, ProductPendingDto.class);
+    }
+
+    public ProductProfitDto convertToProductProfitDto(ProductProfitInterface productProfitInterface) {
+        return modelMapper.map(productProfitInterface, ProductProfitDto.class);
+    }
+
+
+    //   modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
 //            .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
 
 }

@@ -1,6 +1,9 @@
 package com.example.finalproject.controller;
 
 
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.query.ProductCountInterface;
@@ -83,19 +86,19 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountInterface> getTop10Products(@RequestParam(value = "status", required = false) String status) {
+    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
         return  productService.getTop10Products(status);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
-    public List<ProductPendingInterface> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
+    public List<ProductPendingDto> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
         return  productService.findProductPending(day);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
-    public List<ProductProfitInterface> getProffitByPeriod(
+    public List<ProductProfitDto> getProffitByPeriod(
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "period", required = false)  Integer period) {
         return  productService.findProductProfit( type, period);

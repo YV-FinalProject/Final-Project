@@ -131,13 +131,13 @@ class ProductControllerTest {
 
     }
 
-//    @Test
-//    void getTop10Products(String s) throws Exception {
-//        String status = "PAID";
-//        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
-//        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void getTop10Products(String s) throws Exception {
+        String status = "PAID";
+        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
+        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
+                .andExpect(status().isOk());
+    }
 
     @Test
     void getProductPending() throws Exception {

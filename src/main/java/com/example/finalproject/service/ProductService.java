@@ -1,6 +1,9 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
@@ -112,8 +115,8 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductCountInterface> getTop10Products(String status) {
-        List<ProductCountInterface> temporyList = productRepository.findTop10Products(status);
+    public List<ProductCountDto> getTop10Products(String status) {
+        List<ProductCountDto> temporyList =mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
         return temporyList;
     }
 
@@ -132,18 +135,18 @@ public class ProductService {
             }
             sortObject = orderBy(sort[0], ascending);
         }
-        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
-        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
+
+        return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
     @Transactional
-    public List<ProductPendingInterface> findProductPending(Integer day) {
-        return productRepository.findProductPending(day);
+    public List<ProductPendingDto> findProductPending(Integer day) {
+        return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
     @Transactional
-    public List<ProductProfitInterface> findProductProfit(String period, Integer value) {
-        return productRepository.findProffitByPeriod(period, value);
+    public List<ProductProfitDto> findProductProfit(String period, Integer value) {
+        return mapperUtil.convertList(productRepository.findProffitByPeriod(period, value),mappers::convertToProductProfitDto);
     }
 
 

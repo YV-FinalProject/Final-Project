@@ -1,5 +1,7 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.querydto.ProductCountDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
@@ -220,21 +222,21 @@ class ProductServiceTest {
     }
 
 
-    @Test
-    void getTop10Products() {
-//        ProductCountInterface productCountInterfaceTest = new ProductCountInterface(1L, "sss", 3, 22.0)
+//    @Test
+//    void getTop10Products() {
+//        ProductCountDto productCountDtoTest = new ProductCountDto(1L, "sss", 3, BigDecimal.valueOf(22.0));
 //
 //
 //        String sort = "Price";
-//        when(productRepositoryMock.findTop10Products(sort)).thenReturn(List.of(product));
+//        when(productRepositoryMock.findTop10Products(anyString())).thenReturn(MapperUtil.convertList(List.of(productCountDtoTest)),mappersMock::convertToProductCountDto);
 //        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-//        List <ProductCount> actualProductResponseDto = productServiceMock.getTop10Products(sort);
+//        List <ProductCountDto> actualProductResponseDto = productServiceMock.getTop10Products(sort);
 //
 //        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
 //        verify(productRepositoryMock, times(1)).findTop10Products(sort);
 //       // assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
-
-    }
+//
+//    }
 
     @Test
     void findProductsByFilter() {
