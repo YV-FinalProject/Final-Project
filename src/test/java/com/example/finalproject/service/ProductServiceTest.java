@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -222,21 +223,19 @@ class ProductServiceTest {
     }
 
 
-//    @Test
-//    void getTop10Products() {
-//        ProductCountDto productCountDtoTest = new ProductCountDto(1L, "sss", 3, BigDecimal.valueOf(22.0));
-//
-//
-//        String sort = "Price";
-//        when(productRepositoryMock.findTop10Products(anyString())).thenReturn(MapperUtil.convertList(List.of(productCountDtoTest)),mappersMock::convertToProductCountDto);
-//        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-//        List <ProductCountDto> actualProductResponseDto = productServiceMock.getTop10Products(sort);
-//
-//        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
-//        verify(productRepositoryMock, times(1)).findTop10Products(sort);
-//       // assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
-//
-//    }
+    @Test
+    void getTop10Products() {
+        /// КАК ???? Это делать правильно???
+
+        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
+        String sort = "Price";
+        List<ProductCountInterface> productCountInterfaceList = new ArrayList<>();
+        when(productRepositoryMock.findTop10Products(anyString())).thenReturn(productCountInterfaceList );
+
+        List <ProductCountDto> actualProductResponseDto = productServiceMock.getTop10Products(sort);
+        verify(productRepositoryMock, times(1)).findTop10Products(sort);
+    //    verify(mappersMock, times(1)).convertToProductCountDto(any(ProductCountInterface.class));
+    }
 
     @Test
     void findProductsByFilter() {
@@ -251,7 +250,6 @@ class ProductServiceTest {
         assertTrue(actualProductResponseDto.size()>0);
         verify(productRepositoryMock, times(1)).findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
         assertEquals(product.getProductId(),actualProductResponseDto.get(0).getProductId());
-
 
     }
 
