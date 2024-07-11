@@ -10,7 +10,6 @@ import java.util.*;
 @Table(name = "Users")
 @Getter
 @Setter
-//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {

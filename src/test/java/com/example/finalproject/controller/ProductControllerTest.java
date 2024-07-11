@@ -51,7 +51,7 @@ class ProductControllerTest {
                 .discountPrice(new BigDecimal("100.00"))
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
-                .imageURL("https://example.com/images/deroma_white_garden_pot.jpg")
+                .imageUrl("https://example.com/images/deroma_white_garden_pot.jpg")
                 .categoryResponseDto(CategoryResponseDto.builder()
                         .categoryId(1L)
                         .name("Test category")
@@ -61,7 +61,7 @@ class ProductControllerTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("101.00"))
-                .imageURL("https://example.com/images/magic_garden_seeds.jpg")
+                .imageUrl("https://example.com/images/magic_garden_seeds.jpg")
                 .category("Test category")
                 .build();
     }
@@ -148,7 +148,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProffitByPeriod() throws Exception {
+    void getProfitByPeriod() throws Exception {
         String type = "WEEK";
         Integer period = 55;
         when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);

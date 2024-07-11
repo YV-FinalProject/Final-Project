@@ -76,7 +76,7 @@ public class ProductService {
                 productToUpdate.setName(productRequestDto.getName());
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
-                productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setImageUrl(productRequestDto.getImageUrl());
                 productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
@@ -143,7 +143,7 @@ public class ProductService {
 
     @Transactional
     public List<ProductProfitInterface> findProductProfit(String period, Integer value) {
-        return productRepository.findProffitByPeriod(period, value);
+        return productRepository.findProfitByPeriod(period, value);
     }
 
 

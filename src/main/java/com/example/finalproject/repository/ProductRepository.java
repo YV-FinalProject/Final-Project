@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.entity.query.ProductPendingInterface;
 import com.example.finalproject.entity.query.ProductProfitInterface;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -89,6 +88,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "END ",
             nativeQuery = true
     )
-    List<ProductProfitInterface> findProffitByPeriod(String period, Integer value);
+    List<ProductProfitInterface> findProfitByPeriod(String period, Integer value);
 
 }

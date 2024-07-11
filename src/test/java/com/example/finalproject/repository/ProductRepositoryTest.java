@@ -2,11 +2,9 @@ package com.example.finalproject.repository;
 
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
@@ -21,13 +19,6 @@ class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    TestEntityManager entityManager;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     void deleteById() {
@@ -78,10 +69,10 @@ class ProductRepositoryTest {
 //    }
 //
 //    @Test
-//    void findProffitByPeriod() {
+//    void findProfitByPeriod() {
 //        String period ="WEEK";
 //        Integer value = 12;
-//        List<ProductProfitInterface>  productProfitList = productRepository.findProffitByPeriod(period, value);
+//        List<ProductProfitInterface>  productProfitList = productRepository.findProfitByPeriod(period, value);
 //        assertNotNull(productProfitList);
 //    }
 

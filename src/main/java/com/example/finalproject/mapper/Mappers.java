@@ -31,18 +31,18 @@ public class Mappers {
         return favoriteResponseDto;
     }
 
-    public Favorite convertToFavorite(FavoriteResponseDto favoriteDto) {
-        return modelMapper.map(favoriteDto, Favorite.class);
-    }
+//    public Favorite convertToFavorite(FavoriteResponseDto favoriteDto) {
+//        return modelMapper.map(favoriteDto, Favorite.class);
+//    }
 
 
-    public CartResponseDto convertToCartResponseDto(Cart cart) {
-        return modelMapper.map(cart, CartResponseDto.class);
-    }
+//    public CartResponseDto convertToCartResponseDto(Cart cart) {
+//        return modelMapper.map(cart, CartResponseDto.class);
+//    }
 
-    public Cart convertToCart(CartRequestDto cartRequestDto) {
-        return modelMapper.map(cartRequestDto, Cart.class);
-    }
+//    public Cart convertToCart(CartRequestDto cartRequestDto) {
+//        return modelMapper.map(cartRequestDto, Cart.class);
+//    }
 
 
     public CartItemResponseDto convertToCartItemResponseDto(CartItem cartItem) {
@@ -53,9 +53,9 @@ public class Mappers {
         return cartItemResponseDto;
     }
 
-    public CartItem convertToCartItem(CartItemRequestDto cartItemsDto) {
-        return modelMapper.map(cartItemsDto, CartItem.class);
-    }
+//    public CartItem convertToCartItem(CartItemRequestDto cartItemsDto) {
+//        return modelMapper.map(cartItemsDto, CartItem.class);
+//    }
 
 
     public OrderResponseDto convertToOrderResponseDto(Order order) {
@@ -65,9 +65,9 @@ public class Mappers {
 
     }
 
-    public Order convertToOrder(OrderRequestDto ordersRequestDto) {
-        return modelMapper.map(ordersRequestDto, Order.class);
-    }
+//    public Order convertToOrder(OrderRequestDto ordersRequestDto) {
+//        return modelMapper.map(ordersRequestDto, Order.class);
+//    }
 
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItem orderItem) {
@@ -78,9 +78,9 @@ public class Mappers {
         return orderItemResponseDto;
     }
 
-    public OrderItem convertToOrderItem(OrderItemRequestDto orderItemRequestDto) {
-        return modelMapper.map(orderItemRequestDto, OrderItem.class);
-    }
+//    public OrderItem convertToOrderItem(OrderItemRequestDto orderItemRequestDto) {
+//        return modelMapper.map(orderItemRequestDto, OrderItem.class);
+//    }
 
 
     public Product convertToProduct(ProductRequestDto productRequestDto) {

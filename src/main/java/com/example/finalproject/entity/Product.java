@@ -15,7 +15,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-//@EqualsAndHashCode
 public class Product {
 
     @Id
@@ -36,7 +35,7 @@ public class Product {
     private BigDecimal discountPrice;
 
     @Column(name = "ImageURL")
-    private String imageURL;
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(name = "CreatedAt")
