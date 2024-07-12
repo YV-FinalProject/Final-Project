@@ -1,7 +1,10 @@
 package com.example.finalproject.repository;
 
+import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.mapper.Mappers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ class ProductRepositoryTest {
 
     @Autowired
     TestEntityManager entityManager;
+    @Autowired
+    private Mappers mappers;
 
     @BeforeEach
     void setUp() {
@@ -73,10 +78,10 @@ class ProductRepositoryTest {
 //    @Test
 //    void findProductPending() {
 //        Integer days = 55;
-//        List<ProductPendingInterface> productPendingList = productRepository.findProductPending(days);
+//        List<ProductPendingDto> productPendingList = MapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
 //        assertNotNull(productPendingList);
 //    }
-//
+
 //    @Test
 //    void findProffitByPeriod() {
 //        String period ="WEEK";

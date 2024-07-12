@@ -1,6 +1,9 @@
 package com.example.finalproject.controller;
 
 
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.query.ProductCountInterface;
@@ -13,6 +16,8 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +30,7 @@ import java.util.List;
 @RequestMapping(value = "/products")
 @Validated
 public class ProductController {
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     @GetMapping(value = "/{id}")
@@ -77,27 +83,36 @@ public class ProductController {
         @RequestParam(value = "maxPrice", required = false)  BigDecimal maxPrice,
         @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
         @RequestParam(value = "sort", required = false)  String[] sort) {
-
+        log.info("-- Request to endpoint -- findProductsByFilter ");
+        log.info("-- Request parameters CategoryId = " + categoryId+"  minPrice = "+ minPrice +" maxPrice = "+ maxPrice +
+                " hasDiscount = " + hasDiscount + " sortString = " + sort[0]+","+sort[1] );
     return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountInterface> getTop10Products(@RequestParam(value = "status", required = false) String status) {
+    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
+        log.info("-- Request to endpoint -- top10 ");
+        log.info("-- Request parameters Status  = " + status );
         return  productService.getTop10Products(status);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
-    public List<ProductPendingInterface> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
+    public List<ProductPendingDto> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
+        log.info("-- Request to endpoint -- pending ");
+        log.info("-- Request parameters Pending  = " + day +" days ");
         return  productService.findProductPending(day);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
-    public List<ProductProfitInterface> getProffitByPeriod(
+    public List<ProductProfitDto> getProffitByPeriod(
             @RequestParam(value = "type", required = false) String type,
             @RequestParam(value = "period", required = false)  Integer period) {
+
+        log.info("-- Request to endpoint -- profit ");
+        log.info("-- Request parameters PeriodType  = " + type +" Interval =  "+ period);
         return  productService.findProductProfit( type, period);
     }
 }

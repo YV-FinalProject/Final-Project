@@ -1,11 +1,16 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.entity.query.ProductPendingInterface;
+import com.example.finalproject.entity.query.ProductProfitInterface;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
@@ -219,21 +224,59 @@ class ProductServiceTest {
         verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
     }
 
-
     @Test
     void getTop10Products() {
-//        ProductCountInterface productCountInterfaceTest = new ProductCountInterface(1L, "sss", 3, 22.0)
-//
-//
-//        String sort = "Price";
-//        when(productRepositoryMock.findTop10Products(sort)).thenReturn(List.of(product));
-//        when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-//        List <ProductCount> actualProductResponseDto = productServiceMock.getTop10Products(sort);
-//
-//        verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
-//        verify(productRepositoryMock, times(1)).findTop10Products(sort);
-//       // assertEquals(productResponseDto.getProductId(), actualProductResponseDto.getProductId());
+        class MockProductCount implements ProductCountInterface {
+            private Long productId;
+            private String name;
+            private Integer count;
+            private BigDecimal sum;
 
+            public MockProductCount(Long productId, String name, Integer count, BigDecimal sum) {
+                this.productId = productId;
+                this.name = name;
+                this.count = count;
+                this.sum = sum;
+            }
+
+            @Override
+            public Long getProductId() {
+                return productId;
+            }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public Integer getCount() {
+                return count;
+            }
+
+            @Override
+            public BigDecimal getSum() {
+                return sum;
+            }
+        }
+        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
+        String sort = "Price";
+        ProductCountInterface productCountMock = new MockProductCount(1L, "Test name", 2, BigDecimal.valueOf(1.0));
+
+        List<ProductCountInterface> productCountInterfaceList = List.of(productCountMock);
+
+        when(productRepositoryMock.findTop10Products(anyString())).thenReturn(productCountInterfaceList);
+        when(mappersMock.convertToProductCountDto(any(ProductCountInterface.class))).thenReturn(productCountDto);
+
+        List <ProductCountDto> actualProductCountDto = productServiceMock.getTop10Products(sort);
+
+        verify(productRepositoryMock, times(1)).findTop10Products(sort);
+        assertEquals(1, actualProductCountDto.size());
+        assertNotNull(actualProductCountDto.get(0));
+        assertEquals(productCountDto.getProductId(), actualProductCountDto.get(0).getProductId());
+        assertEquals(productCountDto.getName(), actualProductCountDto.get(0).getName());
+        assertEquals(productCountDto.getCount(), actualProductCountDto.get(0).getCount());
+        assertEquals(productCountDto.getSum(), actualProductCountDto.get(0).getSum());
     }
 
     @Test
@@ -246,13 +289,98 @@ class ProductServiceTest {
         Sort sortObject = orderBy("name", true);
         when(productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject)).thenReturn(List.of(product));
         List<Product> actualProductResponseDto = productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
-        assertTrue(actualProductResponseDto.size()>0);
+        assertTrue(actualProductResponseDto.size() > 0);
         verify(productRepositoryMock, times(1)).findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
         assertEquals(product.getProductId(),actualProductResponseDto.get(0).getProductId());
+    }
 
+    @Test
+    void findProductPending() {
+        class MockProductPending implements ProductPendingInterface {
+            private Long productId;
+            private String name;
+            private Integer count;
+            private Timestamp createdAt;
+
+            public MockProductPending(Long productId, String name, Integer count, Timestamp createdAt) {
+                this.productId = productId;
+                this.name = name;
+                this.count = count;
+                this.createdAt = createdAt;
+            }
+
+            @Override
+            public Long getProductId() {
+                return productId;
+            }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public Integer getCount() {
+                return count;
+            }
+
+            @Override
+            public Timestamp getCreatedAt() {
+                return null;
+            }
+        }
+        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).createdAt(Timestamp.valueOf("2024-12-12 00:00:00")).build();
+        Integer day = 5;
+        ProductPendingInterface productPendingMock = new MockProductPending(1L,"Test name",2,Timestamp.valueOf("2024-12-12 00:00:00"));
+        List<ProductPendingInterface> productPendingInterfaceList = List.of(productPendingMock);
+        when(productRepositoryMock.findProductPending(anyInt())).thenReturn(productPendingInterfaceList);
+        when(mappersMock.convertToProductPendingDto(any(ProductPendingInterface.class))).thenReturn(productPendingDto);
+        List <ProductPendingDto> actualProductPendingDto = productServiceMock.findProductPending(day);
+        verify(productRepositoryMock, times(1)).findProductPending(day);
+        assertEquals(1, actualProductPendingDto.size());
+        assertNotNull(actualProductPendingDto.get(0));
+        assertEquals(productPendingDto.getProductId(), actualProductPendingDto.get(0).getProductId());
+        assertEquals(productPendingDto.getName(), actualProductPendingDto.get(0).getName());
+        assertEquals(productPendingDto.getCount(), actualProductPendingDto.get(0).getCount());
+        assertEquals(productPendingDto.getCreatedAt(), actualProductPendingDto.get(0).getCreatedAt());
 
     }
 
+    @Test
+    void findProductProfit() {
+        class MockProductProfit implements ProductProfitInterface {
+            private String period;
+            private BigDecimal sum;
+
+            public MockProductProfit(String period, BigDecimal sum) {
+                this.period = period;
+                this.sum = sum;
+            }
+            @Override
+            public String getPeriod() {
+                return period;
+            }
+            @Override
+            public BigDecimal getSum() {
+                return sum;
+            }
+        }
+        ProductProfitDto productProfitDto = ProductProfitDto.builder().period("WEEK").sum(BigDecimal.valueOf(22.0)).build();
+        String period = "WEEK";
+        Integer interval = 5;
+        ProductProfitInterface productProfitInterface = new MockProductProfit("WEEK",BigDecimal.valueOf(22.0));
+        List<ProductProfitInterface> productProfitInterfaceList = List.of(productProfitInterface);
+        when(productRepositoryMock.findProffitByPeriod(anyString(),anyInt())).thenReturn(productProfitInterfaceList);
+        when(mappersMock.convertToProductProfitDto(any(ProductProfitInterface.class))).thenReturn(productProfitDto);
+
+        List <ProductProfitDto> actualProductProfitDto = productServiceMock.findProductProfit(period,interval);
+        verify(productRepositoryMock, times(1)).findProffitByPeriod(period,interval);
+        assertEquals(1, actualProductProfitDto.size());
+        assertNotNull(actualProductProfitDto.get(0));
+        assertEquals(productProfitDto.getPeriod(), actualProductProfitDto.get(0).getPeriod());
+        assertEquals(productProfitDto.getSum(), actualProductProfitDto.get(0).getSum());
+
+    }
     private Sort orderBy(String sort, Boolean ascending) {
         if (!ascending) {
             return Sort.by(Sort.Direction.DESC, sort);
@@ -261,5 +389,6 @@ class ProductServiceTest {
         }
     }
 
-}
 
+
+}
