@@ -28,7 +28,7 @@ public class CartService {
 
     private final Mappers mappers;
 
-    @Transactional
+
     public Set<CartItemResponseDto> getCartItemsByUserId(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {

@@ -326,7 +326,7 @@ class ProductServiceTest {
 
             @Override
             public Timestamp getCreatedAt() {
-                return null;
+                return createdAt;
             }
         }
         ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).createdAt(Timestamp.valueOf("2024-12-12 00:00:00")).build();
@@ -343,7 +343,6 @@ class ProductServiceTest {
         assertEquals(productPendingDto.getName(), actualProductPendingDto.get(0).getName());
         assertEquals(productPendingDto.getCount(), actualProductPendingDto.get(0).getCount());
         assertEquals(productPendingDto.getCreatedAt(), actualProductPendingDto.get(0).getCreatedAt());
-
     }
 
     @Test

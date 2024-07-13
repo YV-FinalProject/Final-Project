@@ -65,6 +65,7 @@ public class ProductController {
     @Validated
     public void setDiscountPrice(@RequestParam("id") @Positive(message = "Product ID must be a positive number") Long id,
                                  @RequestParam("discountPrice") @DecimalMin(value = "0.0") @Digits(integer=4, fraction=2) BigDecimal discountPrice){
+
         productService.setDiscountPrice(id,discountPrice);
     }
 
@@ -83,36 +84,27 @@ public class ProductController {
         @RequestParam(value = "maxPrice", required = false)  BigDecimal maxPrice,
         @RequestParam(value = "discount", required = false, defaultValue = "false")  Boolean hasDiscount,
         @RequestParam(value = "sort", required = false)  String[] sort) {
-        log.info("-- Request to endpoint -- findProductsByFilter ");
-        log.info("-- Request parameters CategoryId = " + categoryId+"  minPrice = "+ minPrice +" maxPrice = "+ maxPrice +
-                " hasDiscount = " + hasDiscount + " sortString = " + sort[0]+","+sort[1] );
+
     return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
     public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
-        log.info("-- Request to endpoint -- top10 ");
-        log.info("-- Request parameters Status  = " + status );
         return  productService.getTop10Products(status);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
     public List<ProductPendingDto> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
-        log.info("-- Request to endpoint -- pending ");
-        log.info("-- Request parameters Pending  = " + day +" days ");
         return  productService.findProductPending(day);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
     public List<ProductProfitDto> getProffitByPeriod(
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "period", required = false)  Integer period) {
-
-        log.info("-- Request to endpoint -- profit ");
-        log.info("-- Request parameters PeriodType  = " + type +" Interval =  "+ period);
-        return  productService.findProductProfit( type, period);
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "value", required = false)  Integer value) {
+        return  productService.findProductProfit( period, value);
     }
 }
