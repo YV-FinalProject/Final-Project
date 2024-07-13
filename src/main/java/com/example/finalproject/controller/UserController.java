@@ -11,7 +11,7 @@ import org.springframework.http.*;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name="User controller", description="Описание контролера")
+@Tag(name = "User controller", description = "Controller fo managing user's accounts")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Регистрация пользователя", description = "Позволяет зарегистрировать пользователя")
+    @Operation(summary = "User registration", description = "Provides functionality for registering a new user")
     @Validated
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
@@ -28,13 +28,16 @@ public class UserController {
         userService.registerUser(userRequestDto);
     }
 
+    @Operation(summary = "Updating user's account", description = "Provides functionality for updating information in user's account")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id,
                            @RequestBody @Validated(UpdateGroup.class) UserRequestDto userUpdateDto) {
+
         userService.updateUser(id, userUpdateDto);
     }
 
+    @Operation(summary = "Deleting user's account", description = "Provides functionality for deleting a user's account")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {

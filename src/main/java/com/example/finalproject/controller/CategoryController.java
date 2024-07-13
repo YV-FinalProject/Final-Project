@@ -4,6 +4,7 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name="Category controller", description="Описание контролера")
+@Tag(name = "Category controller", description = "Controller for managing product's categories")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/categories")
@@ -22,28 +23,32 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
+    @Operation(summary = "Getting categories", description = "Provides functionality for getting  all product categories")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryResponseDto> getCategories() {
         return categoryService.getCategories();
     }
 
+    @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategoriesById(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
         categoryService.deleteCategoryById(id);
     }
 
+    @Operation(summary = "Inserting a category", description = "Provides functionality for inserting a new product category")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void insertCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
-        categoryService.insertCategories(categoryRequestDto);
+    public void insertCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
+        categoryService.insertCategory(categoryRequestDto);
     }
 
+    @Operation(summary = "Updating a category", description = "Provides functionality for updating certain product category")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateCategories(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                                 @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
+    public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
+                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
         categoryService.updateCategory(categoryRequestDto, id);
     }
 }
