@@ -117,7 +117,6 @@ public class ProductService {
         }
     }
     public List<ProductCountDto> getTop10Products(String status) {
-        log.info("--- Execute service method  getTop10Products with parameters status = " + status );
         List<ProductCountDto> temporyList =mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
         return temporyList;
     }
@@ -136,21 +135,16 @@ public class ProductService {
             }
             sortObject = orderBy(sort[0], ascending);
         }
-
-        log.info("--- Execute service method  findProductsByFilter with parameters minPrice = " + minPrice + " maxPrice = " + maxPrice);
-        log.info("--- isDiscount = " + hasDiscount + " sort = " + sort[0] + ","+ sort[1]);
         return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
 
     public List<ProductPendingDto> findProductPending(Integer day) {
-        log.info("--- Execute service method  findProductPending with parameters day = " + day );
         return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
 
     public List<ProductProfitDto> findProductProfit(String period, Integer value) {
-        log.info("--- Execute service method  findProductProfit with parameters period = " + period + "  interval = " + value );
         return mapperUtil.convertList(productRepository.findProffitByPeriod(period, value),mappers::convertToProductProfitDto);
     }
 
