@@ -1,24 +1,21 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.requestdto.OrderItemRequestDto;
-import com.example.finalproject.dto.requestdto.OrderRequestDto;
-import com.example.finalproject.dto.responsedto.OrderItemResponseDto;
-import com.example.finalproject.dto.responsedto.OrderResponseDto;
+import com.example.finalproject.config.*;
+import com.example.finalproject.dto.requestdto.*;
+import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.*;
-import com.example.finalproject.entity.enums.DeliveryMethod;
-import com.example.finalproject.entity.enums.Status;
-import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.mapper.Mappers;
-import com.example.finalproject.repository.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.example.finalproject.entity.enums.*;
+import com.example.finalproject.exception.*;
+import com.example.finalproject.mapper.*;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import com.example.finalproject.repository.*;
+import lombok.*;
+import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
+
+import java.sql.*;
+import java.time.*;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +27,8 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
 
     private final Mappers mappers;
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
 
     @Transactional
     public OrderResponseDto getOrderById(Long orderId) {
@@ -40,7 +39,7 @@ public class OrderService {
             orderResponseDto.setOrderItemsSet(orderItemResponseDto);
             return orderResponseDto;
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("Order not found in database.");
         }
     }
 
@@ -59,9 +58,9 @@ public class OrderService {
                 }
                 return orderResponseDtoSet;
             }
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("No orders were placed yet.");
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
     }
 
@@ -74,15 +73,14 @@ public class OrderService {
 
             orderToInsert.setUser(user);
             orderToInsert.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-            orderToInsert.setContactPhone(user.getPhoneNumber());
+            orderToInsert.setContactPhone(user.getPhone());
             orderToInsert.setDeliveryAddress(orderRequestDto.getDeliveryAddress());
-
             orderToInsert.setDeliveryMethod(DeliveryMethod.valueOf(orderRequestDto.getDeliveryMethod()));
             orderToInsert.setStatus(Status.CREATED);
             orderToInsert = orderRepository.save(orderToInsert);
 
         } else {
-            throw new DataNotFoundInDataBaseException("Data not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
 
         Set<OrderItemRequestDto> orderItemsRequestDtoSet = orderRequestDto.getOrderItemsSet();
@@ -104,10 +102,36 @@ public class OrderService {
 
                 orderItemToInsertSet.add(orderItemToInsert);
             } else {
-                throw new DataNotFoundInDataBaseException("Data not found in database.");
+                throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
         }
         orderToInsert.setOrderItems(orderItemToInsertSet);
         orderRepository.save(orderToInsert);
+
+        Cart cart = cartRepository.findById(user.getCart().getCartId()).orElse(null);
+        if(cart != null){
+            Set <CartItem> cartItemSet = cart.getCartItems();
+            for(CartItem item : cartItemSet){
+                cartItemRepository.deleteById(item.getCartItemId());
+            }
+        } else {
+            throw new DataNotFoundInDataBaseException("Cart not found in database.");
+        }
     }
+
+    public void cancelOrder(Long orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if (order != null) {
+            if(order.getStatus() == Status.CREATED || order.getStatus() == Status.PENDING_PAYMENT) {
+                order.setStatus(Status.CANCELED);
+                orderRepository.save(order);
+            } else {
+                throw new OrderStatusException("Order already paid and can not be canceled.");
+            }
+        } else {
+            throw new DataNotFoundInDataBaseException("Order not found in database.");
+        }
+    }
+
+
 }
