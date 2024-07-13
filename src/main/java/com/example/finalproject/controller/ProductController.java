@@ -103,8 +103,8 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
     public List<ProductProfitDto> getProffitByPeriod(
-            @RequestParam(value = "type", required = false) String type,
-            @RequestParam(value = "period", required = false)  Integer period) {
-        return  productService.findProductProfit( type, period);
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "value", required = false)  Integer value) {
+        return  productService.findProductProfit( period, value);
     }
 }
