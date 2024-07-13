@@ -1,5 +1,9 @@
 package com.example.finalproject.controller;
 
+
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.query.ProductCountInterface;
@@ -13,6 +17,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +32,7 @@ import java.util.List;
 @RequestMapping(value = "/products")
 @Validated
 public class ProductController {
+    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     @Operation(summary = "Getting product by id", description = "Provides functionality for getting a product from product catalog")
@@ -88,23 +95,23 @@ public class ProductController {
     @Operation(summary = "Getting top-10 products", description = "Provides functionality for getting top-10 most purchased and top-10 most canceled products")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountInterface> getTop10Products(@RequestParam(value = "status", required = false) @NotBlank(message = "Status of order cannot be blank, enter PAID or CANCELED.") @Parameter(description = "Status of the order in witch the product was placed") String status) {
+    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status", required = false) String status) {
         return  productService.getTop10Products(status);
     }
 
     @Operation(summary = "Getting 'pending payment' products", description = "Provides functionality for getting products that are in the status 'pending payment' for more than N days")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
-    public List<ProductPendingInterface> getProductPending(@RequestParam(value = "days", required = false)  @Positive(message = "Number of days must be a positive number.") @Parameter(description = "Number of days for checking 'pending payment' status") Integer days) {
-        return  productService.findProductPending(days);
+    public List<ProductPendingDto> getProductPending(@RequestParam(value = "day", required = false) Integer day) {
+        return  productService.findProductPending(day);
     }
 
     @Operation(summary = "Getting profit for certain period ", description = "Provides functionality for getting profit for certain period (days, months, years) with grouping by hours, days, weeks and months.")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
-    public List<ProductProfitInterface> getProfitByPeriod(
-            @RequestParam(value = "period", required = false) @NotBlank(message = "This parameter cannot be blank, enter DAY, WEEK or YEAR") @Parameter(description = "Period (day, week or year) to calculate the profit") String period,
-            @RequestParam(value = "value", required = false) @Positive(message = "Period must be a positive number.") @Parameter(description = "Length of period (hours, days, weeks, months) to calculate the profit") Integer value) {
-        return  productService.findProductProfit(period, value);
+    public List<ProductProfitDto> getProffitByPeriod(
+            @RequestParam(value = "period", required = false) String period,
+            @RequestParam(value = "value", required = false)  Integer value) {
+        return  productService.findProductProfit( period, value);
     }
 }

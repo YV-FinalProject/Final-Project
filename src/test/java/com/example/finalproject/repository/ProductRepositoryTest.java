@@ -1,10 +1,15 @@
 package com.example.finalproject.repository;
 
+import com.example.finalproject.config.MapperUtil;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
 import com.example.finalproject.entity.Product;
 import com.example.finalproject.entity.query.ProductCountInterface;
+import com.example.finalproject.mapper.Mappers;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
@@ -69,10 +74,10 @@ class ProductRepositoryTest {
 //    }
 //
 //    @Test
-//    void findProfitByPeriod() {
+//    void findProffitByPeriod() {
 //        String period ="WEEK";
 //        Integer value = 12;
-//        List<ProductProfitInterface>  productProfitList = productRepository.findProfitByPeriod(period, value);
+//        List<ProductProfitInterface>  productProfitList = productRepository.findProffitByPeriod(period, value);
 //        assertNotNull(productProfitList);
 //    }
 

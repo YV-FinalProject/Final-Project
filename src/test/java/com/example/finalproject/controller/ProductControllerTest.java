@@ -1,5 +1,8 @@
 package com.example.finalproject.controller;
 
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
@@ -131,18 +134,20 @@ class ProductControllerTest {
 
     }
 
-//    @Test
-//    void getTop10Products(String s) throws Exception {
-//        String status = "PAID";
-//        when(productServiceMock.getTop10Products(anyString())).thenReturn(null);
-//        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void getTop10Products() throws Exception {
+        String status = "PAID";
+        ProductCountDto productCountDto = ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
+        when(productServiceMock.getTop10Products(anyString())).thenReturn(List.of(productCountDto));
+        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
+                .andExpect(status().isOk());
+    }
 
     @Test
     void getProductPending() throws Exception {
         Integer days = 55;
-        when(productServiceMock.findProductPending(anyInt())).thenReturn(null);
+        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(23).build();
+        when(productServiceMock.findProductPending(anyInt())).thenReturn(List.of(productPendingDto));
         this.mockMvc.perform(get("/products/pending",days)).andDo(print())
                 .andExpect(status().isOk());
     }
@@ -151,6 +156,7 @@ class ProductControllerTest {
     void getProfitByPeriod() throws Exception {
         String type = "WEEK";
         Integer period = 55;
+        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
         when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);
         this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
                 .andExpect(status().isOk());

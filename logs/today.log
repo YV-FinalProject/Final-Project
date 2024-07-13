@@ -1,0 +1,64 @@
+2024-07-13 21:18:18.217 | background-preinit             | INFO  | org.hibernate.validator.internal.util.Version                           -  HV000001: Hibernate Validator 8.0.1.Final
+2024-07-13 21:18:18.264 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  Starting FinalProjectApplication using Java 21.0.1 with PID 31524 (/home/radomir/IdeaProjects/MyLessons/Final-Project/target/classes started by radomir in /home/radomir/IdeaProjects/MyLessons/Final-Project)
+2024-07-13 21:18:18.265 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  No active profile set, falling back to 1 default profile: "default"
+2024-07-13 21:18:19.185 | main                           | INFO  | o.s.data.repository.config.RepositoryConfigurationDelegate              -  Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-13 21:18:19.316 | main                           | INFO  | o.s.data.repository.config.RepositoryConfigurationDelegate              -  Finished Spring Data repository scanning in 118 ms. Found 8 JPA repository interfaces.
+2024-07-13 21:18:20.667 | main                           | INFO  | org.springframework.boot.web.embedded.tomcat.TomcatWebServer            -  Tomcat initialized with port 8080 (http)
+2024-07-13 21:18:20.685 | main                           | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Initializing ProtocolHandler ["http-nio-8080"]
+2024-07-13 21:18:20.687 | main                           | INFO  | org.apache.catalina.core.StandardService                                -  Starting service [Tomcat]
+2024-07-13 21:18:20.688 | main                           | INFO  | org.apache.catalina.core.StandardEngine                                 -  Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-07-13 21:18:20.763 | main                           | INFO  | org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]         -  Initializing Spring embedded WebApplicationContext
+2024-07-13 21:18:20.764 | main                           | INFO  | o.s.boot.web.servlet.context.ServletWebServerApplicationContext         -  Root WebApplicationContext: initialization completed in 2437 ms
+2024-07-13 21:18:21.097 | main                           | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Starting...
+2024-07-13 21:18:21.638 | main                           | INFO  | com.zaxxer.hikari.pool.HikariPool                                       -  HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@e01a26b
+2024-07-13 21:18:21.641 | main                           | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Start completed.
+2024-07-13 21:18:22.624 | main                           | INFO  | liquibase.changelog                                                     -  Reading from garden_and_home.DATABASECHANGELOG
+2024-07-13 21:18:22.722 | main                           | INFO  | liquibase.ui                                                            -  Database is up to date, no changesets to execute
+2024-07-13 21:18:22.726 | main                           | INFO  | liquibase.changelog                                                     -  Reading from garden_and_home.DATABASECHANGELOG
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  UPDATE SUMMARY
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  Run:                          0
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  Previously run:              34
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  Filtered out:                 0
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  -------------------------------
+2024-07-13 21:18:22.746 | main                           | INFO  | liquibase.util                                                          -  Total change sets:           34
+2024-07-13 21:18:22.747 | main                           | INFO  | liquibase.util                                                          -  Update summary generated
+2024-07-13 21:18:22.778 | main                           | INFO  | liquibase.lockservice                                                   -  Successfully released change log lock
+2024-07-13 21:18:22.780 | main                           | INFO  | liquibase.command                                                       -  Command execution complete
+2024-07-13 21:18:22.938 | main                           | INFO  | org.hibernate.jpa.internal.util.LogHelper                               -  HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-13 21:18:23.021 | main                           | INFO  | org.hibernate.Version                                                   -  HHH000412: Hibernate ORM core version 6.4.2.Final
+2024-07-13 21:18:23.073 | main                           | INFO  | org.hibernate.cache.internal.RegionFactoryInitiator                     -  HHH000026: Second-level cache disabled
+2024-07-13 21:18:23.431 | main                           | INFO  | org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo   -  No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-13 21:18:25.296 | main                           | INFO  | o.h.engine.transaction.jta.platform.internal.JtaPlatformInitiator       -  HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-13 21:18:25.486 | main                           | INFO  | org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean      -  Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-13 21:18:26.698 | main                           | INFO  | org.springframework.data.jpa.repository.query.QueryEnhancerFactory      -  JSqlParser is in classpath; If applicable, JSqlParser will be used
+2024-07-13 21:18:26.698 | main                           | INFO  | org.springframework.data.jpa.repository.query.QueryEnhancerFactory      -  Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-07-13 21:18:29.093 | main                           | WARN  | o.s.b.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration    -  spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-07-13 21:18:30.552 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Using default implementation for ThreadExecutor
+2024-07-13 21:18:30.573 | main                           | INFO  | org.quartz.core.SchedulerSignalerImpl                                   -  Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+2024-07-13 21:18:30.574 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Quartz Scheduler v.2.3.2 created.
+2024-07-13 21:18:30.575 | main                           | INFO  | org.quartz.simpl.RAMJobStore                                            -  RAMJobStore initialized.
+2024-07-13 21:18:30.576 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler meta-data: Quartz Scheduler (v2.3.2) 'quartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2024-07-13 21:18:30.576 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Quartz scheduler 'quartzScheduler' initialized from an externally provided properties instance.
+2024-07-13 21:18:30.576 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Quartz scheduler version: 2.3.2
+2024-07-13 21:18:30.577 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@5286aa41
+2024-07-13 21:18:30.755 | main                           | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Starting ProtocolHandler ["http-nio-8080"]
+2024-07-13 21:18:30.771 | main                           | INFO  | org.springframework.boot.web.embedded.tomcat.TomcatWebServer            -  Tomcat started on port 8080 (http) with context path '/'
+2024-07-13 21:18:30.774 | main                           | INFO  | org.springframework.scheduling.quartz.SchedulerFactoryBean              -  Starting Quartz Scheduler now
+2024-07-13 21:18:30.774 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED started.
+2024-07-13 21:18:30.793 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  Started FinalProjectApplication in 13.217 seconds (process running for 13.998)
+2024-07-13 21:18:34.880 | http-nio-8080-exec-2           | INFO  | org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]         -  Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-13 21:18:34.880 | http-nio-8080-exec-2           | INFO  | org.springframework.web.servlet.DispatcherServlet                       -  Initializing Servlet 'dispatcherServlet'
+2024-07-13 21:18:34.882 | http-nio-8080-exec-2           | INFO  | org.springframework.web.servlet.DispatcherServlet                       -  Completed initialization in 2 ms
+2024-07-13 21:18:34.954 | http-nio-8080-exec-2           | INFO  | com.example.finalproject.aspect.LoggingAspect                           - CONTROLLER_IN{CONTROLLER_METHOD=getProductsById} args=[6];
+2024-07-13 21:18:35.008 | http-nio-8080-exec-2           | INFO  | com.example.finalproject.aspect.LoggingAspect                           - SERVICE_IN{SERVICE_METHOD=getProductById} args=[6];
+2024-07-13 21:18:35.596 | http-nio-8080-exec-2           | INFO  | com.example.finalproject.aspect.LoggingAspect                           - SERVICE_OUT{SERVICE_METHOD=getProductById}{SERVICE_TIME=583} args=[6]; RESULT: [ProductResponseDto(productId=6, name=Protective Gloves, description=Protective Large Garden Gloves with Strong Grip, price=13.38, discountPrice=10.54, createdAt=2024-07-05 00:13:29.0, updatedAt=2024-07-05 00:13:29.0, imageURL=https://example.com/images/protrective_gloves.jpg, categoryResponseDto=null)]
+2024-07-13 21:18:35.597 | http-nio-8080-exec-2           | INFO  | com.example.finalproject.aspect.LoggingAspect                           - CONTROLLER_OUT{CONTROLLER_METHOD=getProductsById}{CONTROLLER_TIME=643} args=[6]; RESULT: [ProductResponseDto(productId=6, name=Protective Gloves, description=Protective Large Garden Gloves with Strong Grip, price=13.38, discountPrice=10.54, createdAt=2024-07-05 00:13:29.0, updatedAt=2024-07-05 00:13:29.0, imageURL=https://example.com/images/protrective_gloves.jpg, categoryResponseDto=null)]
+2024-07-13 21:19:00.896 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  Number of orders updated: 0
+2024-07-13 21:19:00.997 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  All orders are delivered. Scheduler stopped.
