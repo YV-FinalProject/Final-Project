@@ -145,7 +145,7 @@ public class ProductService {
 
 
     public List<ProductProfitDto> findProductProfit(String period, Integer value) {
-        return mapperUtil.convertList(productRepository.findProffitByPeriod(period, value),mappers::convertToProductProfitDto);
+        return mapperUtil.convertList(productRepository.findProfitByPeriod(period, value),mappers::convertToProductProfitDto);
     }
 
 

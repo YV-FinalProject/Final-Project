@@ -77,7 +77,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "FROM Products p " +
             "JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
             "JOIN Orders o ON oi.OrderId = o.OrderID " +
-            "WHERE o.Status = 'PENDING_PAYMENT' AND o.CreatedAt >= " +
+            "WHERE o.Status = 'PAID' AND o.CreatedAt >= " +
             "CASE " +
                     "WHEN :period = 'MONTH' THEN NOW() - INTERVAL :value MONTH " +
                     "WHEN :period = 'WEEK' THEN NOW() - INTERVAL :value WEEK " +
@@ -90,6 +90,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "END ",
             nativeQuery = true
     )
-    List<ProductProfitInterface> findProffitByPeriod(String period, Integer value);
+    List<ProductProfitInterface> findProfitByPeriod(String period, Integer value);
 
 }
