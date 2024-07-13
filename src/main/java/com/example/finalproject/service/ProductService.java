@@ -38,7 +38,7 @@ public class ProductService {
     private final Mappers mappers;
     private final MapperUtil mapperUtil;
 
-    @Transactional
+
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {

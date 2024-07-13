@@ -22,7 +22,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
 
-    @Transactional
     public List<CategoryResponseDto> getCategories() {
         List<Category> categoriesList = categoryRepository.findAll();
         return MapperUtil.convertList(categoriesList, mappers::convertToCategoryResponseDto);
