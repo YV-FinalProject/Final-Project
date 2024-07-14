@@ -4,6 +4,7 @@ import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.service.*;
 import com.example.finalproject.validation.groups.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -31,7 +32,7 @@ public class UserController {
     @Operation(summary = "Updating user's account", description = "Provides functionality for updating information in user's account")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id,
+    public void updateUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "User identifier") Long id,
                            @RequestBody @Validated(UpdateGroup.class) UserRequestDto userUpdateDto) {
 
         userService.updateUser(id, userUpdateDto);
@@ -40,7 +41,7 @@ public class UserController {
     @Operation(summary = "Deleting user's account", description = "Provides functionality for deleting a user's account")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
+    public void deleteUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
         userService.deleteUser(id);
     }
 
