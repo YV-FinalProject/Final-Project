@@ -47,9 +47,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     @Query("SELECT product from Product product " +
-            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
+            "WHERE (:hasCategory = FALSE OR product.category.categoryId = :category) " +
             "AND product.price BETWEEN :minPrice and :maxPrice " +
-            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL)")
+            "AND (:hasDiscount = FALSE OR product.discountPrice IS NOT NULL)")
     List<Product> findProductsByFilter(Boolean hasCategory, Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Sort sortObject);
 
 

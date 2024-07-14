@@ -32,7 +32,10 @@ public class UserController {
     @Operation(summary = "Updating user's account", description = "Provides functionality for updating information in user's account")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "User identifier") Long id,
+    public void updateUser(@PathVariable
+                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                               @Parameter(description = "User identifier") Long id,
+
                            @RequestBody @Validated(UpdateGroup.class) UserRequestDto userUpdateDto) {
 
         userService.updateUser(id, userUpdateDto);
@@ -41,7 +44,9 @@ public class UserController {
     @Operation(summary = "Deleting user's account", description = "Provides functionality for deleting a user's account")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
+    public void deleteUser(@PathVariable
+                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                               @Parameter(description = "Category identifier") Long id) {
         userService.deleteUser(id);
     }
 

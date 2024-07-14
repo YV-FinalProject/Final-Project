@@ -34,7 +34,9 @@ public class CategoryController {
     @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
+    public void deleteCategoriesById(@PathVariable
+                                         @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                                         @Parameter(description = "Category identifier") Long id) {
         categoryService.deleteCategoryById(id);
     }
 
@@ -49,7 +51,10 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
+
+                               @PathVariable
+                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                               @Parameter(description = "Category identifier") Long id) {
         categoryService.updateCategory(categoryRequestDto, id);
     }
 }
