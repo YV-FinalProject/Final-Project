@@ -301,13 +301,13 @@ class ProductServiceTest {
             private Long productId;
             private String name;
             private Integer count;
-            private Timestamp createdAt;
+            private String status;
 
-            public MockProductPending(Long productId, String name, Integer count, Timestamp createdAt) {
+            public MockProductPending(Long productId, String name, Integer count, String status) {
                 this.productId = productId;
                 this.name = name;
                 this.count = count;
-                this.createdAt = createdAt;
+                this.status = status;
             }
 
             @Override
@@ -326,13 +326,13 @@ class ProductServiceTest {
             }
 
             @Override
-            public Timestamp getCreatedAt() {
-                return createdAt;
+            public String getStatus() {
+                return status;
             }
         }
-        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).createdAt(Timestamp.valueOf("2024-12-12 00:00:00")).build();
+        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).status("PENDING").build();
         Integer day = 5;
-        ProductPendingInterface productPendingMock = new MockProductPending(1L,"Test name",2,Timestamp.valueOf("2024-12-12 00:00:00"));
+        ProductPendingInterface productPendingMock = new MockProductPending(1L,"Test name",2,"PENDING");
         List<ProductPendingInterface> productPendingInterfaceList = List.of(productPendingMock);
         when(productRepositoryMock.findProductPending(anyInt())).thenReturn(productPendingInterfaceList);
         when(mappersMock.convertToProductPendingDto(any(ProductPendingInterface.class))).thenReturn(productPendingDto);
@@ -343,7 +343,7 @@ class ProductServiceTest {
         assertEquals(productPendingDto.getProductId(), actualProductPendingDto.getFirst().getProductId());
         assertEquals(productPendingDto.getName(), actualProductPendingDto.getFirst().getName());
         assertEquals(productPendingDto.getCount(), actualProductPendingDto.getFirst().getCount());
-        assertEquals(productPendingDto.getCreatedAt(), actualProductPendingDto.getFirst().getCreatedAt());
+        assertEquals(productPendingDto.getStatus(), actualProductPendingDto.getFirst().getStatus());
     }
 
     @Test

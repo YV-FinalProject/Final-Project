@@ -37,7 +37,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "SELECT  p.ProductID as productId, p.Name as name, SUM(Quantity) as count, SUM(Quantity*Price) as sum " +
                     "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
                     "JOIN Orders o ON oi.OrderId = o.OrderID " +
-                    "WHERE o.Status  = ?1 " +
+                    "WHERE o.Status  = :status " +
                     "GROUP BY p.ProductID, p.Name " +
                     "ORDER BY Count DESC  " +
                     "LIMIT 10"
@@ -56,13 +56,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
 @Query (value =
-           "SELECT  p.ProductID as productId, p.Name as name, SUM(oi.Quantity) as count, o.CreatedAt "+
-           "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID "+
+           "SELECT  p.ProductID as productId, p.Name as name, SUM(oi.Quantity) as count, o.Status "+
+           "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
            "JOIN Orders o ON oi.OrderId = o.OrderID " +
-           "where o.Status = 'PENDING_PAYMENT' and o.CreatedAt < Now() - INTERVAL :days DAY  " +
-           "GROUP BY  p.ProductID, o.CreatedAt "+
+           "where o.Status = 'PENDING_PAYMENT' and o.CreatedAt < Now() - INTERVAL :day DAY  " +
+           "GROUP BY  p.ProductID "+
            "Order by p.ProductID ", nativeQuery = true)
-    List<ProductPendingInterface> findProductPending(Integer days);
+    List<ProductPendingInterface> findProductPending(Integer day);
 
 
 
