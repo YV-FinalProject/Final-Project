@@ -1,7 +1,9 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.config.MapperUtil;
-import com.example.finalproject.dto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductCountDto;
+import com.example.finalproject.dto.querydto.ProductPendingDto;
+import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
@@ -11,31 +13,31 @@ import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
-import com.fasterxml.jackson.core.io.BigDecimalParser;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.*;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-
+    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
     private final MapperUtil mapperUtil;
 
-    @Transactional
+
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
@@ -79,7 +81,8 @@ public class ProductService {
                 productToUpdate.setName(productRequestDto.getName());
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
-                productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setImageUrl(productRequestDto.getImageUrl());
+                productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
             } else {
@@ -112,54 +115,46 @@ public class ProductService {
             return mappers.convertToProductResponseDto(maxDiscountProductList.getFirst());
         }
     }
+    public List<ProductCountDto> getTop10Products(String status) {
+
+        return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
+    }
 
     @Transactional
-    public List<ProductCountDto> getTop10Products(String status) {
-        List<String> temporyList = productRepository.findTop10Products(status);
-        List<ProductCountDto> list1 = new ArrayList<>();
-        for (String entry : temporyList) {
-            String[] stringEntry = entry.split(",");
-            ProductCountDto productCount = new ProductCountDto(Long.parseUnsignedLong(stringEntry[0]),
-                    stringEntry[1],
-                    Integer.valueOf(stringEntry[2]),
-                    BigDecimalParser.parseWithFastParser(stringEntry[3]));
-            list1.add(productCount);
+    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String[] sort) {
+        boolean ascending = true;
+        Sort sortObject = orderBy("name", true);// по умолчанию
+        boolean hasCategory = false;
+
+        if (category == null) { hasCategory = true; }
+        if (minPrice == null) { minPrice =BigDecimal.valueOf( 0.00); }
+        if (maxPrice == null) { maxPrice =BigDecimal.valueOf( Double.MAX_VALUE); }
+        if (sort != null) {
+            if (sort[1].equals("desc")) {
+                ascending = false;
+            }
+            sortObject = orderBy(sort[0], ascending);
         }
-        return list1;
+        return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
 
-//    @Transactional
-//    public List<ProductResponseDto> findProductsByFilter(Long category, Double minPrice, Double maxPrice, Boolean hasDiscount, String[] sort) {
-//        boolean ascending = true;
-//        Sort sortObject = orderBy("name", true);// по умолчанию
-//        boolean hasCategory = false;
-//
-//        if (category == null) {
-//            hasCategory = true;
-//        }
-//        if (minPrice == null) {
-//            minPrice = 0.00;
-//        }
-//        if (maxPrice == null) {
-//            maxPrice = Double.MAX_VALUE;
-//        }
-//        if (sort != null) {
-//            if (sort[1].equals("desc")) {
-//                ascending = false;
-//            }
-//            sortObject = orderBy(sort[0], ascending);
-//        }
-//        List<Product> list = productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject);
-//        return mapperUtil.convertList(list, mappers::convertToProductResponseDto);
-//    }
-//
-//    private Sort orderBy(String sort, Boolean ascending) {
-//        if (!ascending) {
-//            return Sort.by(Sort.Direction.DESC, sort);
-//        } else {
-//            return Sort.by(Sort.Direction.ASC, sort);
-//        }
-//    }
+    public List<ProductPendingDto> findProductPending(Integer days) {
+        return mapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
+    }
+
+
+    public List<ProductProfitDto> findProductProfit(String period, Integer value) {
+        return mapperUtil.convertList(productRepository.findProfitByPeriod(period, value),mappers::convertToProductProfitDto);
+    }
+
+
+    private Sort orderBy(String sort, Boolean ascending) {
+        if (!ascending) {
+            return Sort.by(Sort.Direction.DESC, sort);
+        } else {
+            return Sort.by(Sort.Direction.ASC, sort);
+        }
+    }
 
 }

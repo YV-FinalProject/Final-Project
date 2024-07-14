@@ -31,6 +31,7 @@ public class UserService {
         cart.setUser(user);
         user.setCart(cart);
         userRepository.save(user);
+        cartRepository.save(cart);
     }
 
     @Transactional

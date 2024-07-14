@@ -5,13 +5,12 @@ import jakarta.validation.*;
 import org.modelmapper.spi.*;
 import org.springframework.context.support.*;
 import org.springframework.http.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.*;
 
 import java.util.*;
-import java.util.stream.*;
-
 
 @RestControllerAdvice
 public class AdviceController {
@@ -37,25 +36,13 @@ public class AdviceController {
                 .body(new ErrorMessage(exception.getMessage()));
     }
 
-    @ExceptionHandler(InvalidValueExeption.class)
-    public ResponseEntity<ErrorMessage> exceptionHandler(InvalidValueExeption exception) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body(new ErrorMessage(exception.getMessage()));
-    }
-
-    @ExceptionHandler(UnauthorizedDataException.class)
-    public ResponseEntity<ErrorMessage> exceptionHandler(UnauthorizedDataException exception) {
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorMessage(exception.getMessage()));
-    }
-
     // для обработки ошибок Validation
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
+
         List<String> errors = ex.getBindingResult().getFieldErrors()
-                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
@@ -65,7 +52,7 @@ public class AdviceController {
         List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toList());
+                .toList();
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
@@ -81,6 +68,22 @@ public class AdviceController {
         errors.put("errors", errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> handleMessageNotReadableException(HttpMessageNotReadableException ex) {
+        Map<String, String> errors = new HashMap<>();
+        String exceptionMessage = ex.getMessage();
+        String errorMessage = "Invalid parameter type";
+        if (ex.getMessage() != null) {
+            errorMessage = String.format(exceptionMessage);
+        }
+        errors.put("errors", errorMessage);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+
+
+
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();

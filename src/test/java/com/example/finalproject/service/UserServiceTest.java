@@ -9,7 +9,6 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
 import org.mockito.*;
 import org.mockito.junit.jupiter.*;
-import org.springframework.transaction.annotation.*;
 
 import java.util.*;
 
@@ -62,19 +61,17 @@ class UserServiceTest {
     }
 
     @Test
-    @Transactional
     void registerUser() {
         when(userRepository.existsByEmail(userCreateDto.getEmail())).thenReturn(false);
         when(mappers.convertToUser(userCreateDto)).thenReturn(createUser);
 
         userService.registerUser(userCreateDto);
 
-        verify(userRepository).save(createUser);
-        verify(cartRepository).save(any(Cart.class));
+        verify(userRepository, times(1)).save(createUser);
+        verify(cartRepository, times(1)).save(any(Cart.class));
     }
 
     @Test
-    @Transactional
     void registerUser_ShouldThrowException_WhenEmailAlreadyExists() {
         when(userRepository.existsByEmail(userCreateDto.getEmail())).thenReturn(true);
 
@@ -90,7 +87,6 @@ class UserServiceTest {
     }
 
     @Test
-    @Transactional
     void updateUser() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(updateUser));
 
@@ -99,11 +95,10 @@ class UserServiceTest {
         assertEquals(userUpdateDto.getName(), updateUser.getName());
         assertEquals(userUpdateDto.getPhone(), updateUser.getPhone());
 
-        verify(userRepository).save(updateUser);
+        verify(userRepository, times(1)).save(updateUser);
     }
 
     @Test
-    @Transactional
     void updateUser_ShouldReturnNotFound_WhenUserDoesNotExists() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -119,7 +114,6 @@ class UserServiceTest {
     }
 
     @Test
-    @Transactional
     void deleteUser() {
         User user = new User();
         user.setUserID(1L);
@@ -133,12 +127,11 @@ class UserServiceTest {
 
         userService.deleteUser(1L);
 
-        verify(cartRepository).delete(cart);
-        verify(userRepository).deleteById(1L);
+        verify(cartRepository, times(1)).delete(cart);
+        verify(userRepository, times(1)).deleteById(1L);
     }
 
     @Test
-    @Transactional
     void deleteUser_ShouldReturnNotFound_WhenUserDoesNotExists() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
