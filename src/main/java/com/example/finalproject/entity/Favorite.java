@@ -7,7 +7,6 @@ import lombok.*;
 @Table(name = "Favorites")
 @Getter
 @Setter
-//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Favorite {

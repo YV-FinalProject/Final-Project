@@ -1,6 +1,5 @@
 package com.example.finalproject.service;
 
-
 import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
@@ -37,7 +36,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void insertCategories(CategoryRequestDto categoryRequestDto) {
+    public void insertCategory(CategoryRequestDto categoryRequestDto) {
         Category checkCategory = categoryRepository.findCategoryByName(categoryRequestDto.getName());
         if(checkCategory == null){
             Category category = mappers.convertToCategory(categoryRequestDto);

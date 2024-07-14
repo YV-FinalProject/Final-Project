@@ -9,7 +9,6 @@ import java.math.*;
 @Table(name = "OrderItems")
 @Getter
 @Setter
-//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {

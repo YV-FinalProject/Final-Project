@@ -9,7 +9,6 @@ import java.util.*;
 @Table(name = "Cart")
 @Getter
 @Setter
-//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Cart {

@@ -23,7 +23,7 @@ public class ProductResponseDto {
 
     private Timestamp createdAt;
     private Timestamp updatedAt;
-    private String imageURL;
+    private String imageUrl;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("category")

@@ -54,7 +54,7 @@ class ProductControllerTest {
                 .discountPrice(new BigDecimal("100.00"))
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .updatedAt(Timestamp.valueOf(LocalDateTime.now()))
-                .imageURL("https://example.com/images/deroma_white_garden_pot.jpg")
+                .imageUrl("https://example.com/images/deroma_white_garden_pot.jpg")
                 .categoryResponseDto(CategoryResponseDto.builder()
                         .categoryId(1L)
                         .name("Test category")
@@ -64,7 +64,7 @@ class ProductControllerTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("101.00"))
-                .imageURL("https://example.com/images/magic_garden_seeds.jpg")
+                .imageUrl("https://example.com/images/magic_garden_seeds.jpg")
                 .category("Test category")
                 .build();
     }
@@ -125,13 +125,12 @@ class ProductControllerTest {
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
         BigDecimal maxPrice = BigDecimal.valueOf(100.00);
         Boolean hasDiscount = true;
-        String[] strSort = new String[]{"Name","asc"};
+        String[] strSort = new String[]{"name","asc"};
 
         when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
                 (List.of(productResponseDto)));
         this.mockMvc.perform(get("/products",categoryId,minPrice,maxPrice,hasDiscount,strSort)).andDo(print())
                 .andExpect(status().isOk());
-
     }
 
     @Test
@@ -153,11 +152,11 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProffitByPeriod() throws Exception {
+    void getProfitByPeriod() throws Exception {
         String type = "WEEK";
         Integer period = 55;
         ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
-        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);
+        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
         this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
                 .andExpect(status().isOk());
     }

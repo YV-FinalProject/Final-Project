@@ -7,7 +7,6 @@ import lombok.*;
 @Table(name = "CartItems")
 @Getter
 @Setter
-//@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 
