@@ -118,7 +118,7 @@ public class ProductController {
     @Operation(summary = "Getting top-10 products", description = "Provides functionality for getting top-10 most purchased and top-10 most canceled products")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountDto> getTop10Products(@RequestParam("status")
+    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status")
                                                   @Pattern(regexp = "^(PAID|CANCELED)$", message = "Invalid order status: Must be PAID or CANCELED")
                                                   @Parameter(description = "Status of the order in which the product was placed: <code>PAID</code> or <code>CANCELED</code>") String status) {
         return productService.getTop10Products(status);
