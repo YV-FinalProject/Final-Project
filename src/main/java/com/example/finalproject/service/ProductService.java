@@ -139,8 +139,8 @@ public class ProductService {
     }
 
 
-    public List<ProductPendingDto> findProductPending(Integer days) {
-        return mapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
+    public List<ProductPendingDto> findProductPending(Integer day) {
+        return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
 

@@ -138,26 +138,26 @@ class ProductControllerTest {
         String status = "PAID";
         ProductCountDto productCountDto = ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
         when(productServiceMock.getTop10Products(anyString())).thenReturn(List.of(productCountDto));
-        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
+        this.mockMvc.perform(get("/products/top10?status=PAID")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getProductPending() throws Exception {
-        Integer days = 55;
+        Integer day = 55;
         ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(23).build();
         when(productServiceMock.findProductPending(anyInt())).thenReturn(List.of(productPendingDto));
-        this.mockMvc.perform(get("/products/pending",days)).andDo(print())
+        this.mockMvc.perform(get("/products/pending?day=55")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getProfitByPeriod() throws Exception {
-        String type = "WEEK";
-        Integer period = 55;
-        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
+        String period = "WEEK";
+        Integer value = 55;
+        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(period).sum(BigDecimal.valueOf(234.33)).build();
         when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
-        this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
+        this.mockMvc.perform(get("/products/profit",period,value)).andDo(print())
                 .andExpect(status().isOk());
     }
 

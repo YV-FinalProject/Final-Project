@@ -84,7 +84,8 @@ public class ProductController {
         @RequestParam(value = "minPrice", required = false)  @DecimalMin(value = "0.0") @Digits(integer=6, fraction=2) @Parameter(description = "Minimal price for the filter range") BigDecimal minPrice,
         @RequestParam(value = "maxPrice", required = false)  @DecimalMax (value = "999999.0") @Digits(integer=6, fraction=2) @Parameter(description = "Maximal price for the filter range") BigDecimal maxPrice,
         @RequestParam(value = "discount", required = false, defaultValue = "false")  @NotNull(message = "This parameter can not be null, enter true or false.") @Parameter(description = "Indicator whether a discount is available or not") Boolean hasDiscount,
-        @RequestParam(value = "sort", required = false) @Pattern(regexp = "^((name|price|createdAt|updatedAt)(,asc|,desc)?)?$", message = "Invalid Sorting definition: must be in form '<sort parameter>,<sort order>'") @Parameter(description = "Sorting parameters in ascending and descending order by:<br>name: <code>name,asc</code> / <code>name,desc</code><br>price: <code>price,asc</code> / <code>price,desc</code><br>creation date: <code>createdAt,asc</code> / <code>createdAt,desc</code><br>update date: <code>updatedAt,asc</code> / <code>updatedAt,desc</code>") String[] sort) {
+        @RequestParam(value = "sort", required = false)
+        /*@Pattern(regexp = "^((name|price|createdAt|updatedAt)(,asc|,desc)?)?$", message = "Invalid Sorting definition: must be in form '<sort parameter>,<sort order>'")*/ @Parameter(description = "Sorting parameters in ascending and descending order by:<br>name: <code>name,asc</code> / <code>name,desc</code><br>price: <code>price,asc</code> / <code>price,desc</code><br>creation date: <code>createdAt,asc</code> / <code>createdAt,desc</code><br>update date: <code>updatedAt,asc</code> / <code>updatedAt,desc</code>") String[] sort) {
     return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
 
@@ -105,9 +106,7 @@ public class ProductController {
     @Operation(summary = "Getting profit for certain period ", description = "Provides functionality for getting profit for certain period (days, months, years)")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
-    public List<ProductProfitDto> getProfitByPeriod(
-            @RequestParam(value = "period") String period,
-            @RequestParam(value = "value")  Integer value) {
+
     public List<ProductProfitDto> getProfitByPeriod(
             @RequestParam(value = "period", required = false) @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH") @Parameter(description = "Type of period for profit calculating: <code>DAY</code>, <code>WEEK</code> or <code>MONTH</code>") String period,
             @RequestParam(value = "value", required = false) @Positive(message = "Period length must be a positive number") @Parameter(description = "Length of period for profit calculating") Integer value) {
