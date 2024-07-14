@@ -17,5 +17,5 @@ public class ProductPendingDto {
     private Long productId;
     private String name;
     private Integer count;
-    private Timestamp createdAt;
+    private String status;
 }

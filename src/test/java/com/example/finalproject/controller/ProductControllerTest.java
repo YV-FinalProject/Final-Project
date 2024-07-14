@@ -154,11 +154,11 @@ class ProductControllerTest {
 
     @Test
     void getProffitByPeriod() throws Exception {
-        String type = "WEEK";
-        Integer period = 55;
-        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
-        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);
-        this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
+        String period = "WEEK";
+        Integer value = 55;
+        ProductProfitDto productProfitDto = ProductProfitDto.builder().period("2024-06-06").sum(BigDecimal.valueOf(234.33)).build();
+        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
+        this.mockMvc.perform(get("/products/profit",period,value)).andDo(print())
                 .andExpect(status().isOk());
     }
 

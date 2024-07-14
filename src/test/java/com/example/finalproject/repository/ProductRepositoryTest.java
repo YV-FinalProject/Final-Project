@@ -26,8 +26,6 @@ class ProductRepositoryTest {
 
     @Autowired
     TestEntityManager entityManager;
-    @Autowired
-    private Mappers mappers;
 
     @BeforeEach
     void setUp() {
