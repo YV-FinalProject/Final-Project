@@ -1,6 +1,5 @@
 package com.example.finalproject.repository;
 
-import com.example.finalproject.dto.querydto.ProductCountDto;
 import com.example.finalproject.entity.Product;
 import org.springframework.data.domain.Sort;
 
@@ -8,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.entity.query.ProductPendingInterface;
 import com.example.finalproject.entity.query.ProductProfitInterface;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -51,7 +49,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT product from Product product " +
             "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
             "AND product.price BETWEEN :minPrice and :maxPrice " +
-            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
+            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL)")
     List<Product> findProductsByFilter(Boolean hasCategory, Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Sort sortObject);
 
 

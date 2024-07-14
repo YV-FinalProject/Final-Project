@@ -125,7 +125,7 @@ class FavoriteServiceTest {
                 .name("Name")
                 .description("Description")
                 .price(new BigDecimal("100.00"))
-                .imageURL("http://localhost/img/1.jpg")
+                .imageUrl("http://localhost/img/1.jpg")
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .categoryResponseDto(new CategoryResponseDto(1L, "Category"))
                 .build();

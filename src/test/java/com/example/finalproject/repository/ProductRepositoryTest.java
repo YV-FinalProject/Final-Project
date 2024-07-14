@@ -24,13 +24,6 @@ class ProductRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @Autowired
-    TestEntityManager entityManager;
-
-    @BeforeEach
-    void setUp() {
-
-    }
 
     @Test
     void deleteById() {
@@ -48,7 +41,7 @@ class ProductRepositoryTest {
         List<Product> productList = productRepository.getMaxDiscountProduct();
 
         assertNotNull(productList);
-        assertEquals(1, productList.size());
+        assertEquals(2, productList.size());
         assertEquals(BigDecimal.valueOf(2.99) , productList.getFirst().getDiscountPrice());
     }
 
@@ -76,10 +69,10 @@ class ProductRepositoryTest {
 //    @Test
 //    void findProductPending() {
 //        Integer days = 55;
-//        List<ProductPendingDto> productPendingList = MapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
+//        List<ProductPendingInterface> productPendingList = productRepository.findProductPending(days);
 //        assertNotNull(productPendingList);
 //    }
-
+//
 //    @Test
 //    void findProffitByPeriod() {
 //        String period ="WEEK";

@@ -8,7 +8,6 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.*;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
@@ -82,7 +81,7 @@ public class ProductService {
                 productToUpdate.setName(productRequestDto.getName());
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
-                productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setImageUrl(productRequestDto.getImageUrl());
                 productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
@@ -117,10 +116,11 @@ public class ProductService {
         }
     }
     public List<ProductCountDto> getTop10Products(String status) {
-        List<ProductCountDto> temporyList =mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
-        return temporyList;
+
+        return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
     }
 
+    @Transactional
     public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String[] sort) {
         boolean ascending = true;
         Sort sortObject = orderBy("name", true);// по умолчанию
@@ -139,8 +139,8 @@ public class ProductService {
     }
 
 
-    public List<ProductPendingDto> findProductPending(Integer day) {
-        return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
+    public List<ProductPendingDto> findProductPending(Integer days) {
+        return mapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
     }
 
 
