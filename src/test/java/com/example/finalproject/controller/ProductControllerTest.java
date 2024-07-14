@@ -125,7 +125,7 @@ class ProductControllerTest {
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
         BigDecimal maxPrice = BigDecimal.valueOf(100.00);
         Boolean hasDiscount = true;
-        String[] strSort = new String[]{"name","asc"};
+        String strSort = "name,asc";
 
         when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
                 (List.of(productResponseDto)));
