@@ -109,5 +109,4 @@ public class ProductController {
             @RequestParam(value = "value", required = false) @Positive(message = "Period length must be a positive number") @Parameter(description = "Length of period for profit calculating") Integer value) {
         return  productService.findProductProfit( period, value);
     }
-
 }
