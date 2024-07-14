@@ -129,7 +129,7 @@ class ProductControllerTest {
 
         when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
                 (List.of(productResponseDto)));
-        this.mockMvc.perform(get("/products",categoryId,minPrice,maxPrice,hasDiscount,strSort)).andDo(print())
+        this.mockMvc.perform(get("/products?category=1&minPrice=0.00&maxPrice=100.00&discount=true&sort=name,asc")).andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -137,7 +137,7 @@ class ProductControllerTest {
     void getTop10Products() throws Exception {
         String status = "PAID";
         ProductCountDto productCountDto = ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
-        when(productServiceMock.getTop10Products(anyString())).thenReturn(List.of(productCountDto));
+        when(productServiceMock.getTop10Products(status)).thenReturn(List.of(productCountDto));
         this.mockMvc.perform(get("/products/top10?status=PAID")).andDo(print())
                 .andExpect(status().isOk());
     }
@@ -146,7 +146,7 @@ class ProductControllerTest {
     void getProductPending() throws Exception {
         Integer day = 55;
         ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(23).build();
-        when(productServiceMock.findProductPending(anyInt())).thenReturn(List.of(productPendingDto));
+        when(productServiceMock.findProductPending(day)).thenReturn(List.of(productPendingDto));
         this.mockMvc.perform(get("/products/pending?day=55")).andDo(print())
                 .andExpect(status().isOk());
     }
@@ -156,8 +156,8 @@ class ProductControllerTest {
         String period = "WEEK";
         Integer value = 55;
         ProductProfitDto productProfitDto = ProductProfitDto.builder().period(period).sum(BigDecimal.valueOf(234.33)).build();
-        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
-        this.mockMvc.perform(get("/products/profit",period,value)).andDo(print())
+        when(productServiceMock.findProductProfit(period,value)).thenReturn(List.of(productProfitDto));
+        this.mockMvc.perform(get("/products/profit?period=WEEK&value=55")).andDo(print())
                 .andExpect(status().isOk());
     }
 
