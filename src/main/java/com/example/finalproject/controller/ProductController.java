@@ -101,6 +101,7 @@ public class ProductController {
             @DecimalMin(value = "0.0") @Digits(integer = 6, fraction = 2)
             @Parameter(description = "Minimal price for the filter range") BigDecimal minPrice,
 
+
             @RequestParam(value = "maxPrice", required = false)
             @DecimalMax(value = "999999.0") @Digits(integer = 6, fraction = 2)
             @Parameter(description = "Maximal price for the filter range") BigDecimal maxPrice,
@@ -110,7 +111,7 @@ public class ProductController {
             @Parameter(description = "Indicator whether a discount is available or not") Boolean hasDiscount,
 
             @RequestParam(value = "sort", required = false)
-            @Pattern(regexp = "^((name|price|createdAt|updatedAt)(,asc|,desc))?$", message = "Invalid Sorting definition: must be in form '<sort parameter>,<sort order>'")
+            @Pattern(regexp = "^((name|price|createdAt|updatedAt)(,asc|,desc))?$", message = "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'")
             @Parameter(description = "Sorting parameters in ascending and descending order by:<br>name: <code>name,asc</code> / <code>name,desc</code><br>price: <code>price,asc</code> / <code>price,desc</code><br>creation date: <code>createdAt,asc</code> / <code>createdAt,desc</code><br>update date: <code>updatedAt,asc</code> / <code>updatedAt,desc</code>") String sort) {
         return productService.findProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
