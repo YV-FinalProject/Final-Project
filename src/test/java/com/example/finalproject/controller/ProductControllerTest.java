@@ -156,7 +156,7 @@ class ProductControllerTest {
         String type = "WEEK";
         Integer period = 55;
         ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
-        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(null);
+        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
         this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
                 .andExpect(status().isOk());
     }
