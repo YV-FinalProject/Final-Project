@@ -8,7 +8,6 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.*;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
@@ -117,8 +116,8 @@ public class ProductService {
         }
     }
     public List<ProductCountDto> getTop10Products(String status) {
-        List<ProductCountDto> temporyList =mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
-        return temporyList;
+
+        return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
     }
 
     @Transactional

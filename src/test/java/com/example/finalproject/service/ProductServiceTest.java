@@ -370,11 +370,11 @@ class ProductServiceTest {
         Integer interval = 5;
         ProductProfitInterface productProfitInterface = new MockProductProfit("WEEK",BigDecimal.valueOf(22.0));
         List<ProductProfitInterface> productProfitInterfaceList = List.of(productProfitInterface);
-        when(productRepositoryMock.findProffitByPeriod(anyString(),anyInt())).thenReturn(productProfitInterfaceList);
+        when(productRepositoryMock.findProfitByPeriod(anyString(),anyInt())).thenReturn(productProfitInterfaceList);
         when(mappersMock.convertToProductProfitDto(any(ProductProfitInterface.class))).thenReturn(productProfitDto);
 
         List <ProductProfitDto> actualProductProfitDto = productServiceMock.findProductProfit(period,interval);
-        verify(productRepositoryMock, times(1)).findProffitByPeriod(period,interval);
+        verify(productRepositoryMock, times(1)).findProfitByPeriod(period,interval);
         assertEquals(1, actualProductProfitDto.size());
         assertNotNull(actualProductProfitDto.get(0));
         assertEquals(productProfitDto.getPeriod(), actualProductProfitDto.get(0).getPeriod());

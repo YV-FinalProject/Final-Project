@@ -5,6 +5,7 @@ import com.example.finalproject.dto.requestdto.CategoryRequestDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -33,7 +34,7 @@ public class CategoryController {
     @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
+    public void deleteCategoriesById(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
         categoryService.deleteCategoryById(id);
     }
 
@@ -48,7 +49,7 @@ public class CategoryController {
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long id) {
+                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
         categoryService.updateCategory(categoryRequestDto, id);
     }
 }

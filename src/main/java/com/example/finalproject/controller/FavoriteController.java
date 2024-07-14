@@ -1,9 +1,9 @@
 package com.example.finalproject.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.validation.annotation.*;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
@@ -26,7 +26,7 @@ public class FavoriteController {
     @Operation(summary = "Getting user's favorites", description = "Provides functionality for getting  all user's favorite products")
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long userId) {
+    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "User identifier") Long userId) {
         return favoriteService.getFavoritesByUserId(userId);
     }
 
@@ -34,7 +34,7 @@ public class FavoriteController {
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void insertFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto,
-                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long userId) {
+                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "User identifier") Long userId) {
         favoriteService.insertFavorite(favoriteRequestDto, userId);
     }
 
@@ -42,9 +42,9 @@ public class FavoriteController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void deleteFavoriteByProductId(
-            @RequestParam("userId") @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long userId,
+            @RequestParam("userId") @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "User identifier") Long userId,
 
-            @RequestParam("productId") @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Max(value = Long.MAX_VALUE, message = "Invalid ID: Id must be less than or equal to 9 223 372 036 854 775 807") Long productId) {
+            @RequestParam("productId") @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Product identifier") Long productId) {
         favoriteService.deleteFavoriteByProductId(userId, productId);
     }
 }

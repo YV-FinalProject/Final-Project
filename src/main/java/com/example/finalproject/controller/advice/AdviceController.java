@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.*;
 
 import java.util.*;
-import java.util.stream.*;
 
 @RestControllerAdvice
 public class AdviceController {
@@ -42,7 +41,7 @@ public class AdviceController {
     public ResponseEntity<Map<String, List<String>>> handleValidationErrors(MethodArgumentNotValidException ex) {
 
         List<String> errors = ex.getBindingResult().getFieldErrors()
-                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+                .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
 
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +52,7 @@ public class AdviceController {
         List<String> errors = ex.getConstraintViolations()
                 .stream()
                 .map(ConstraintViolation::getMessage)
-                .collect(Collectors.toList());
+                .toList();
         return new ResponseEntity<>(getErrorsMap(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 
