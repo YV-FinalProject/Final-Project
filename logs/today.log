@@ -12648,3 +12648,73 @@ jakarta.validation.ConstraintViolationException: getProfitByPeriod.value: Period
 2024-07-14 22:57:53.185 | SpringApplicationShutdownHook  | INFO  | org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean      -  Closing JPA EntityManagerFactory for persistence unit 'default'
 2024-07-14 22:57:53.188 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown initiated...
 2024-07-14 22:57:53.198 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown completed.
+2024-07-14 22:58:00.168 | background-preinit             | INFO  | org.hibernate.validator.internal.util.Version                           -  HV000001: Hibernate Validator 8.0.1.Final
+2024-07-14 22:58:00.232 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  Starting FinalProjectApplication using Java 22.0.1 with PID 27576 (C:\Users\Julia Vladimirov\Documents\IT - Study\Pro_BE_Main\Final-Project\target\classes started by Julia Vladimirov in C:\Users\Julia Vladimirov\Documents\IT - Study\Pro_BE_Main\Final-Project)
+2024-07-14 22:58:00.233 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  No active profile set, falling back to 1 default profile: "default"
+2024-07-14 22:58:01.673 | main                           | INFO  | o.s.data.repository.config.RepositoryConfigurationDelegate              -  Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2024-07-14 22:58:01.773 | main                           | INFO  | o.s.data.repository.config.RepositoryConfigurationDelegate              -  Finished Spring Data repository scanning in 90 ms. Found 8 JPA repository interfaces.
+2024-07-14 22:58:02.713 | main                           | INFO  | org.springframework.boot.web.embedded.tomcat.TomcatWebServer            -  Tomcat initialized with port 8080 (http)
+2024-07-14 22:58:02.728 | main                           | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Initializing ProtocolHandler ["http-nio-8080"]
+2024-07-14 22:58:02.731 | main                           | INFO  | org.apache.catalina.core.StandardService                                -  Starting service [Tomcat]
+2024-07-14 22:58:02.731 | main                           | INFO  | org.apache.catalina.core.StandardEngine                                 -  Starting Servlet engine: [Apache Tomcat/10.1.24]
+2024-07-14 22:58:02.819 | main                           | INFO  | org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]         -  Initializing Spring embedded WebApplicationContext
+2024-07-14 22:58:02.821 | main                           | INFO  | o.s.boot.web.servlet.context.ServletWebServerApplicationContext         -  Root WebApplicationContext: initialization completed in 2512 ms
+2024-07-14 22:58:03.078 | main                           | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Starting...
+2024-07-14 22:58:03.475 | main                           | INFO  | com.zaxxer.hikari.pool.HikariPool                                       -  HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@28dd81ad
+2024-07-14 22:58:03.478 | main                           | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Start completed.
+2024-07-14 22:58:04.546 | main                           | INFO  | liquibase.changelog                                                     -  Reading from garden_and_home.databasechangelog
+2024-07-14 22:58:04.633 | main                           | INFO  | liquibase.ui                                                            -  Database is up to date, no changesets to execute
+2024-07-14 22:58:04.637 | main                           | INFO  | liquibase.changelog                                                     -  Reading from garden_and_home.databasechangelog
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  UPDATE SUMMARY
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  Run:                          0
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  Previously run:              34
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  Filtered out:                 0
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  -------------------------------
+2024-07-14 22:58:04.657 | main                           | INFO  | liquibase.util                                                          -  Total change sets:           34
+2024-07-14 22:58:04.659 | main                           | INFO  | liquibase.util                                                          -  Update summary generated
+2024-07-14 22:58:04.684 | main                           | INFO  | liquibase.lockservice                                                   -  Successfully released change log lock
+2024-07-14 22:58:04.686 | main                           | INFO  | liquibase.command                                                       -  Command execution complete
+2024-07-14 22:58:04.810 | main                           | INFO  | org.hibernate.jpa.internal.util.LogHelper                               -  HHH000204: Processing PersistenceUnitInfo [name: default]
+2024-07-14 22:58:04.909 | main                           | INFO  | org.hibernate.Version                                                   -  HHH000412: Hibernate ORM core version 6.4.2.Final
+2024-07-14 22:58:04.963 | main                           | INFO  | org.hibernate.cache.internal.RegionFactoryInitiator                     -  HHH000026: Second-level cache disabled
+2024-07-14 22:58:05.314 | main                           | INFO  | org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo   -  No LoadTimeWeaver setup: ignoring JPA class transformer
+2024-07-14 22:58:06.962 | main                           | INFO  | o.h.engine.transaction.jta.platform.internal.JtaPlatformInitiator       -  HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2024-07-14 22:58:07.107 | main                           | INFO  | org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean      -  Initialized JPA EntityManagerFactory for persistence unit 'default'
+2024-07-14 22:58:07.981 | main                           | INFO  | org.springframework.data.jpa.repository.query.QueryEnhancerFactory      -  JSqlParser is in classpath; If applicable, JSqlParser will be used
+2024-07-14 22:58:07.981 | main                           | INFO  | org.springframework.data.jpa.repository.query.QueryEnhancerFactory      -  Hibernate is in classpath; If applicable, HQL parser will be used.
+2024-07-14 22:58:09.973 | main                           | WARN  | o.s.b.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration    -  spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2024-07-14 22:58:11.782 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Using default implementation for ThreadExecutor
+2024-07-14 22:58:11.802 | main                           | INFO  | org.quartz.core.SchedulerSignalerImpl                                   -  Initialized Scheduler Signaller of type: class org.quartz.core.SchedulerSignalerImpl
+2024-07-14 22:58:11.803 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Quartz Scheduler v.2.3.2 created.
+2024-07-14 22:58:11.804 | main                           | INFO  | org.quartz.simpl.RAMJobStore                                            -  RAMJobStore initialized.
+2024-07-14 22:58:11.805 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler meta-data: Quartz Scheduler (v2.3.2) 'quartzScheduler' with instanceId 'NON_CLUSTERED'
+  Scheduler class: 'org.quartz.core.QuartzScheduler' - running locally.
+  NOT STARTED.
+  Currently in standby mode.
+  Number of jobs executed: 0
+  Using thread pool 'org.quartz.simpl.SimpleThreadPool' - with 10 threads.
+  Using job-store 'org.quartz.simpl.RAMJobStore' - which does not support persistence. and is not clustered.
+
+2024-07-14 22:58:11.805 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Quartz scheduler 'quartzScheduler' initialized from an externally provided properties instance.
+2024-07-14 22:58:11.805 | main                           | INFO  | org.quartz.impl.StdSchedulerFactory                                     -  Quartz scheduler version: 2.3.2
+2024-07-14 22:58:11.805 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  JobFactory set to: org.springframework.scheduling.quartz.SpringBeanJobFactory@3de7a660
+2024-07-14 22:58:11.890 | main                           | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Starting ProtocolHandler ["http-nio-8080"]
+2024-07-14 22:58:11.914 | main                           | INFO  | org.springframework.boot.web.embedded.tomcat.TomcatWebServer            -  Tomcat started on port 8080 (http) with context path '/'
+2024-07-14 22:58:11.918 | main                           | INFO  | org.springframework.scheduling.quartz.SchedulerFactoryBean              -  Starting Quartz Scheduler now
+2024-07-14 22:58:11.918 | main                           | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED started.
+2024-07-14 22:58:11.942 | main                           | INFO  | com.example.finalproject.FinalProjectApplication                        -  Started FinalProjectApplication in 12.64 seconds (process running for 14.244)
+2024-07-14 22:58:16.193 | http-nio-8080-exec-1           | INFO  | org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]         -  Initializing Spring DispatcherServlet 'dispatcherServlet'
+2024-07-14 22:58:16.194 | http-nio-8080-exec-1           | INFO  | org.springframework.web.servlet.DispatcherServlet                       -  Initializing Servlet 'dispatcherServlet'
+2024-07-14 22:58:16.196 | http-nio-8080-exec-1           | INFO  | org.springframework.web.servlet.DispatcherServlet                       -  Completed initialization in 2 ms
+2024-07-14 22:58:17.704 | http-nio-8080-exec-4           | INFO  | org.springdoc.api.AbstractOpenApiResource                               -  Init duration for springdoc-openapi is: 898 ms
+2024-07-14 22:58:42.082 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  Number of orders updated: 0
+2024-07-14 22:58:42.169 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  All orders are delivered. Scheduler stopped.
+2024-07-14 23:03:47.950 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED paused.
+2024-07-14 23:03:47.954 | SpringApplicationShutdownHook  | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Stopping ProtocolHandler ["http-nio-8080"]
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.springframework.scheduling.quartz.SchedulerFactoryBean              -  Shutting down Quartz Scheduler
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED shutting down.
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED paused.
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED shutdown complete.
+2024-07-14 23:03:47.973 | SpringApplicationShutdownHook  | INFO  | org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean      -  Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-07-14 23:03:47.986 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown initiated...
+2024-07-14 23:03:48.068 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown completed.
