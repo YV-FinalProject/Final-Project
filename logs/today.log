@@ -12709,3 +12709,12 @@ jakarta.validation.ConstraintViolationException: getProfitByPeriod.value: Period
 2024-07-14 22:58:17.704 | http-nio-8080-exec-4           | INFO  | org.springdoc.api.AbstractOpenApiResource                               -  Init duration for springdoc-openapi is: 898 ms
 2024-07-14 22:58:42.082 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  Number of orders updated: 0
 2024-07-14 22:58:42.169 | scheduling-1                   | INFO  | com.example.finalproject.scheduler.OrderStatusScheduler                 -  All orders are delivered. Scheduler stopped.
+2024-07-14 23:03:47.950 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED paused.
+2024-07-14 23:03:47.954 | SpringApplicationShutdownHook  | INFO  | org.apache.coyote.http11.Http11NioProtocol                              -  Stopping ProtocolHandler ["http-nio-8080"]
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.springframework.scheduling.quartz.SchedulerFactoryBean              -  Shutting down Quartz Scheduler
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED shutting down.
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED paused.
+2024-07-14 23:03:47.964 | SpringApplicationShutdownHook  | INFO  | org.quartz.core.QuartzScheduler                                         -  Scheduler quartzScheduler_$_NON_CLUSTERED shutdown complete.
+2024-07-14 23:03:47.973 | SpringApplicationShutdownHook  | INFO  | org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean      -  Closing JPA EntityManagerFactory for persistence unit 'default'
+2024-07-14 23:03:47.986 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown initiated...
+2024-07-14 23:03:48.068 | SpringApplicationShutdownHook  | INFO  | com.zaxxer.hikari.HikariDataSource                                      -  HikariPool-1 - Shutdown completed.

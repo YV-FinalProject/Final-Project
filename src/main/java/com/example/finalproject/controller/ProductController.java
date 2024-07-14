@@ -118,7 +118,7 @@ public class ProductController {
     @Operation(summary = "Getting top-10 products", description = "Provides functionality for getting top-10 most purchased and top-10 most canceled products")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
-    public List<ProductCountDto> getTop10Products(@RequestParam(value = "status")
+    public List<ProductCountDto> getTop10Products(@RequestParam("status")
                                                   @Pattern(regexp = "^(PAID|CANCELED)$", message = "Invalid order status: Must be PAID or CANCELED")
                                                   @Parameter(description = "Status of the order in which the product was placed: <code>PAID</code> or <code>CANCELED</code>") String status) {
         return productService.getTop10Products(status);
@@ -127,7 +127,7 @@ public class ProductController {
     @Operation(summary = "Getting 'pending payment' products", description = "Provides functionality for getting products that are in the status 'pending payment' for more than N days")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
-    public List<ProductPendingDto> getProductPending(@RequestParam(value = "day")
+    public List<ProductPendingDto> getProductPending(@RequestParam("day")
                                                      @Positive(message = "Number of days must be a positive number")
                                                      @Parameter(description = "Number of days for <code>PENDING_PAYMENT</code> status") Integer day) {
         return productService.findProductPending(day);
@@ -138,11 +138,11 @@ public class ProductController {
     @GetMapping(value = "/profit")
 
     public List<ProductProfitDto> getProfitByPeriod(
-            @RequestParam(value = "period", required = false)
+            @RequestParam("period")
             @Pattern(regexp = "^(WEEK|DAY|MONTH)$", message = "Invalid type of period: Must be DAY, WEEK or MONTH")
             @Parameter(description = "Type of period for profit calculating: <code>DAY</code>, <code>WEEK</code> or <code>MONTH</code>") String period,
 
-            @RequestParam(value = "value", required = false)
+            @RequestParam("value")
             @Positive(message = "Period length must be a positive number")
             @Parameter(description = "Length of period for profit calculating") Integer value) {
         return productService.findProductProfit(period, value);
