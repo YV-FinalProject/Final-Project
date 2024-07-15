@@ -37,7 +37,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "SELECT  p.ProductID as productId, p.Name as name, SUM(Quantity) as count, SUM(Quantity*Price) as sum " +
                     "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
                     "JOIN Orders o ON oi.OrderId = o.OrderID " +
-                    "WHERE o.Status  = :status " +
+                    "WHERE   "+
+                        "(:status ='PAID' AND o.Status IN ('PAID','ON_THE_WAY','DELIVERED') ) OR " +
+                        "(:status = 'CANCELED' AND o.Status = 'CANCELED' )" +
                     "GROUP BY p.ProductID, p.Name " +
                     "ORDER BY Count DESC  " +
                     "LIMIT 10"
