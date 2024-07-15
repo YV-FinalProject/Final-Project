@@ -230,12 +230,14 @@ class ProductServiceTest {
         class MockProductCount implements ProductCountInterface {
             private Long productId;
             private String name;
+            private String status;
             private Integer count;
             private BigDecimal sum;
 
-            public MockProductCount(Long productId, String name, Integer count, BigDecimal sum) {
+            public MockProductCount(Long productId, String name, String status, Integer count, BigDecimal sum) {
                 this.productId = productId;
                 this.name = name;
+                this.status = status;
                 this.count = count;
                 this.sum = sum;
             }
@@ -251,6 +253,11 @@ class ProductServiceTest {
             }
 
             @Override
+            public String getStatus() {
+                return status;
+            }
+
+            @Override
             public Integer getCount() {
                 return count;
             }
@@ -260,9 +267,9 @@ class ProductServiceTest {
                 return sum;
             }
         }
-        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
+        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").status("PAID").count(2).sum(BigDecimal.valueOf(1.0)).build();
         String sort = "Price";
-        ProductCountInterface productCountMock = new MockProductCount(1L, "Test name", 2, BigDecimal.valueOf(1.0));
+        ProductCountInterface productCountMock = new MockProductCount(1L, "Test name", "PAID",2, BigDecimal.valueOf(1.0));
 
         List<ProductCountInterface> productCountInterfaceList = List.of(productCountMock);
 
@@ -276,6 +283,7 @@ class ProductServiceTest {
         assertNotNull(actualProductCountDto.getFirst());
         assertEquals(productCountDto.getProductId(), actualProductCountDto.getFirst().getProductId());
         assertEquals(productCountDto.getName(), actualProductCountDto.getFirst().getName());
+        assertEquals(productCountDto.getStatus(), actualProductCountDto.getFirst().getStatus());
         assertEquals(productCountDto.getCount(), actualProductCountDto.getFirst().getCount());
         assertEquals(productCountDto.getSum(), actualProductCountDto.getFirst().getSum());
     }
