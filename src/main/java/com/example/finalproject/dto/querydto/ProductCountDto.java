@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class ProductCountDto {
     private Long productId;
     private String name;
+    private String status;
     private Integer count;
     private BigDecimal sum;
 }

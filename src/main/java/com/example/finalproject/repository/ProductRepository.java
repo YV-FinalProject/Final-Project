@@ -1,6 +1,5 @@
 package com.example.finalproject.repository;
 
-import com.example.finalproject.dto.querydto.ProductCountDto;
 import com.example.finalproject.entity.Product;
 import org.springframework.data.domain.Sort;
 
@@ -8,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import com.example.finalproject.entity.query.ProductCountInterface;
 import com.example.finalproject.entity.query.ProductPendingInterface;
 import com.example.finalproject.entity.query.ProductProfitInterface;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,11 +34,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     @Query(value =
-            "SELECT  p.ProductID as productId, p.Name as name, SUM(Quantity) as count, SUM(Quantity*Price) as sum " +
+            "SELECT  p.ProductID as productId, p.Name as name, o.Status as status, SUM(Quantity) as count, SUM(Quantity*Price) as sum " +
                     "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
                     "JOIN Orders o ON oi.OrderId = o.OrderID " +
-                    "WHERE o.Status  = ?1 " +
-                    "GROUP BY p.ProductID, p.Name " +
+                    "WHERE   "+
+                        "(:status ='PAID' AND o.Status IN ('PAID','ON_THE_WAY','DELIVERED') ) OR " +
+                        "(:status = 'CANCELED' AND o.Status = 'CANCELED' )" +
+                    "GROUP BY p.ProductID, p.Name, o.Status " +
                     "ORDER BY Count DESC  " +
                     "LIMIT 10"
             , nativeQuery = true
@@ -49,22 +49,22 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
     @Query("SELECT product from Product product " +
-            "WHERE (:hasCategory = TRUE OR product.category.categoryId = :category) " +
+            "WHERE (:hasCategory = FALSE OR product.category.categoryId = :category) " +
             "AND product.price BETWEEN :minPrice and :maxPrice " +
-            "AND (:hasDiscount = TRUE OR product.discountPrice IS NOT NULL) ")
+            "AND (:hasDiscount = FALSE OR product.discountPrice IS NOT NULL)")
     List<Product> findProductsByFilter(Boolean hasCategory, Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, Sort sortObject);
 
 
 
 
 @Query (value =
-           "SELECT  p.ProductID as productId, p.Name as name, SUM(oi.Quantity) as count, o.CreatedAt "+
-           "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID "+
+           "SELECT  p.ProductID as productId, p.Name as name, SUM(oi.Quantity) as count, o.Status "+
+           "FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
            "JOIN Orders o ON oi.OrderId = o.OrderID " +
-           "where o.Status = 'PENDING_PAYMENT' and o.CreatedAt < Now() - INTERVAL :days DAY  " +
-           "GROUP BY  p.ProductID, o.CreatedAt "+
+           "where o.Status = 'PENDING_PAYMENT' and o.CreatedAt < Now() - INTERVAL :day DAY  " +
+           "GROUP BY  p.ProductID "+
            "Order by p.ProductID ", nativeQuery = true)
-    List<ProductPendingInterface> findProductPending(Integer days);
+    List<ProductPendingInterface> findProductPending(Integer day);
 
 
 
@@ -77,7 +77,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "FROM Products p " +
             "JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
             "JOIN Orders o ON oi.OrderId = o.OrderID " +
-            "WHERE o.Status = 'PENDING_PAYMENT' AND o.CreatedAt >= " +
+            "WHERE o.Status = 'PAID' AND o.CreatedAt >= " +
             "CASE " +
                     "WHEN :period = 'MONTH' THEN NOW() - INTERVAL :value MONTH " +
                     "WHEN :period = 'WEEK' THEN NOW() - INTERVAL :value WEEK " +
@@ -90,6 +90,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "END ",
             nativeQuery = true
     )
-    List<ProductProfitInterface> findProffitByPeriod(String period, Integer value);
+    List<ProductProfitInterface> findProfitByPeriod(String period, Integer value);
 
 }

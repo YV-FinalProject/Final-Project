@@ -30,7 +30,6 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
-    @Transactional
     public OrderResponseDto getOrderById(Long orderId) {
         Order order = orderRepository.findById(orderId).orElse(null);
         if (order != null) {
@@ -43,7 +42,6 @@ public class OrderService {
         }
     }
 
-    @Transactional
     public Set<OrderResponseDto> getOrderHistoryByUserId(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {

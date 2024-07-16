@@ -95,12 +95,12 @@ class CategoryServiceTest {
         when(categoryRepositoryMock.findCategoryByName(categoryRequestDto.getName())).thenReturn(null);
         when(mappersMock.convertToCategory(any(CategoryRequestDto.class))).thenReturn(category);
         category.setCategoryId(0L);
-        categoryServiceMock.insertCategories(categoryRequestDto);
+        categoryServiceMock.insertCategory(categoryRequestDto);
         verify(categoryRepositoryMock, times(1)).save(any(Category.class));
 
         when(categoryRepositoryMock.findCategoryByName(wrongCategoryRequestDto.getName())).thenReturn(category);
         dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
-                () -> categoryServiceMock.insertCategories(wrongCategoryRequestDto));
+                () -> categoryServiceMock.insertCategory(wrongCategoryRequestDto));
     }
 
     @Test

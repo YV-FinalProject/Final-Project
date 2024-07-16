@@ -8,7 +8,6 @@ import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
 import com.example.finalproject.entity.Category;
 import com.example.finalproject.entity.Product;
-import com.example.finalproject.entity.query.*;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
@@ -38,7 +37,7 @@ public class ProductService {
     private final Mappers mappers;
     private final MapperUtil mapperUtil;
 
-    @Transactional
+
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
@@ -82,7 +81,7 @@ public class ProductService {
                 productToUpdate.setName(productRequestDto.getName());
                 productToUpdate.setDescription(productRequestDto.getDescription());
                 productToUpdate.setPrice(productRequestDto.getPrice());
-                productToUpdate.setImageURL(productRequestDto.getImageURL());
+                productToUpdate.setImageUrl(productRequestDto.getImageUrl());
                 productToUpdate.setCategory(category);
                 productToUpdate.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
                 productRepository.save(productToUpdate);
@@ -117,41 +116,37 @@ public class ProductService {
         }
     }
     public List<ProductCountDto> getTop10Products(String status) {
-        log.info("--- Execute service method  getTop10Products with parameters status = " + status );
-        List<ProductCountDto> temporyList =mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
-        return temporyList;
+
+        return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
     }
 
-    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String[] sort) {
+    @Transactional
+    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String sort) {
         boolean ascending = true;
         Sort sortObject = orderBy("name", true);// по умолчанию
         boolean hasCategory = false;
 
-        if (category == null) { hasCategory = true; }
+        if (category != null) { hasCategory = true; }
         if (minPrice == null) { minPrice =BigDecimal.valueOf( 0.00); }
         if (maxPrice == null) { maxPrice =BigDecimal.valueOf( Double.MAX_VALUE); }
         if (sort != null) {
-            if (sort[1].equals("desc")) {
+            String[] sortArray = sort.split(",");
+            if (sortArray[1].equals("desc")) {
                 ascending = false;
             }
-            sortObject = orderBy(sort[0], ascending);
+            sortObject = orderBy(sortArray[0], ascending);
         }
-
-        log.info("--- Execute service method  findProductsByFilter with parameters minPrice = " + minPrice + " maxPrice = " + maxPrice);
-        log.info("--- isDiscount = " + hasDiscount + " sort = " + sort[0] + ","+ sort[1]);
         return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
 
     public List<ProductPendingDto> findProductPending(Integer day) {
-        log.info("--- Execute service method  findProductPending with parameters day = " + day );
         return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
 
     public List<ProductProfitDto> findProductProfit(String period, Integer value) {
-        log.info("--- Execute service method  findProductProfit with parameters period = " + period + "  interval = " + value );
-        return mapperUtil.convertList(productRepository.findProffitByPeriod(period, value),mappers::convertToProductProfitDto);
+        return mapperUtil.convertList(productRepository.findProfitByPeriod(period, value),mappers::convertToProductProfitDto);
     }
 
 

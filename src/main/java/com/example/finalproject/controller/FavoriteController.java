@@ -1,7 +1,10 @@
 package com.example.finalproject.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Min;
 import org.springframework.validation.annotation.*;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
 import com.example.finalproject.dto.responsedto.FavoriteResponseDto;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+@Tag(name = "Favorite controller", description = "Controller for managing user's favorite products")
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -19,23 +23,37 @@ import java.util.Set;
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
+    @Operation(summary = "Getting user's favorites", description = "Provides functionality for getting  all user's favorite products")
     @GetMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
+    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable
+                                                             @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                                                             @Parameter(description = "User identifier") Long userId) {
         return favoriteService.getFavoritesByUserId(userId);
     }
 
+    @Operation(summary = "Inserting a favorite", description = "Provides functionality for inserting a new favorite product for the user")
     @PostMapping(value = "/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void insertFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto,
-                               @PathVariable @Positive(message = "User ID must be a positive number") Long userId) {
+
+                               @PathVariable
+                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                               @Parameter(description = "User identifier") Long userId) {
         favoriteService.insertFavorite(favoriteRequestDto, userId);
     }
 
+    @Operation(summary = "Deleting a favorite", description = "Provides functionality for deleting a favorite product from user's favorites list")
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFavoriteByProductId(@RequestParam("userId") @Positive(message = "User ID must be a positive number") Long userId,
-                                         @RequestParam("productId") @Positive(message = "User ID must be a positive number") Long productId) {
+    public void deleteFavoriteByProductId(
+            @RequestParam("userId")
+            @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+            @Parameter(description = "User identifier") Long userId,
+
+            @RequestParam("productId")
+            @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+            @Parameter(description = "Product identifier") Long productId) {
         favoriteService.deleteFavoriteByProductId(userId, productId);
     }
 }

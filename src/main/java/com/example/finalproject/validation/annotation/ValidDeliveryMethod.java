@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidDeliveryMethod {
-    String message() default "Invalid Delivery method";
+    String message() default "Invalid Delivery method: Must be one of: COURIER_DELIVERY or CUSTOMER_PICKUP";
 
     Class<?>[] groups() default {};
 

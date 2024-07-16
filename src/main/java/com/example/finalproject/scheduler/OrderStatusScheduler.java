@@ -14,8 +14,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@Data
 public class OrderStatusScheduler {
 
     private final OrderRepository orderRepository;
@@ -38,7 +38,7 @@ public class OrderStatusScheduler {
         }
     }
 
-    private void stopScheduler() {
+    public void stopScheduler() {
         active = false;
         if (scheduledTask != null) {
             scheduledTask.cancel(false);

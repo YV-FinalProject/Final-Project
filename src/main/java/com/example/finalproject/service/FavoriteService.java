@@ -25,7 +25,6 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
 
-    @Transactional
     public Set<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user != null) {
