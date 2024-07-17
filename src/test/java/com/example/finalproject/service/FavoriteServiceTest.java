@@ -153,86 +153,86 @@ class FavoriteServiceTest {
     }
 
     @Test
-    void getFavoritesByUserId() {
+    void getFavorite() {
 
-        Long userId = 1L;
-        Long wrongUserId = 58L;
+        String email = "arneoswald@example.com";
+        String wrongEmail = "julia.vladimirov@example.com";
 
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(mappersMock.convertToFavoriteResponseDto(any(Favorite.class))).thenReturn(favoriteResponseDto);
 
-        Set<FavoriteResponseDto> actualFavoriteResponseDtoSet = favoriteServiceMock.getFavoritesByUserId(userId);
+        Set<FavoriteResponseDto> actualFavoriteResponseDtoSet = favoriteServiceMock.getFavorites(email);
 
-        verify(userRepositoryMock, times(1)).findById(userId);
+        verify(userRepositoryMock, times(1)).findByEmail(email);
         verify(mappersMock, times(1)).convertToFavoriteResponseDto(any(Favorite.class));
 
         assertFalse(actualFavoriteResponseDtoSet.isEmpty());
         assertEquals(favoriteResponseDtoSet.size(), actualFavoriteResponseDtoSet.size());
         assertEquals(favoriteResponseDtoSet.hashCode(), actualFavoriteResponseDtoSet.hashCode());
 
-        when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> favoriteServiceMock.getFavoritesByUserId(wrongUserId));
+                () -> favoriteServiceMock.getFavorites(wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
     void insertFavorite() {
 
-        Long userId = 1L;
-        Long wrongUserId = 58L;
+        String email = "arneoswald@example.com";
+        String wrongEmail = "julia.vladimirov@example.com";
 
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(favoriteRequestDto.getProductId())).thenReturn(Optional.of(newProduct));
 
-        favoriteServiceMock.insertFavorite(favoriteRequestDto, userId);
+        favoriteServiceMock.insertFavorite(favoriteRequestDto, email);
 
         verify(favoriteRepositoryMock, times(1)).save(any(Favorite.class));
 
-        when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> favoriteServiceMock.insertFavorite(favoriteRequestDto, wrongUserId));
+                () -> favoriteServiceMock.insertFavorite(favoriteRequestDto, wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
-        when(productRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(productRepositoryMock.findById(wrongFavoriteRequestDto.getProductId())).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> favoriteServiceMock.insertFavorite(wrongFavoriteRequestDto, userId));
+                () -> favoriteServiceMock.insertFavorite(wrongFavoriteRequestDto, email));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
         when(productRepositoryMock.findById(existingFavoriteRequestDto.getProductId())).thenReturn(Optional.of(product));
         dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
-                () -> favoriteServiceMock.insertFavorite(existingFavoriteRequestDto, userId));
+                () -> favoriteServiceMock.insertFavorite(existingFavoriteRequestDto, email));
         assertEquals("This product is already in favorites.", dataAlreadyExistsException.getMessage());
     }
 
     @Test
     void deleteFavoriteByProductId() {
 
-        Long userId = 1L;
-        Long wrongUserId = 58L;
+        String email = "arneoswald@example.com";
+        String wrongEmail = "julia.vladimirov@example.com";
 
         Long productId = 1L;
         Long wrongProductId = 58L;
 
 
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(productId)).thenReturn(Optional.of(product));
 
-        favoriteServiceMock.deleteFavoriteByProductId(userId, productId);
+        favoriteServiceMock.deleteFavoriteByProductId(email, productId);
 
         verify(favoriteRepositoryMock, times(1)).deleteById(user.getFavorites().iterator().next().getFavoriteId());
 
 
-        when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         when(productRepositoryMock.findById(wrongProductId)).thenReturn(Optional.empty());
 
 
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> favoriteServiceMock.deleteFavoriteByProductId(productId, wrongUserId));
+                () -> favoriteServiceMock.deleteFavoriteByProductId(email, wrongProductId));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> favoriteServiceMock.deleteFavoriteByProductId(wrongProductId, userId));
+                () -> favoriteServiceMock.deleteFavoriteByProductId(wrongEmail, productId));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
     }

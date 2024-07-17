@@ -80,13 +80,13 @@ class CategoryServiceTest {
         Long wrongId = 10L;
 
         when(categoryRepositoryMock.findById(id)).thenReturn(Optional.of(category));
-        categoryServiceMock.deleteCategoryById(id);
+        categoryServiceMock.deleteCategory(id);
         verify(categoryRepositoryMock,times(1)).findById(id);
         verify(categoryRepositoryMock,times(1)).deleteById(id);
 
         when(categoryRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> categoryServiceMock.deleteCategoryById(wrongId));
+                () -> categoryServiceMock.deleteCategory(wrongId));
         assertEquals("Category not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 

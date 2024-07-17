@@ -24,6 +24,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @Operation(summary = "Getting order by id", description = "Provides functionality for getting user's order by order id")
+//    @SecurityRequirement(name = "JWT")
     @GetMapping(value = "/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public OrderResponseDto getOrderById(@PathVariable
@@ -33,26 +34,33 @@ public class OrderController {
     }
 
     @Operation(summary = "Getting order history", description = "Provides functionality for getting all orders of a user ")
-    @GetMapping(value = "/history/{userId}")
+//    @SecurityRequirement(name = "JWT")
+    @GetMapping(value = "/history")
     @ResponseStatus(HttpStatus.OK)
-    public Set<OrderResponseDto> getOrderHistoryByUserId(@PathVariable
-                                                             @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                                                             @Parameter(description = "User identifier") Long userId) {
-        return orderService.getOrderHistoryByUserId(userId);
+    public Set<OrderResponseDto> getOrderHistory() {
+
+//        final JwtAuthentication jwtInfoToken = (JwtAuthentication)SecurityContextHolder.getContext().getAuthentication();
+//        String email = jwtInfoToken.getEmail());
+        String email = "torstenbormann@example.com";
+
+        return orderService.getOrderHistory(email);
     }
 
     @Operation(summary = "Inserting a new order", description = "Provides functionality for inserting a new order")
-    @PostMapping(value = "/{userId}")
+//    @SecurityRequirement(name = "JWT")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void insertOrder(@RequestBody @Valid OrderRequestDto orderRequestDto,
+    public void insertOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
 
-                            @PathVariable
-                            @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                            @Parameter(description = "User identifier") Long userId) {
-        orderService.insertOrder(orderRequestDto, userId);
+//        final JwtAuthentication jwtInfoToken = (JwtAuthentication)SecurityContextHolder.getContext().getAuthentication();
+//        String email = jwtInfoToken.getEmail());
+        String email = "torstenbormann@example.com";
+
+        orderService.insertOrder(orderRequestDto, email);
     }
 
     @Operation(summary = "Canceling an order", description = "Provides functionality for canceling an already placed order")
+//    @SecurityRequirement(name = "JWT")
     @PutMapping(value = "/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public void cancelOrder(@PathVariable

@@ -42,15 +42,17 @@ public class ProductController {
     }
 
     @Operation(summary = "Deleting product by id", description = "Provides functionality for deleting a product from product catalog")
+//    @SecurityRequirement(name = "JWT")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteProductsById(@PathVariable
+    public void deleteProduct(@PathVariable
                                    @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
                                    @Parameter(description = "Product identifier") Long id) {
-        productService.deleteProductById(id);
+        productService.deleteProduct(id);
     }
 
     @Operation(summary = "Inserting a new product", description = "Provides functionality for inserting a new product into product catalog")
+//    @SecurityRequirement(name = "JWT")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void insertProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
@@ -58,6 +60,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Updating a product", description = "Provides functionality for updating a product in product catalog")
+//    @SecurityRequirement(name = "JWT")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Validated
@@ -69,6 +72,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Setting discount price", description = "Provides functionality for setting discount price for a product")
+//    @SecurityRequirement(name = "JWT")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void setDiscountPrice(@RequestParam("id")
@@ -83,6 +87,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Getting maximum discount price product", description = "Provides functionality for getting product with maximum discount price")
+//    @SecurityRequirement(name = "JWT")
     @GetMapping(value = "/maxDiscount")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getMaxDiscountProduct() {
@@ -117,6 +122,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Getting top-10 products", description = "Provides functionality for getting top-10 most purchased and top-10 most canceled products")
+//    @SecurityRequirement(name = "JWT")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
     public List<ProductCountDto> getTop10Products(@RequestParam(value = "status")
@@ -126,6 +132,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Getting 'pending payment' products", description = "Provides functionality for getting products that are in the status 'pending payment' for more than N days")
+//    @SecurityRequirement(name = "JWT")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
     public List<ProductPendingDto> getProductPending(@RequestParam("day")
@@ -135,6 +142,7 @@ public class ProductController {
     }
 
     @Operation(summary = "Getting profit for certain period ", description = "Provides functionality for getting profit for certain period (days, months, years)")
+//    @SecurityRequirement(name = "JWT")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
 

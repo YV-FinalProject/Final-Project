@@ -49,7 +49,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProductById(Long id) {
+    public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
             productRepository.deleteById(product.getProductId());
