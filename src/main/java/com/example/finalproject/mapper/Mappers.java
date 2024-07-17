@@ -21,7 +21,7 @@ public class Mappers {
 
     public UserResponseDto convertToUserResponseDto(User user) {
         UserResponseDto usersResponseDto = modelMapper.map(user, UserResponseDto.class);
-        usersResponseDto.setPassword("***");
+     //   usersResponseDto.setPassword("***");
         return usersResponseDto;
     }
 

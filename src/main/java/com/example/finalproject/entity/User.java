@@ -34,6 +34,8 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
+    @Column(name = "RefreshToken")
+    private String refreshToken;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;

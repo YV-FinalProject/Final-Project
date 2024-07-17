@@ -1,6 +1,7 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.requestdto.*;
+import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.*;
 import com.example.finalproject.exception.*;
@@ -52,4 +53,16 @@ public class UserService {
         }
         userRepository.deleteById(id);
     }
+
+    public UserResponseDto findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        UserResponseDto userResponseDto = null;
+        if(user!=null) {
+            userResponseDto = mappers.convertToUserResponseDto(user);
+        } else {
+            new DataNotFoundInDataBaseException("User not found in database.");
+        }
+        return userResponseDto;
+    }
+
 }
