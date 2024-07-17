@@ -143,13 +143,13 @@ class ProductServiceTest {
 
         when(productRepositoryMock.findById(id)).thenReturn(Optional.of(product));
 
-        productServiceMock.deleteProductById(id);
+        productServiceMock.deleteProduct(id);
 
         verify(productRepositoryMock,times(1)).deleteById(product.getProductId());
 
         when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> productServiceMock.deleteProductById(wrongId));
+                () -> productServiceMock.deleteProduct(wrongId));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 

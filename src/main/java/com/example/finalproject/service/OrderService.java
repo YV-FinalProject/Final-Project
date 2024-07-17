@@ -42,8 +42,8 @@ public class OrderService {
         }
     }
 
-    public Set<OrderResponseDto> getOrderHistoryByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Set<OrderResponseDto> getOrderHistory(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Set<Order> ordersSet = user.getOrders();
             Set<OrderResponseDto> orderResponseDtoSet = new HashSet<>();
@@ -63,10 +63,10 @@ public class OrderService {
     }
 
     @Transactional
-    public void insertOrder(OrderRequestDto orderRequestDto, Long userId) {
+    public void insertOrder(OrderRequestDto orderRequestDto, String email) {
         Order orderToInsert = new Order();
 
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
 
             orderToInsert.setUser(user);

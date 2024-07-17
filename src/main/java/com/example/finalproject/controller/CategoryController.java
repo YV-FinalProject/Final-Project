@@ -32,15 +32,17 @@ public class CategoryController {
     }
 
     @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
+//    @SecurityRequirement(name = "JWT")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable
+    public void deleteCategory(@PathVariable
                                          @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
                                          @Parameter(description = "Category identifier") Long id) {
-        categoryService.deleteCategoryById(id);
+        categoryService.deleteCategory(id);
     }
 
     @Operation(summary = "Inserting a category", description = "Provides functionality for inserting a new product category")
+//    @SecurityRequirement(name = "JWT")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void insertCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
@@ -48,6 +50,7 @@ public class CategoryController {
     }
 
     @Operation(summary = "Updating a category", description = "Provides functionality for updating certain product category")
+//    @SecurityRequirement(name = "JWT")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,

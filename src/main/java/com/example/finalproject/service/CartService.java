@@ -29,8 +29,8 @@ public class CartService {
     private final Mappers mappers;
 
 
-    public Set<CartItemResponseDto> getCartItemsByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Set<CartItemResponseDto> getCartItems(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Set<CartItem> cartItemsSet = user.getCart().getCartItems();
             return MapperUtil.convertSet(cartItemsSet, mappers::convertToCartItemResponseDto);
@@ -40,9 +40,9 @@ public class CartService {
     }
 
     @Transactional
-    public void insertCartItem(CartItemRequestDto cartItemRequestDto, Long userId) {
+    public void insertCartItem(CartItemRequestDto cartItemRequestDto, String email) {
         CartItem cartItemToInsert = new CartItem();
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(cartItemRequestDto.getProductId()).orElse(null);
             if (product != null) {
@@ -51,7 +51,7 @@ public class CartService {
                     Set<CartItem> cartItemSet = cart.getCartItems();
                     for(CartItem item : cartItemSet){
                         if(item.getProduct().getProductId().equals(cartItemRequestDto.getProductId())) {
-                            throw new DataAlreadyExistsException("This product is already in Cart.");
+                            throw new DataAlreadyExistsException("This product is already in cart.");
                         }
                     }
                     cartItemToInsert.setCart(cart);
@@ -84,8 +84,8 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCarItemByProductId(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public void deleteCarItemByProductId(String email, Long productId) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {

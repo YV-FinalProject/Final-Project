@@ -30,6 +30,7 @@ public class UserController {
     }
 
     @Operation(summary = "Updating user's account", description = "Provides functionality for updating information in user's account")
+//    @SecurityRequirement(name = "JWT")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable
@@ -42,6 +43,7 @@ public class UserController {
     }
 
     @Operation(summary = "Deleting user's account", description = "Provides functionality for deleting a user's account")
+//    @SecurityRequirement(name = "JWT")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable

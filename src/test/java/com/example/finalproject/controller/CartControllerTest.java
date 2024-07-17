@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -93,12 +94,9 @@ class CartControllerTest {
     }
 
     @Test
-    void getCartItemsByUserId() throws Exception {
-        Long userId = 1L;
-
-        when(cartServiceMock.getCartItemsByUserId(anyLong())).thenReturn(cartItemResponseDtoSet);
-
-        this.mockMvc.perform(get("/cart/{userId}",userId)).andDo(print())
+    void getCartItems() throws Exception {
+        when(cartServiceMock.getCartItems(anyString())).thenReturn(cartItemResponseDtoSet);
+        this.mockMvc.perform(get("/cart")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..cartItemId").value(1))
                 .andExpect(jsonPath("$..product.productId").value(1));
@@ -106,8 +104,7 @@ class CartControllerTest {
 
     @Test
     void insertCartItem() throws Exception  {
-        Long userId = 1L;
-        mockMvc.perform(post("/cart/{userId}", userId)
+        mockMvc.perform(post("/cart")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(cartItemRequestDto))).andDo(print())
                 .andExpect(status().isOk());
@@ -115,10 +112,8 @@ class CartControllerTest {
 
     @Test
     void deleteCarItemByProductId() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/cart?userId=1&productId=1"))
+        mockMvc.perform(delete("/cart/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 }
