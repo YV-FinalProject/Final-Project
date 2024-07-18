@@ -1,5 +1,6 @@
 package com.example.finalproject.service;
 
+import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.*;
@@ -12,12 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-        private final PasswordEncoder passwordEncoder; ////это задел на Spring Security
+        private final PasswordEncoder passwordEncoder;
     private final Mappers mappers;
     private final CartRepository cartRepository;
 
@@ -28,7 +32,22 @@ public class UserService {
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.CLIENT);
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword())); ////это задел на Spring Security
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        Cart cart = new Cart();
+        cart.setUser(user);
+        user.setCart(cart);
+        userRepository.save(user);
+        cartRepository.save(cart);
+    }
+
+    @Transactional
+    public void registerAdmin(UserRequestDto userRequestDto) {
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new DataAlreadyExistsException("User already exists.");
+        }
+        User user = mappers.convertToUser(userRequestDto);
+        user.setRole(Role.ADMINISTRATOR);
+        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
         Cart cart = new Cart();
         cart.setUser(user);
         user.setCart(cart);
@@ -57,13 +76,18 @@ public class UserService {
 
     public UserResponseDto findByEmail(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
-        UserResponseDto userResponseDto = null;
+        UserResponseDto userResponseDto;
         if(user!=null) {
             userResponseDto = mappers.convertToUserResponseDto(user);
         } else {
-            new DataNotFoundInDataBaseException("User not found in database.");
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
         return userResponseDto;
     }
 
+    public Set<UserResponseDto> getUsers() {
+        Set<User> users = new HashSet<>();
+        users.addAll(userRepository.findAll());
+        return MapperUtil.convertSet(users, mappers::convertToUserResponseDto);
+    }
 }

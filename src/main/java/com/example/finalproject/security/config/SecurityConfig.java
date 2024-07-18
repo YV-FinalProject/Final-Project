@@ -33,13 +33,14 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/login", "/auth/token",
                                         "/users/register",
-//                                        "/products","/products/{id}",
-//                                        "/categories",
+                                        "/products","/products/*",
+                                        "/categories",
                                         "/manage/**",
                                         "/swagger-ui.html",
                                         "/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**"
                                 )
                                 .permitAll()
+
                                 .anyRequest().authenticated()
 //                                .anyRequest().permitAll()
                 ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();

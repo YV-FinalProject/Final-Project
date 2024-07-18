@@ -17,16 +17,16 @@ public class JwtAuthentication implements Authentication {
 
     private boolean authenticated;
 
-    private String username;
+    private String email;
 
     private String firstName;
 
     private Set<SimpleGrantedAuthority> roles;
 
-    public JwtAuthentication(String username, Collection<String> roles) {
-        this.username = username;
+    public JwtAuthentication(String email, Collection<String> roles) {
+        this.email = email;
         this.roles = roles.stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
     }
 
@@ -47,7 +47,7 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return email;
     }
 
     @Override
