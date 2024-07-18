@@ -206,6 +206,7 @@ class CartServiceTest {
         dataAlreadyExistsException = assertThrows(DataAlreadyExistsException.class,
                 () -> cartServiceMock.insertCartItem(existingCartItemRequestDto, email));
         assertEquals("This product is already in cart.", dataAlreadyExistsException.getMessage());
+
     }
 
     @Test

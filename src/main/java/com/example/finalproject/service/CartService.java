@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -49,9 +50,22 @@ public class CartService {
                 Cart cart = cartRepository.findById(user.getCart().getCartId()).orElse(null);
                 if (cart != null) {
                     Set<CartItem> cartItemSet = cart.getCartItems();
-                    for(CartItem item : cartItemSet){
-                        if(item.getProduct().getProductId().equals(cartItemRequestDto.getProductId())) {
-                            throw new DataAlreadyExistsException("This product is already in cart.");
+                    if(cartItemSet == null) {
+                        cartItemToInsert.setCart(cart);
+                        cartItemToInsert.setCartItemId(0L);
+                        cartItemToInsert.setProduct(product);
+                        cartItemToInsert.setQuantity(cartItemRequestDto.getQuantity());
+                        cartItemRepository.save(cartItemToInsert);
+
+                        Set<CartItem> cartItemToInsertSet = new HashSet<>();
+                        cartItemToInsertSet.add(cartItemToInsert);
+                        cart.setCartItems(cartItemToInsertSet);
+                        cartRepository.save(cart);
+                    } else {
+                        for (CartItem item : cartItemSet) {
+                            if (item.getProduct().getProductId().equals(cartItemRequestDto.getProductId())) {
+                                throw new DataAlreadyExistsException("This product is already in cart.");
+                            }
                         }
                     }
                     cartItemToInsert.setCart(cart);
@@ -60,20 +74,20 @@ public class CartService {
                     cartItemToInsert.setQuantity(cartItemRequestDto.getQuantity());
                     cartItemRepository.save(cartItemToInsert);
                 }
-//                else {
-//                    Cart newCart = new Cart();
-//                    newCart.setUser(user);
-//                    Cart savedCart = cartRepository.save(newCart);
-//                    cartItemToInsert.setCart(savedCart);
-//                    cartItemToInsert.setCartItemId(0L);
-//                    cartItemToInsert.setProduct(product);
-//                    cartItemToInsert.setQuantity(cartItemRequestDto.getQuantity());
-//                    CartItem savedCartItem = cartItemRepository.save(cartItemToInsert);
-//                    Set<CartItem> newCartItemSet = new HashSet<>();
-//                    newCartItemSet.add(savedCartItem);
-//                    savedCart.setCartItems(newCartItemSet);
-//                    cartRepository.save(savedCart);
-//                }
+                else {
+                    Cart newCart = new Cart();
+                    newCart.setUser(user);
+                    Cart savedCart = cartRepository.save(newCart);
+                    cartItemToInsert.setCart(savedCart);
+                    cartItemToInsert.setCartItemId(0L);
+                    cartItemToInsert.setProduct(product);
+                    cartItemToInsert.setQuantity(cartItemRequestDto.getQuantity());
+                    CartItem savedCartItem = cartItemRepository.save(cartItemToInsert);
+                    Set<CartItem> newCartItemSet = new HashSet<>();
+                    newCartItemSet.add(savedCartItem);
+                    savedCart.setCartItems(newCartItemSet);
+                    cartRepository.save(savedCart);
+                }
 
             } else {
                 throw new DataNotFoundInDataBaseException("Product not found in database.");
