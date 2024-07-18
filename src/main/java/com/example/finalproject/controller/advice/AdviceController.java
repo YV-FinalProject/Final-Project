@@ -1,6 +1,10 @@
 package com.example.finalproject.controller.advice;
 
 import com.example.finalproject.exception.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.security.auth.message.AuthException;
 import jakarta.validation.*;
 import org.modelmapper.spi.*;
@@ -39,6 +43,34 @@ public class AdviceController {
 
     @ExceptionHandler(AuthException.class)
     public ResponseEntity<ErrorMessage> exceptionHandler(AuthException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(ExpiredJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(UnsupportedJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(MalformedJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(SignatureException exception) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorMessage(exception.getMessage()));
@@ -88,10 +120,6 @@ public class AdviceController {
         errors.put("errors", errorMessage);
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
-
-
-
 
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();

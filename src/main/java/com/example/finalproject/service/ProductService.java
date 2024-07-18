@@ -38,7 +38,7 @@ public class ProductService {
     private final MapperUtil mapperUtil;
 
 
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
             return mappers.convertToProductResponseDto(product);
@@ -121,7 +121,7 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String sort) {
+    public List<ProductResponseDto> getProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String sort) {
         boolean ascending = true;
         Sort sortObject = orderBy("name", true);// по умолчанию
         boolean hasCategory = false;

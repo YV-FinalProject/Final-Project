@@ -11,7 +11,7 @@ public class JwtUtils {
 
     public static JwtAuthentication generate(Claims claims) {
         // Extract the username from the claims
-        String username = claims.getSubject();
+        String email = claims.getSubject();
         // Extract the roles list from the claims
         List<?> rolesObjectList = claims.get("roles", List.class);
         // Convert the roles list to a list of strings
@@ -19,6 +19,6 @@ public class JwtUtils {
                 .map(Object::toString)
                 .collect(Collectors.toList());
         // Create and return a JwtAuthentication object with the extracted information
-        return new JwtAuthentication(username, roles);
+        return new JwtAuthentication(email, roles);
     }
 }

@@ -117,13 +117,13 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProductById() {
+    void getProduct() {
         Long id = 1L;
         Long wrongId = 58L;
 
         when(productRepositoryMock.findById(anyLong())).thenReturn(Optional.of(product));
         when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-        ProductResponseDto actualProductResponseDto = productServiceMock.getProductById(id);
+        ProductResponseDto actualProductResponseDto = productServiceMock.getProduct(id);
 
         verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
         verify(productRepositoryMock, times(1)).findById(id);
@@ -131,7 +131,7 @@ class ProductServiceTest {
 
         when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> productServiceMock.getProductById(wrongId));
+                () -> productServiceMock.getProduct(wrongId));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
     }
@@ -289,7 +289,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void findProductsByFilter() {
+    void getProductsByFilter() {
         Boolean hasCategory = true;
         Long categoryId = 1L;
         BigDecimal minPrice = BigDecimal.valueOf(0.00);

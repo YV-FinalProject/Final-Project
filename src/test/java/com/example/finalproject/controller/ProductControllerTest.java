@@ -70,9 +70,9 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductsById() throws Exception {
+    void getProduct() throws Exception {
         Long id = 1L;
-        when(productServiceMock.getProductById(anyLong())).thenReturn(productResponseDto);
+        when(productServiceMock.getProduct(anyLong())).thenReturn(productResponseDto);
         this.mockMvc.perform(get("/products/{id}",id)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
@@ -127,7 +127,7 @@ class ProductControllerTest {
         Boolean hasDiscount = true;
         String strSort = "name,asc";
 
-        when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
+        when(productServiceMock.getProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
                 (List.of(productResponseDto)));
         this.mockMvc.perform(get("/products?category=1&minPrice=0.00&maxPrice=100.00&discount=true&sort=name,asc")).andDo(print())
                 .andExpect(status().isOk());
