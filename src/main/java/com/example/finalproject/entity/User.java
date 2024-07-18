@@ -16,7 +16,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UserID")
-    private Long UserID;
+    private Long userId;
 
     @Column(name = "Name")
     private String name;
@@ -34,6 +34,8 @@ public class User {
     @Column(name = "Role")
     private Role role;
 
+    @Column(name = "RefreshToken")
+    private String refreshToken;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;

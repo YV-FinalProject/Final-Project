@@ -1,6 +1,7 @@
 package com.example.finalproject.controller.advice;
 
 import com.example.finalproject.exception.*;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.*;
 import org.modelmapper.spi.*;
 import org.springframework.context.support.*;
@@ -33,6 +34,13 @@ public class AdviceController {
     public ResponseEntity<ErrorMessage> exceptionHandler(OrderStatusException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(AuthException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorMessage(exception.getMessage()));
     }
 

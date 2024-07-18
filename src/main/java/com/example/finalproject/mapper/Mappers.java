@@ -20,9 +20,7 @@ public class Mappers {
     private final ModelMapper modelMapper;
 
     public UserResponseDto convertToUserResponseDto(User user) {
-        UserResponseDto usersResponseDto = modelMapper.map(user, UserResponseDto.class);
-        usersResponseDto.setPassword("***");
-        return usersResponseDto;
+        return modelMapper.map(user, UserResponseDto.class);
     }
 
     public User convertToUser(UserRequestDto userRequestDto) {
@@ -37,18 +35,6 @@ public class Mappers {
         return favoriteResponseDto;
     }
 
-//    public Favorite convertToFavorite(FavoriteResponseDto favoriteDto) {
-//        return modelMapper.map(favoriteDto, Favorite.class);
-//    }
-
-
-//    public CartResponseDto convertToCartResponseDto(Cart cart) {
-//        return modelMapper.map(cart, CartResponseDto.class);
-//    }
-
-//    public Cart convertToCart(CartRequestDto cartRequestDto) {
-//        return modelMapper.map(cartRequestDto, Cart.class);
-//    }
 
 
     public CartItemResponseDto convertToCartItemResponseDto(CartItem cartItem) {
