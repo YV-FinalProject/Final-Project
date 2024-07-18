@@ -21,7 +21,7 @@ public class AuthController {
     private final AuthService authService;
 
 
-    @Operation(summary = "Logging in a new user", description = "Provides functionality for logging in a new user")
+    @Operation(summary = "Logging in a user", description = "Provides functionality for logging in a user")
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException {
         final JwtResponse token = authService.login(authRequest);
