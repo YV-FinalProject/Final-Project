@@ -116,7 +116,7 @@ class UserServiceTest {
     @Test
     void deleteUser() {
         User user = new User();
-        user.setUserID(1L);
+        user.setUserId(1L);
 
         Cart cart = new Cart();
         cart.setCartId(1L);

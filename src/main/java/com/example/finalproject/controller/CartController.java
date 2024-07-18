@@ -2,6 +2,7 @@ package com.example.finalproject.controller;
 
 import com.example.finalproject.dto.requestdto.CartItemRequestDto;
 import com.example.finalproject.dto.responsedto.CartItemResponseDto;
+import com.example.finalproject.security.jwt.JwtAuthentication;
 import com.example.finalproject.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,9 +31,8 @@ public class CartController {
     @ResponseStatus(HttpStatus.OK)
     public Set<CartItemResponseDto> getCartItems() {
 
-//        final JwtAuthentication jwtInfoToken = (JwtAuthentication)SecurityContextHolder.getContext().getAuthentication();
-//        String email = jwtInfoToken.getEmail());
-        String email = "torstenbormann@example.com";
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getUsername();
 
         return cartService.getCartItems(email);
     }

@@ -22,22 +22,8 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    /**
-     * The JWT filter bean for processing JWT tokens.
-     */
     private final JwtFilter jwtFilter;
 
-    /**
-     * Configures the security filter chain.
-     * <p>
-     * This method sets up the security configurations such as CSRF disabling, session management policy,
-     * authorization rules and adds the JWT filter after the UsernamePasswordAuthenticationFilter.
-     * </p>
-     *
-     * @param http the HttpSecurity instance to configure.
-     * @return the SecurityFilterChain instance.
-     * @throws Exception if an error occurs during configuration.
-     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
@@ -47,8 +33,8 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/auth/login", "/auth/token",
                                         "/users/register",
-                                        //"/products/top10","/products/{id}",
-                                        "/categories",
+//                                        "/products","/products/{id}",
+//                                        "/categories",
                                         "/manage/**",
                                         "/swagger-ui.html",
                                         "/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**"
