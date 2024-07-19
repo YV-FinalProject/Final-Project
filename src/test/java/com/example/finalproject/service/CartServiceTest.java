@@ -75,6 +75,7 @@ class CartServiceTest {
                 Role.CLIENT,
                 null,
                 null,
+                null,
                 null);
 
         cart = new Cart(1L, null, user);
@@ -187,7 +188,6 @@ class CartServiceTest {
         verify(userRepositoryMock, times(1)).findByEmail(email);
         verify(productRepositoryMock, times(1)).findById(cartItemRequestDto.getProductId());
         verify(cartRepositoryMock, times(1)).findById(user.getCart().getCartId());
-
         verify(cartItemRepositoryMock, times(1)).save(any(CartItem.class));
 
 
@@ -195,6 +195,7 @@ class CartServiceTest {
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.insertCartItem(cartItemRequestDto, wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+
 
         when(productRepositoryMock.findById(wrongCartItemRequestDto.getProductId())).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,

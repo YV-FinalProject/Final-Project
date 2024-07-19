@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
 
 @Tag(name = "User controller", description = "Controller fo managing user's accounts")
 @RestController
@@ -50,8 +49,8 @@ public class UserController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable
-                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                               @Parameter(description = "User identifier") Long id,
+                           @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                           @Parameter(description = "User identifier") Long id,
 
                            @RequestBody @Validated(UpdateGroup.class) UserRequestDto userUpdateDto) {
 
@@ -64,19 +63,22 @@ public class UserController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable
-                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                               @Parameter(description = "Category identifier") Long id) {
+                           @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                           @Parameter(description = "Category identifier") Long id) {
         userService.deleteUser(id);
     }
 
-    @Operation(summary = "Getting all users", description = "Provides functionality for getting all registered users (including administrators)")
+    @Operation(summary = "Getting user by email", description = "Provides functionality for getting user by his email")
     @SecurityRequirement(name = "JWT")
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Set<UserResponseDto> getUsers() {
-        return userService.getUsers();
+    public UserResponseDto getUserByEmail(@RequestParam("email")
+                                          @Pattern(regexp = "^[a-zA-Z0-9]+[\\w.+-]{2,30}@[a-zA-Z0-9-]{3,30}.[a-zA-Z0-9-.]{2,30}$", message = "Invalid email")
+                                          @Parameter(description = "User's email") String email) {
+        return userService.getUserByEmail(email);
     }
+
 
 }
 

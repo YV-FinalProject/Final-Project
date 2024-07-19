@@ -1,6 +1,5 @@
 package com.example.finalproject.service;
 
-import com.example.finalproject.config.MapperUtil;
 import com.example.finalproject.dto.requestdto.*;
 import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.*;
@@ -13,15 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-        private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final Mappers mappers;
     private final CartRepository cartRepository;
 
@@ -74,10 +71,10 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserResponseDto findByEmail(String email) {
+    public UserResponseDto getUserByEmail(String email) {
         User user = userRepository.findByEmail(email).orElse(null);
         UserResponseDto userResponseDto;
-        if(user!=null) {
+        if (user != null) {
             userResponseDto = mappers.convertToUserResponseDto(user);
         } else {
             throw new DataNotFoundInDataBaseException("User not found in database.");
@@ -85,9 +82,4 @@ public class UserService {
         return userResponseDto;
     }
 
-    public Set<UserResponseDto> getUsers() {
-        Set<User> users = new HashSet<>();
-        users.addAll(userRepository.findAll());
-        return MapperUtil.convertSet(users, mappers::convertToUserResponseDto);
-    }
 }

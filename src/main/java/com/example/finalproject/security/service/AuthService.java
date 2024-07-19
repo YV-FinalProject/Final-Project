@@ -3,7 +3,6 @@ package com.example.finalproject.security.service;
 import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.User;
 import com.example.finalproject.repository.UserRepository;
-import com.example.finalproject.security.jwt.JwtAuthentication;
 import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.security.jwt.JwtRequest;
 import com.example.finalproject.security.jwt.JwtResponse;
@@ -12,7 +11,6 @@ import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +27,7 @@ public class AuthService {
     private final UserRepository userRepository;
 
     public JwtResponse login(JwtRequest authRequest) throws AuthException {
-        final UserResponseDto userResponseDto = userService.findByEmail(authRequest.getEmail());
+        final UserResponseDto userResponseDto = userService.getUserByEmail(authRequest.getEmail());
         if (userResponseDto == null) throw new AuthException("User not found in database");
 
         if (passwordEncoder.matches(authRequest.getPassword(), userResponseDto.getPassword())) {
@@ -59,7 +57,7 @@ public class AuthService {
             if (user != null) {
                 final String savedRefreshToken = user.getRefreshToken();
                 if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-                    final UserResponseDto userResponseDto = userService.findByEmail(email);
+                    final UserResponseDto userResponseDto = userService.getUserByEmail(email);
                     if (userResponseDto == null) {
                         throw new AuthException("User not found in database");
                     }
@@ -87,7 +85,7 @@ public class AuthService {
                 final String savedRefreshToken = user.getRefreshToken();
 
                 if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-                    final UserResponseDto userResponseDto = userService.findByEmail(email);
+                    final UserResponseDto userResponseDto = userService.getUserByEmail(email);
                     if (userResponseDto == null) {
                         throw new AuthException("User not found in database");
                     }

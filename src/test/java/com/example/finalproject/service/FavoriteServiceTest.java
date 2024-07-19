@@ -73,6 +73,7 @@ class FavoriteServiceTest {
                 Role.CLIENT,
                 null,
                 null,
+                null,
                 null);
 
 
