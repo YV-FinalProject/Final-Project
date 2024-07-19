@@ -26,7 +26,7 @@ public class JwtAuthentication implements Authentication {
     public JwtAuthentication(String email, Collection<String> roles) {
         this.email = email;
         this.roles = roles.stream()
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
     }
 
