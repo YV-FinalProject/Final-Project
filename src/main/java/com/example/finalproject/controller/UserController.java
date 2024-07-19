@@ -78,7 +78,5 @@ public class UserController {
                                           @Parameter(description = "User's email") String email) {
         return userService.getUserByEmail(email);
     }
-
-
 }
 
