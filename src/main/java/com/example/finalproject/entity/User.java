@@ -28,7 +28,7 @@ public class User {
     private String phone;
 
     @Column(name = "PasswordHash")
-    private String password;
+    private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")

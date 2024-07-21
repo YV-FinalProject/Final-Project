@@ -29,7 +29,7 @@ public class UserService {
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.CLIENT);
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         Cart cart = new Cart();
         cart.setUser(user);
         user.setCart(cart);
@@ -44,7 +44,7 @@ public class UserService {
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.ADMINISTRATOR);
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
+        user.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         Cart cart = new Cart();
         cart.setUser(user);
         user.setCart(cart);
