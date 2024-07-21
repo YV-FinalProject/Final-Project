@@ -1,11 +1,12 @@
 package com.example.finalproject.security.jwt;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 
-@Setter
-@Getter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtRequest {
 
     private String email;

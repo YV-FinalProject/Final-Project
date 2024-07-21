@@ -117,7 +117,7 @@ class FavoriteServiceTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("Pass1$trong")
                 .role(Role.CLIENT)
                 .build();
 

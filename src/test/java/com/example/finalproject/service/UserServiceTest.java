@@ -36,7 +36,7 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
+    private DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
 
     private UserRequestDto userCreateDto;
     private User createUser;
@@ -58,7 +58,7 @@ class UserServiceTest {
         createUser.setName("Arne Oswald");
         createUser.setEmail("arneoswald@example.com");
         createUser.setPhone("+111111111111");
-        createUser.setPassword("ClientPass1$trong");
+        createUser.setPasswordHash("$2a$10$yovX4MDz2oZKpqq6DiWfrOkpJ3");
 
         userUpdateDto = UserRequestDto.builder()
                 .name("New Arne Oswald")
@@ -74,7 +74,7 @@ class UserServiceTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("ClientPass1$trong")
+                .passwordHash("$2a$10$yovX4MDz2oZKpqq6DiWfrOkpJ3")
                 .role(Role.CLIENT)
                 .build();
 
@@ -82,7 +82,7 @@ class UserServiceTest {
                 "Arne Oswald",
                 "arneoswald@example.com",
                 "+496151226",
-                "Pass1$trong",
+                "$2a$10$yovX4MDz2oZKpqq6DiWfrOkpJ3",
                 Role.CLIENT,
                 null,
                 null,
@@ -230,7 +230,6 @@ class UserServiceTest {
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> userService.getUserByEmail(wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
-
     }
 
 }
