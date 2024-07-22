@@ -38,7 +38,7 @@ public class ProductService {
     private final MapperUtil mapperUtil;
 
 
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
             return mappers.convertToProductResponseDto(product);
@@ -49,7 +49,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteProductById(Long id) {
+    public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
             productRepository.deleteById(product.getProductId());
@@ -121,26 +121,27 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponseDto> findProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String[] sort) {
+    public List<ProductResponseDto> getProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String sort) {
         boolean ascending = true;
         Sort sortObject = orderBy("name", true);// по умолчанию
         boolean hasCategory = false;
 
-        if (category == null) { hasCategory = true; }
+        if (category != null) { hasCategory = true; }
         if (minPrice == null) { minPrice =BigDecimal.valueOf( 0.00); }
         if (maxPrice == null) { maxPrice =BigDecimal.valueOf( Double.MAX_VALUE); }
         if (sort != null) {
-            if (sort[1].equals("desc")) {
+            String[] sortArray = sort.split(",");
+            if (sortArray[1].equals("desc")) {
                 ascending = false;
             }
-            sortObject = orderBy(sort[0], ascending);
+            sortObject = orderBy(sortArray[0], ascending);
         }
         return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
 
-    public List<ProductPendingDto> findProductPending(Integer days) {
-        return mapperUtil.convertList(productRepository.findProductPending(days),mappers::convertToProductPendingDto);
+    public List<ProductPendingDto> findProductPending(Integer day) {
+        return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
 

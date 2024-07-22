@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -62,7 +63,7 @@ class OrderControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("Pass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -123,21 +124,19 @@ class OrderControllerTest {
     }
 
     @Test
-    void getOrderHistoryByUserId() throws Exception {
-        Long userId = 1L;
+    void getOrderHistory() throws Exception {
         Set<OrderResponseDto> orderResponseDtoSet = new HashSet<>();
         orderResponseDtoSet.add(orderResponseDto);
-        when(orderServiceMock.getOrderHistoryByUserId(anyLong())).thenReturn(orderResponseDtoSet);
+        when(orderServiceMock.getOrderHistory(anyString())).thenReturn(orderResponseDtoSet);
 
-        this.mockMvc.perform(get("/orders/history/{orderId}", userId)).andDo(print())
+        this.mockMvc.perform(get("/orders/history")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..contactPhone").value(orderResponseDto.getContactPhone()));
     }
 
     @Test
     void insertOrder() throws Exception {
-        Long userId = 1L;
-        mockMvc.perform(post("/orders/{userId}", userId)
+        mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequestDto)))
                 .andDo(print())

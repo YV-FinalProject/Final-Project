@@ -6,11 +6,13 @@ import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,13 +34,19 @@ public class CategoryController {
     }
 
     @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
+    @SecurityRequirement(name = "JWT")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCategoriesById(@PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
-        categoryService.deleteCategoryById(id);
+    public void deleteCategory(@PathVariable
+                                         @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                                         @Parameter(description = "Category identifier") Long id) {
+        categoryService.deleteCategory(id);
     }
 
     @Operation(summary = "Inserting a category", description = "Provides functionality for inserting a new product category")
+    @SecurityRequirement(name = "JWT")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void insertCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
@@ -46,10 +54,15 @@ public class CategoryController {
     }
 
     @Operation(summary = "Updating a category", description = "Provides functionality for updating certain product category")
+    @SecurityRequirement(name = "JWT")
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                               @PathVariable @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1") @Parameter(description = "Category identifier") Long id) {
+
+                               @PathVariable
+                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                               @Parameter(description = "Category identifier") Long id) {
         categoryService.updateCategory(categoryRequestDto, id);
     }
 }

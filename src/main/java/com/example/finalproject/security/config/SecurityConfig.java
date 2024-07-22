@@ -1,18 +1,20 @@
 package com.example.finalproject.security.config;
 
-import com.example.finalproject.security.jwt.*;
-import lombok.*;
-import org.springframework.context.annotation.*;
-import org.springframework.security.config.annotation.method.configuration.*;
-import org.springframework.security.config.annotation.web.builders.*;
-import org.springframework.security.config.annotation.web.configuration.*;
-import org.springframework.security.config.annotation.web.configurers.*;
-import org.springframework.security.crypto.bcrypt.*;
-import org.springframework.security.crypto.password.*;
-import org.springframework.security.web.*;
-import org.springframework.security.web.authentication.*;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.*;
+import com.example.finalproject.security.jwt.JwtFilter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @EnableWebSecurity
@@ -29,14 +31,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(
-                                        "/users/register", "/users/login",
-                                        "/users/auth/token", "/users/auth/refresh",
+                                        "/auth/login", "/auth/token",
+                                        "/users/register",
+                                        "/products","/products/*",
+                                        "/categories",
                                         "/manage/**",
                                         "/swagger-ui.html",
                                         "/api/v1/auth/**", "/v3/api-docs/**", "/swagger-ui/**"
                                 )
                                 .permitAll()
+
                                 .anyRequest().authenticated()
+//                                .anyRequest().permitAll()
                 ).addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
@@ -44,4 +50,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

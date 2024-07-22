@@ -6,5 +6,5 @@ public interface ProductPendingInterface {
     Long getProductId();
     String getName();
     Integer getCount();
-    Timestamp getCreatedAt();
+    String getStatus();
 }

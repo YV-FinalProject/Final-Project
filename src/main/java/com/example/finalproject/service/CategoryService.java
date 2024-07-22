@@ -27,7 +27,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategoryById(Long id) {
+    public void deleteCategory(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
         } else {

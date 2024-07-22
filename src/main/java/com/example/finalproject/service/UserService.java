@@ -1,25 +1,24 @@
 package com.example.finalproject.service;
 
 import com.example.finalproject.dto.requestdto.*;
-import com.example.finalproject.dto.responsedto.*;
+import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.*;
 import com.example.finalproject.entity.enums.*;
 import com.example.finalproject.exception.*;
 import com.example.finalproject.mapper.*;
 import com.example.finalproject.repository.*;
 import lombok.*;
-import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.*;
 import org.springframework.transaction.annotation.*;
 
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder; ////это задел на Spring Security
+    private final PasswordEncoder passwordEncoder;
     private final Mappers mappers;
     private final CartRepository cartRepository;
 
@@ -30,7 +29,22 @@ public class UserService {
         }
         User user = mappers.convertToUser(userRequestDto);
         user.setRole(Role.CLIENT);
-        user.setPassword(passwordEncoder.encode(userRequestDto.getPassword())); ////это задел на Spring Security
+        user.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
+        Cart cart = new Cart();
+        cart.setUser(user);
+        user.setCart(cart);
+        userRepository.save(user);
+        cartRepository.save(cart);
+    }
+
+    @Transactional
+    public void registerAdmin(UserRequestDto userRequestDto) {
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new DataAlreadyExistsException("User already exists.");
+        }
+        User user = mappers.convertToUser(userRequestDto);
+        user.setRole(Role.ADMINISTRATOR);
+        user.setPasswordHash(passwordEncoder.encode(userRequestDto.getPassword()));
         Cart cart = new Cart();
         cart.setUser(user);
         user.setCart(cart);
@@ -57,15 +71,15 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    // Security
-    public UserResponseDto getByEmail(String email) {
-        List<User> users = userRepository.getByEmail(email);
-        UserResponseDto usersDto = null;
-        if (users != null && !users.isEmpty())
-            usersDto = mappers.convertToUserResponseDto(users.getFirst());
-        else
-            throw new DataNotFoundInDataBaseException("Не найден в БД пользователь с e-mail = " + email);
-
-        return usersDto;
+    public UserResponseDto getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        UserResponseDto userResponseDto;
+        if (user != null) {
+            userResponseDto = mappers.convertToUserResponseDto(user);
+        } else {
+            throw new DataNotFoundInDataBaseException("User not found in database.");
+        }
+        return userResponseDto;
     }
+
 }

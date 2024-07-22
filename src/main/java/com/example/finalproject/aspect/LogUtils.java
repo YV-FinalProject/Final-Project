@@ -14,6 +14,8 @@ public class LogUtils {
 
         if (result instanceof List) {
             resultInfo.append("RESULT_SIZE=").append(((List<?>) result).size());
+            resultInfo.append(", { First record } : ");
+            resultInfo.append(((List)result).getFirst().toString());
         }
 
         if (log.isDebugEnabled() || !(result instanceof List)) {

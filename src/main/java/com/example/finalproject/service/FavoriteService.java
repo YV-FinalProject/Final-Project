@@ -25,8 +25,8 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
 
-    public Set<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Set<FavoriteResponseDto> getFavorites(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Set<Favorite> favoritesList = user.getFavorites();
             return MapperUtil.convertSet(favoritesList, mappers::convertToFavoriteResponseDto);
@@ -36,9 +36,9 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void insertFavorite(FavoriteRequestDto favoriteRequestDto, Long userId) {
+    public void insertFavorite(FavoriteRequestDto favoriteRequestDto, String email) {
         Favorite favorite = new Favorite();
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(favoriteRequestDto.getProductId()).orElse(null);
             if (product != null) {
@@ -63,8 +63,8 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavoriteByProductId(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public void deleteFavoriteByProductId(String email, Long productId) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {

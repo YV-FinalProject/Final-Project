@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -57,7 +57,7 @@ class FavoriteControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("Pass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -87,30 +87,25 @@ class FavoriteControllerTest {
     }
 
     @Test
-    void getFavoritesByUserId() throws Exception {
-        Long userId = 1L;
-        when(favoriteServiceMock.getFavoritesByUserId(anyLong())).thenReturn(favoriteResponseDtoSet);
-        this.mockMvc.perform(get("/favorites/{userId}",userId)).andDo(print())
+    void getFavorites() throws Exception {
+        when(favoriteServiceMock.getFavorites(any(String.class))).thenReturn(favoriteResponseDtoSet);
+        this.mockMvc.perform(get("/favorites")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..favoriteId").value(1));
     }
 
     @Test
     void insertFavorite() throws Exception {
-        Long userId = 1L;
-        mockMvc.perform(post("/favorites/{userId}", userId)
+        mockMvc.perform(post("/favorites")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(favoriteResponseDto))).andDo(print())
                 .andExpect(status().isOk());
-
     }
 
     @Test
     void deleteFavoriteByProductId() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/favorites?userId=1&productId=1"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/favorites/1"))
                 .andDo(print())
                 .andExpect(status().isOk());
-
     }
 }

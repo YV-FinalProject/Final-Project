@@ -1,20 +1,24 @@
 package com.example.finalproject.security.jwt;
 
-import io.jsonwebtoken.*;
-import org.springframework.stereotype.*;
+import io.jsonwebtoken.Claims;
+import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtUtils {
 
     public static JwtAuthentication generate(Claims claims) {
-        String username = claims.getSubject();
+
+        String email = claims.getSubject();
+
         List<?> rolesObjectList = claims.get("roles", List.class);
+
         List<String> roles = rolesObjectList.stream()
                 .map(Object::toString)
                 .collect(Collectors.toList());
-        return new JwtAuthentication(username, roles);
+
+        return new JwtAuthentication(email, roles);
     }
 }

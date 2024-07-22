@@ -1,23 +1,30 @@
 package com.example.finalproject.security.jwt;
 
-import lombok.*;
-import org.springframework.security.core.*;
-import org.springframework.security.core.authority.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Getter
 @Setter
 public class JwtAuthentication implements Authentication {
 
     private boolean authenticated;
-    private String username;
+
+    private String email;
+
     private String firstName;
+
     private Set<SimpleGrantedAuthority> roles;
 
-    public JwtAuthentication(String username, Collection<String> roles) {
-        this.username = username;
+    public JwtAuthentication(String email, Collection<String> roles) {
+        this.email = email;
         this.roles = roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                 .collect(Collectors.toSet());
@@ -40,7 +47,7 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return username;
+        return email;
     }
 
     @Override

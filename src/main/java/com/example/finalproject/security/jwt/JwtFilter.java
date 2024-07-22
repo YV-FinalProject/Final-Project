@@ -1,16 +1,20 @@
 package com.example.finalproject.security.jwt;
 
-import io.jsonwebtoken.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import lombok.*;
-import lombok.extern.slf4j.*;
-import org.springframework.security.core.context.*;
-import org.springframework.stereotype.*;
-import org.springframework.util.*;
-import org.springframework.web.filter.*;
 
-import java.io.*;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
+
+import java.io.IOException;
 
 @Slf4j
 @Component
@@ -18,6 +22,7 @@ import java.io.*;
 public class JwtFilter extends GenericFilterBean {
 
     private static final String AUTHORIZATION = "Authorization";
+
     private final JwtProvider jwtProvider;
 
     @Override

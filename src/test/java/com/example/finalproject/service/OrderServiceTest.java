@@ -92,6 +92,7 @@ class OrderServiceTest {
                 Role.CLIENT,
                 null,
                 null,
+                null,
                 null);
 
 
@@ -236,20 +237,20 @@ class OrderServiceTest {
     }
 
     @Test
-    void getOrderHistoryByUserId() {
+    void getOrderHistory() {
 
-        Long userId = 1L;
-        Long wrongUserId = 58L;
+        String email = "arneoswald@example.com";
+        String wrongEmail = "julia.vladimirov@example.com";
 
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(mappersMock.convertToOrderResponseDto(any(Order.class))).thenReturn(orderResponseDto);
         when(mappersMock.convertToOrderItemResponseDto(any(OrderItem.class))).thenReturn(orderItemResponseDto);
         Set<OrderResponseDto> ordersResponseDtoSet = new HashSet<>();
         ordersResponseDtoSet.add(orderResponseDto);
 
-        Set<OrderResponseDto> actualOrderResponseDtoSet = orderServiceMock.getOrderHistoryByUserId(userId);
+        Set<OrderResponseDto> actualOrderResponseDtoSet = orderServiceMock.getOrderHistory(email);
 
-        verify(userRepositoryMock, times(1)).findById(userId);
+        verify(userRepositoryMock, times(1)).findByEmail(email);
         verify(mappersMock, times(1)).convertToOrderResponseDto(any(Order.class));
         verify(mappersMock, times(1)).convertToOrderItemResponseDto(any(OrderItem.class));
 
@@ -258,52 +259,52 @@ class OrderServiceTest {
         assertEquals(ordersResponseDtoSet.hashCode(), actualOrderResponseDtoSet.hashCode());
 
 
-        when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.getOrderHistoryByUserId(wrongUserId));
+                () -> orderServiceMock.getOrderHistory(wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
 
         user.setOrders(null);
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.getOrderHistoryByUserId(userId));
+                () -> orderServiceMock.getOrderHistory(email));
         assertEquals("No orders were placed yet.", dataNotFoundInDataBaseException.getMessage());
     }
 
     @Test
     void insertOrder() {
 
-        Long userId = 1L;
-        Long wrongUserId = 58L;
+        String email = "arneoswald@example.com";
+        String wrongEmail = "julia.vladimirov@example.com";
 
-        when(userRepositoryMock.findById(userId)).thenReturn(Optional.of(user));
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(orderRequestDto.getOrderItemsSet().iterator().next().getProductId())).thenReturn(Optional.of(product));
         when(orderRepositoryMock.save(any(Order.class))).thenReturn(order);
         when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.of(cart));
 
-        orderServiceMock.insertOrder(orderRequestDto, userId);
+        orderServiceMock.insertOrder(orderRequestDto, email);
 
         verify(orderRepositoryMock, times(2)).save(any(Order.class));
         verify(orderItemRepositoryMock, times(1)).save(any(OrderItem.class));
         verify(cartItemRepositoryMock, times(1)).deleteById(cart.getCartItems().iterator().next().getCartItemId());
 
 
-        when(userRepositoryMock.findById(wrongUserId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.insertOrder(orderRequestDto, wrongUserId));
+                () -> orderServiceMock.insertOrder(orderRequestDto, wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
 
         when(productRepositoryMock.findById(wrongOrderRequestDto.getOrderItemsSet().iterator().next().getProductId())).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.insertOrder(wrongOrderRequestDto, userId));
+                () -> orderServiceMock.insertOrder(wrongOrderRequestDto, email));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
 
         when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.insertOrder(orderRequestDto, userId));
+                () -> orderServiceMock.insertOrder(orderRequestDto, email));
         assertEquals("Cart not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 

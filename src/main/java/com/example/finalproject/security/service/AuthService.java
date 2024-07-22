@@ -1,74 +1,111 @@
 package com.example.finalproject.security.service;
 
-import com.example.finalproject.dto.responsedto.*;
-import com.example.finalproject.security.jwt.*;
-import com.example.finalproject.service.*;
-import io.jsonwebtoken.*;
-import jakarta.security.auth.message.*;
-import lombok.*;
-import org.springframework.security.crypto.password.*;
-import org.springframework.stereotype.*;
-
-import java.util.*;
+import com.example.finalproject.dto.responsedto.UserResponseDto;
+import com.example.finalproject.entity.User;
+import com.example.finalproject.repository.UserRepository;
+import com.example.finalproject.security.jwt.JwtProvider;
+import com.example.finalproject.security.jwt.JwtRequest;
+import com.example.finalproject.security.jwt.JwtResponse;
+import com.example.finalproject.service.UserService;
+import io.jsonwebtoken.Claims;
+import jakarta.security.auth.message.AuthException;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserService userService;
-    private final Map<String, String> refreshStorage = new HashMap<>();
+    private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public JwtResponse login(JwtRequest authRequest) throws AuthException {
-        final UserResponseDto userDto = userService.getByEmail(authRequest.getEmail());
-        if (userDto == null) {
-            throw new AuthException("User is not found");
-        }
 
-        if (passwordEncoder.matches(authRequest.getPassword(), userDto.getPassword())) {
-            final String accessToken = jwtProvider.generateAccessToken(userDto);
-            final String refreshToken = jwtProvider.generateRefreshToken(userDto);
-            refreshStorage.put(userDto.getEmail(), refreshToken);
+//    private final Map<String, String> refreshStorage = new HashMap<>();
+
+
+    public JwtResponse login(JwtRequest authRequest) throws AuthException {
+        final UserResponseDto userResponseDto = userService.getUserByEmail(authRequest.getEmail());
+        if (userResponseDto == null) throw new AuthException("User not found in database.");
+
+        if (passwordEncoder.matches(authRequest.getPassword(), userResponseDto.getPasswordHash())) {
+            final String accessToken = jwtProvider.generateAccessToken(userResponseDto);
+            final String refreshToken = jwtProvider.generateRefreshToken(userResponseDto);
+
+            User user = userRepository.findByEmail(authRequest.getEmail()).orElse(null);
+            if (user != null) {
+                user.setRefreshToken(refreshToken);
+                userRepository.save(user);
+            } else {
+                throw new AuthException("User not found in database.");
+            }
             return new JwtResponse(accessToken, refreshToken);
         } else {
-            throw new AuthException("Wrong password");
+            throw new AuthException("Wrong password.");
         }
     }
 
     public JwtResponse getAccessToken(@NonNull String refreshToken) throws AuthException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
-            final String savedRefreshToken = refreshStorage.get(login);
-            if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-                final UserResponseDto userDto = userService.getByEmail(login);
-                if (userDto == null) {
-                    throw new AuthException("User is not found");
+            final String email = claims.getSubject();
+
+            User user = userRepository.findByEmail(email).orElse(null);
+            if (user != null) {
+                final String savedRefreshToken = user.getRefreshToken();
+                if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
+                    final UserResponseDto userResponseDto = userService.getUserByEmail(email);
+                    if (userResponseDto == null) {
+                        throw new AuthException("User not found in database.");
+                    }
+
+                    final String accessToken = jwtProvider.generateAccessToken(userResponseDto);
+                    return new JwtResponse(accessToken, null);
                 }
-                final String accessToken = jwtProvider.generateAccessToken(userDto);
-                return new JwtResponse(accessToken, null);
+            } else {
+                throw new AuthException("User not found in database.");
             }
         }
-        return new JwtResponse(null, null);
+        throw new AuthException("Invalid JWT token. Please, login.");
     }
 
+
     public JwtResponse refresh(@NonNull String refreshToken) throws AuthException {
+        JwtResponse jwtResponse = null;
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String login = claims.getSubject();
-            final String savedRefreshToken = refreshStorage.get(login);
-            if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
-                final UserResponseDto userDto = userService.getByEmail(login);
-                if (userDto == null) {
-                    throw new AuthException("User is not found");
+            final String email = claims.getSubject();
+
+            User user = userRepository.findByEmail(email).orElse(null);
+            if (user != null) {
+                final String savedRefreshToken = user.getRefreshToken();
+
+                if (savedRefreshToken != null && savedRefreshToken.equals(refreshToken)) {
+                    final UserResponseDto userResponseDto = userService.getUserByEmail(email);
+                    if (userResponseDto == null) {
+                        throw new AuthException("User not found in database");
+                    }
+                    final String newAccessToken = jwtProvider.generateAccessToken(userResponseDto);
+                    final String newRefreshToken = jwtProvider.generateRefreshToken(userResponseDto);
+
+                    user.setRefreshToken(refreshToken);
+                    userRepository.save(user);
+                    jwtResponse = new JwtResponse(newAccessToken, newRefreshToken);
                 }
-                final String accessToken = jwtProvider.generateAccessToken(userDto);
-                final String newRefreshToken = jwtProvider.generateRefreshToken(userDto);
-                refreshStorage.put(userDto.getEmail(), newRefreshToken);
-                return new JwtResponse(accessToken, newRefreshToken);
+            } else {
+                throw new AuthException("User not found in database");
             }
+        } else {
+            throw new AuthException("Invalid JWT token. Please, login.");
         }
-        throw new AuthException("Invalid JWT token");
+        return jwtResponse;
     }
+
+//    public JwtAuthentication getAuthInfo() {
+//        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+//    }
+
 }

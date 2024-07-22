@@ -117,13 +117,13 @@ class ProductServiceTest {
     }
 
     @Test
-    void getProductById() {
+    void getProduct() {
         Long id = 1L;
         Long wrongId = 58L;
 
         when(productRepositoryMock.findById(anyLong())).thenReturn(Optional.of(product));
         when(mappersMock.convertToProductResponseDto(any(Product.class))).thenReturn(productResponseDto);
-        ProductResponseDto actualProductResponseDto = productServiceMock.getProductById(id);
+        ProductResponseDto actualProductResponseDto = productServiceMock.getProduct(id);
 
         verify(mappersMock, times(1)).convertToProductResponseDto(any(Product.class));
         verify(productRepositoryMock, times(1)).findById(id);
@@ -131,7 +131,7 @@ class ProductServiceTest {
 
         when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> productServiceMock.getProductById(wrongId));
+                () -> productServiceMock.getProduct(wrongId));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
 
     }
@@ -143,13 +143,13 @@ class ProductServiceTest {
 
         when(productRepositoryMock.findById(id)).thenReturn(Optional.of(product));
 
-        productServiceMock.deleteProductById(id);
+        productServiceMock.deleteProduct(id);
 
         verify(productRepositoryMock,times(1)).deleteById(product.getProductId());
 
         when(productRepositoryMock.findById(wrongId)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> productServiceMock.deleteProductById(wrongId));
+                () -> productServiceMock.deleteProduct(wrongId));
         assertEquals("Product not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
 
@@ -230,12 +230,14 @@ class ProductServiceTest {
         class MockProductCount implements ProductCountInterface {
             private Long productId;
             private String name;
+            private String status;
             private Integer count;
             private BigDecimal sum;
 
-            public MockProductCount(Long productId, String name, Integer count, BigDecimal sum) {
+            public MockProductCount(Long productId, String name, String status, Integer count, BigDecimal sum) {
                 this.productId = productId;
                 this.name = name;
+                this.status = status;
                 this.count = count;
                 this.sum = sum;
             }
@@ -251,6 +253,11 @@ class ProductServiceTest {
             }
 
             @Override
+            public String getStatus() {
+                return status;
+            }
+
+            @Override
             public Integer getCount() {
                 return count;
             }
@@ -260,9 +267,9 @@ class ProductServiceTest {
                 return sum;
             }
         }
-        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
+        ProductCountDto productCountDto =ProductCountDto.builder().productId(1L).name("Test name").status("PAID").count(2).sum(BigDecimal.valueOf(1.0)).build();
         String sort = "Price";
-        ProductCountInterface productCountMock = new MockProductCount(1L, "Test name", 2, BigDecimal.valueOf(1.0));
+        ProductCountInterface productCountMock = new MockProductCount(1L, "Test name", "PAID",2, BigDecimal.valueOf(1.0));
 
         List<ProductCountInterface> productCountInterfaceList = List.of(productCountMock);
 
@@ -276,12 +283,13 @@ class ProductServiceTest {
         assertNotNull(actualProductCountDto.getFirst());
         assertEquals(productCountDto.getProductId(), actualProductCountDto.getFirst().getProductId());
         assertEquals(productCountDto.getName(), actualProductCountDto.getFirst().getName());
+        assertEquals(productCountDto.getStatus(), actualProductCountDto.getFirst().getStatus());
         assertEquals(productCountDto.getCount(), actualProductCountDto.getFirst().getCount());
         assertEquals(productCountDto.getSum(), actualProductCountDto.getFirst().getSum());
     }
 
     @Test
-    void findProductsByFilter() {
+    void getProductsByFilter() {
         Boolean hasCategory = true;
         Long categoryId = 1L;
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
@@ -301,13 +309,13 @@ class ProductServiceTest {
             private Long productId;
             private String name;
             private Integer count;
-            private Timestamp createdAt;
+            private String status;
 
-            public MockProductPending(Long productId, String name, Integer count, Timestamp createdAt) {
+            public MockProductPending(Long productId, String name, Integer count, String status) {
                 this.productId = productId;
                 this.name = name;
                 this.count = count;
-                this.createdAt = createdAt;
+                this.status = status;
             }
 
             @Override
@@ -326,13 +334,13 @@ class ProductServiceTest {
             }
 
             @Override
-            public Timestamp getCreatedAt() {
-                return createdAt;
+            public String getStatus() {
+                return status;
             }
         }
-        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).createdAt(Timestamp.valueOf("2024-12-12 00:00:00")).build();
+        ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(2).status("PENDING").build();
         Integer day = 5;
-        ProductPendingInterface productPendingMock = new MockProductPending(1L,"Test name",2,Timestamp.valueOf("2024-12-12 00:00:00"));
+        ProductPendingInterface productPendingMock = new MockProductPending(1L,"Test name",2,"PENDING");
         List<ProductPendingInterface> productPendingInterfaceList = List.of(productPendingMock);
         when(productRepositoryMock.findProductPending(anyInt())).thenReturn(productPendingInterfaceList);
         when(mappersMock.convertToProductPendingDto(any(ProductPendingInterface.class))).thenReturn(productPendingDto);
@@ -343,7 +351,7 @@ class ProductServiceTest {
         assertEquals(productPendingDto.getProductId(), actualProductPendingDto.getFirst().getProductId());
         assertEquals(productPendingDto.getName(), actualProductPendingDto.getFirst().getName());
         assertEquals(productPendingDto.getCount(), actualProductPendingDto.getFirst().getCount());
-        assertEquals(productPendingDto.getCreatedAt(), actualProductPendingDto.getFirst().getCreatedAt());
+        assertEquals(productPendingDto.getStatus(), actualProductPendingDto.getFirst().getStatus());
     }
 
     @Test

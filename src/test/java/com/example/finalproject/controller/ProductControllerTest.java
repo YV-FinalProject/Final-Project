@@ -70,9 +70,9 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductsById() throws Exception {
+    void getProduct() throws Exception {
         Long id = 1L;
-        when(productServiceMock.getProductById(anyLong())).thenReturn(productResponseDto);
+        when(productServiceMock.getProduct(anyLong())).thenReturn(productResponseDto);
         this.mockMvc.perform(get("/products/{id}",id)).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(1L))
@@ -125,11 +125,11 @@ class ProductControllerTest {
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
         BigDecimal maxPrice = BigDecimal.valueOf(100.00);
         Boolean hasDiscount = true;
-        String[] strSort = new String[]{"name","asc"};
+        String strSort = "name,asc";
 
-        when(productServiceMock.findProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
+        when(productServiceMock.getProductsByFilter(categoryId,minPrice,maxPrice,hasDiscount,strSort)).thenReturn(
                 (List.of(productResponseDto)));
-        this.mockMvc.perform(get("/products",categoryId,minPrice,maxPrice,hasDiscount,strSort)).andDo(print())
+        this.mockMvc.perform(get("/products?category=1&minPrice=0.00&maxPrice=100.00&discount=true&sort=name,asc")).andDo(print())
                 .andExpect(status().isOk());
     }
 
@@ -137,27 +137,27 @@ class ProductControllerTest {
     void getTop10Products() throws Exception {
         String status = "PAID";
         ProductCountDto productCountDto = ProductCountDto.builder().productId(1L).name("Test name").count(2).sum(BigDecimal.valueOf(1.0)).build();
-        when(productServiceMock.getTop10Products(anyString())).thenReturn(List.of(productCountDto));
-        this.mockMvc.perform(get("/products/top10",status)).andDo(print())
+        when(productServiceMock.getTop10Products(status)).thenReturn(List.of(productCountDto));
+        this.mockMvc.perform(get("/products/top10?status=PAID")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getProductPending() throws Exception {
-        Integer days = 55;
+        Integer day = 55;
         ProductPendingDto productPendingDto = ProductPendingDto.builder().productId(1L).name("Test name").count(23).build();
-        when(productServiceMock.findProductPending(anyInt())).thenReturn(List.of(productPendingDto));
-        this.mockMvc.perform(get("/products/pending",days)).andDo(print())
+        when(productServiceMock.findProductPending(day)).thenReturn(List.of(productPendingDto));
+        this.mockMvc.perform(get("/products/pending?day=55")).andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     void getProfitByPeriod() throws Exception {
-        String type = "WEEK";
-        Integer period = 55;
-        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(type).sum(BigDecimal.valueOf(234.33)).build();
-        when(productServiceMock.findProductProfit(anyString(),anyInt())).thenReturn(List.of(productProfitDto));
-        this.mockMvc.perform(get("/products/profit",type,period)).andDo(print())
+        String period = "WEEK";
+        Integer value = 55;
+        ProductProfitDto productProfitDto = ProductProfitDto.builder().period(period).sum(BigDecimal.valueOf(234.33)).build();
+        when(productServiceMock.findProductProfit(period,value)).thenReturn(List.of(productProfitDto));
+        this.mockMvc.perform(get("/products/profit?period=WEEK&value=55")).andDo(print())
                 .andExpect(status().isOk());
     }
 
