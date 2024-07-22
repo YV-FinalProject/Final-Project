@@ -14,7 +14,6 @@ import com.example.finalproject.repository.CategoryRepository;
 import com.example.finalproject.repository.ProductRepository;
 
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +47,7 @@ public class ProductService {
         }
     }
 
-    @Transactional
+
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null) {
@@ -58,7 +57,7 @@ public class ProductService {
         }
     }
 
-    @Transactional
+
     public void insertProduct(ProductRequestDto productRequestDto) {
         Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
         if (category != null) {
@@ -72,7 +71,7 @@ public class ProductService {
         }
     }
 
-    @Transactional
+
     public void updateProduct(ProductRequestDto productRequestDto, Long id) {
         Category category = categoryRepository.findCategoryByName(productRequestDto.getCategory());
         if (category != null) {
@@ -94,7 +93,7 @@ public class ProductService {
 
     }
 
-    @Transactional
+
     public void setDiscountPrice(Long id, BigDecimal discountPrice) {
         Product productToUpdate = productRepository.findById(id).orElse(null);
         if (productToUpdate != null) {
@@ -120,7 +119,7 @@ public class ProductService {
         return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
     }
 
-    @Transactional
+
     public List<ProductResponseDto> getProductsByFilter(Long category, BigDecimal minPrice, BigDecimal maxPrice, Boolean hasDiscount, String sort) {
         boolean ascending = true;
         Sort sortObject = orderBy("name", true);// по умолчанию

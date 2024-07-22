@@ -6,6 +6,7 @@ import com.example.finalproject.dto.querydto.ProductProfitDto;
 import com.example.finalproject.dto.responsedto.CategoryResponseDto;
 import com.example.finalproject.dto.requestdto.ProductRequestDto;
 import com.example.finalproject.dto.responsedto.ProductResponseDto;
+import com.example.finalproject.security.jwt.JwtFilter;
 import com.example.finalproject.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,10 @@ class ProductControllerTest {
     @MockBean
     private ProductService productServiceMock;
 
+    @MockBean
+    private JwtFilter jwtFilterMock;
+
+
     private ProductResponseDto productResponseDto;
     private ProductRequestDto  productRequestDto;
 
@@ -67,6 +72,7 @@ class ProductControllerTest {
                 .imageUrl("https://example.com/images/magic_garden_seeds.jpg")
                 .category("Test category")
                 .build();
+
     }
 
     @Test

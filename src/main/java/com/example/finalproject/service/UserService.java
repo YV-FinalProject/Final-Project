@@ -52,7 +52,7 @@ public class UserService {
         cartRepository.save(cart);
     }
 
-    @Transactional
+
     public void updateUser(Long id, UserRequestDto userUpdateDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found in database."));

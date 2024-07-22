@@ -82,7 +82,7 @@ public class JwtProvider {
         } catch (SignatureException signatureException) {
             log.error("Invalid signature", signatureException);
         } catch (Exception exception) {
-            log.error("invalid token", exception);
+            log.error("Invalid token", exception);
         }
         return false;
     }

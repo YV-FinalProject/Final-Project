@@ -97,7 +97,6 @@ public class CartService {
         }
     }
 
-    @Transactional
     public void deleteCarItemByProductId(String email, Long productId) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {

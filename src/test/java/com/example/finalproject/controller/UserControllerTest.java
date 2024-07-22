@@ -28,10 +28,14 @@ class UserControllerTest {
     @MockBean
     private UserService userServiceMock;
 
+
     private UserRequestDto userRequestDto;
+
+
 
     @BeforeEach
     void setUp() {
+
         userRequestDto = UserRequestDto.builder()
                 .name("Arne Oswald")
                 .email("arnedraoswa@ldexadple.com")
@@ -40,8 +44,10 @@ class UserControllerTest {
                 .build();
     }
 
+
     @Test
     void registerUser() throws Exception {
+
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestDto)))
