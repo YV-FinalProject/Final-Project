@@ -76,6 +76,7 @@ public class UserService {
         UserResponseDto userResponseDto;
         if (user != null) {
             userResponseDto = mappers.convertToUserResponseDto(user);
+            userResponseDto.setPasswordHash("***");
         } else {
             throw new DataNotFoundInDataBaseException("User not found in database.");
         }

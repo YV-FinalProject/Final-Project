@@ -15,8 +15,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -31,7 +29,6 @@ import java.util.List;
 @RequestMapping(value = "/products")
 @Validated
 public class ProductController {
-    private static final Logger log = LoggerFactory.getLogger(ProductController.class);
     private final ProductService productService;
 
     @Operation(summary = "Getting product by id", description = "Provides functionality for getting a product from product catalog")
@@ -56,7 +53,7 @@ public class ProductController {
 
     @Operation(summary = "Inserting a new product", description = "Provides functionality for inserting a new product into product catalog")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void insertProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {
@@ -65,7 +62,7 @@ public class ProductController {
 
     @Operation(summary = "Updating a product", description = "Provides functionality for updating a product in product catalog")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Validated
@@ -78,7 +75,7 @@ public class ProductController {
 
     @Operation(summary = "Setting discount price", description = "Provides functionality for setting discount price for a product")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void setDiscountPrice(@RequestParam("id")
@@ -94,7 +91,7 @@ public class ProductController {
 
     @Operation(summary = "Getting maximum discount price product", description = "Provides functionality for getting product with maximum discount price")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping(value = "/maxDiscount")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getMaxDiscountProduct() {
@@ -130,7 +127,7 @@ public class ProductController {
 
     @Operation(summary = "Getting top-10 products", description = "Provides functionality for getting top-10 most purchased and top-10 most canceled products")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/top10")
     public List<ProductCountDto> getTop10Products(@RequestParam(value = "status")
@@ -141,7 +138,7 @@ public class ProductController {
 
     @Operation(summary = "Getting 'pending payment' products", description = "Provides functionality for getting products that are in the status 'pending payment' for more than N days")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/pending")
     public List<ProductPendingDto> getProductPending(@RequestParam("day")
@@ -152,7 +149,7 @@ public class ProductController {
 
     @Operation(summary = "Getting profit for certain period ", description = "Provides functionality for getting profit for certain period (days, months, years)")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/profit")
 
