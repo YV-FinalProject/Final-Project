@@ -35,7 +35,7 @@ public class UserController {
 
     @Operation(summary = "Administrator registration", description = "Provides functionality for registering a new administrator")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @Validated
     @PostMapping("/registerAdmin")
     @ResponseStatus(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ public class UserController {
 
     @Operation(summary = "Updating user's account", description = "Provides functionality for updating information in user's account")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@PathVariable
@@ -59,7 +59,7 @@ public class UserController {
 
     @Operation(summary = "Deleting user's account", description = "Provides functionality for deleting a user's account")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable
@@ -70,7 +70,7 @@ public class UserController {
 
     @Operation(summary = "Getting user by email", description = "Provides functionality for getting user by his email")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public UserResponseDto getUserByEmail(@RequestParam("email")

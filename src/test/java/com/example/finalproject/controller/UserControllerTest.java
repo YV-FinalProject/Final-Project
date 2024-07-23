@@ -1,21 +1,27 @@
 package com.example.finalproject.controller;
 
 import com.example.finalproject.dto.requestdto.*;
-import com.example.finalproject.exception.*;
+import com.example.finalproject.dto.responsedto.UserResponseDto;
+import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.security.config.SecurityConfig;
+import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.service.*;
 import com.fasterxml.jackson.databind.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.*;
 import org.springframework.boot.test.mock.mockito.*;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.*;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(UserController.class)
 class UserControllerTest {
 
@@ -28,94 +34,159 @@ class UserControllerTest {
     @MockBean
     private UserService userServiceMock;
 
+    @MockBean
+    private JwtProvider jwtProvider;
 
-    private UserRequestDto userRequestDto;
 
+    private UserRequestDto userRequestDtoClient, userRequestDtoAdmin;
 
 
     @BeforeEach
     void setUp() {
 
-        userRequestDto = UserRequestDto.builder()
+        userRequestDtoClient = UserRequestDto.builder()
                 .name("Arne Oswald")
-                .email("arnedraoswa@ldexadple.com")
-                .phone("+123456789012")
-                .password("Secure1!")
+                .email("arneoswald@example.com")
+                .phone("+496151226")
+                .password("ClientPass1$trong")
+                .build();
+
+        userRequestDtoAdmin = UserRequestDto.builder()
+                .name("Michael Nguyen")
+                .email("michaelnguyen@example.com")
+                .phone("+496823485")
+                .password("AdminPass1$trong")
                 .build();
     }
 
 
     @Test
     void registerUser() throws Exception {
-
         mockMvc.perform(post("/users/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                        .content(objectMapper.writeValueAsString(userRequestDtoClient)))
+                .andDo(print())
                 .andExpect(status().isCreated());
 
-        verify(userServiceMock).registerUser(any(UserRequestDto.class));
+        verify(userServiceMock, times(1)).registerUser(userRequestDtoClient);
     }
 
     @Test
-    void registerUser_ShouldThrowException_WhenEmailAlreadyExists() throws Exception {
-        doThrow(new DataAlreadyExistsException("User already exists"))
-                .when(userServiceMock).registerUser(any(UserRequestDto.class));
+    @WithMockUser(username = "Test User", roles = {"ADMINISTRATOR"})
+    void registerAdmin() throws Exception {
 
-        mockMvc.perform(post("/users/register")
+        mockMvc.perform(post("/users/registerAdmin")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("User already exists"));
+                        .content(objectMapper.writeValueAsString(userRequestDtoAdmin)))
+                .andDo(print())
+                .andExpect(status().isCreated());
 
-        verify(userServiceMock).registerUser(any(UserRequestDto.class));
+        verify(userServiceMock, times(1)).registerAdmin(userRequestDtoAdmin);
     }
 
     @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT"})
+    void shouldNotRegisterAdmin() throws Exception {
+        mockMvc.perform(post("/users/registerAdmin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestDtoAdmin)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(userServiceMock, never()).registerAdmin(userRequestDtoAdmin);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"ADMINISTRATOR"})
     void updateUser() throws Exception {
         Long userId = 1L;
         mockMvc.perform(put("/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
+                        .content(objectMapper.writeValueAsString(userRequestDtoClient)))
+                .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(userServiceMock).updateUser(eq(userId), any(UserRequestDto.class));
+        verify(userServiceMock, times(1)).updateUser(userId, userRequestDtoClient);
     }
 
     @Test
-    void updateUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
+    @WithMockUser(username = "Test User", roles = {"CLIENT"})
+    void shouldNotUpdateUser() throws Exception {
         Long userId = 1L;
-        doThrow(new DataNotFoundInDataBaseException("User not found"))
-                .when(userServiceMock).updateUser(anyLong(), any(UserRequestDto.class));
-
         mockMvc.perform(put("/users/{id}", userId)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestDto)))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found"));
+                        .content(objectMapper.writeValueAsString(userRequestDtoAdmin)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
 
-        verify(userServiceMock).updateUser(eq(userId), any(UserRequestDto.class));
+        verify(userServiceMock, never()).updateUser(userId, userRequestDtoClient);
     }
 
+
     @Test
+    @WithMockUser(username = "Test User", roles = {"ADMINISTRATOR"})
     void deleteUser() throws Exception {
         Long userId = 1L;
-        doNothing().when(userServiceMock).deleteUser(anyLong());
-        mockMvc.perform(delete("/users/{id}", userId))
-                .andExpect(status().isOk());
-        verify(userServiceMock).deleteUser(userId);
 
+        mockMvc.perform(delete("/users/{id}", userId))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(userServiceMock, times(1)).deleteUser(userId);
     }
 
     @Test
-    void deleteUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
+    @WithMockUser(username = "Test User", roles = {"CLIENT"})
+    void shouldNotDeleteUser() throws Exception {
         Long userId = 1L;
-        doThrow(new DataNotFoundInDataBaseException("User not found"))
-                .when(userServiceMock).deleteUser(anyLong());
 
         mockMvc.perform(delete("/users/{id}", userId))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("User not found"));
+                .andDo(print())
+                .andExpect(status().isForbidden());
 
-        verify(userServiceMock).deleteUser(userId);
+        verify(userServiceMock, never()).deleteUser(userId);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"ADMINISTRATOR"})
+    void getUserByEmail() throws Exception {
+
+        UserResponseDto userResponseDto = UserResponseDto.builder()
+                .userId(1L)
+                .name("Arne Oswald")
+                .email("arneoswald@example.com")
+                .phone("+496151226")
+                .role(Role.CLIENT)
+                .build();
+
+        when(userServiceMock.getUserByEmail("arneoswald@example.com")).thenReturn(userResponseDto);
+        mockMvc.perform(get("/users?email=arneoswald@example.com"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.name").value("Arne Oswald"))
+                .andExpect(jsonPath("$.email").value("arneoswald@example.com"));
+
+        verify(userServiceMock, times(1)).getUserByEmail("arneoswald@example.com");
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT"})
+    void shouldNotGetUserByEmail() throws Exception {
+
+        UserResponseDto userResponseDto = UserResponseDto.builder()
+                .userId(1L)
+                .name("Arne Oswald")
+                .email("arneoswald@example.com")
+                .phone("+496151226")
+                .role(Role.CLIENT)
+                .build();
+
+        when(userServiceMock.getUserByEmail("arneoswald@example.com")).thenReturn(userResponseDto);
+        mockMvc.perform(get("/users?email=arneoswald@example.com"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(userServiceMock, never()).getUserByEmail("arneoswald@example.com");
     }
 }

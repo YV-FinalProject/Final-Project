@@ -3,6 +3,7 @@ package com.example.finalproject.service;
 import com.example.finalproject.dto.responsedto.UserResponseDto;
 import com.example.finalproject.entity.User;
 import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.UserRepository;
 import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.security.jwt.JwtRequest;
@@ -34,7 +35,7 @@ class AuthServiceTest {
     private UserRepository userRepositoryMock;
 
     @Mock
-    private UserService userServiceMock;
+    private Mappers mappers;
 
     @Mock
     private PasswordEncoder passwordEncoderMock;
@@ -103,26 +104,26 @@ class AuthServiceTest {
                 .password("WrongPass1$trong")
                 .build();
 
-        when(userServiceMock.getUserByEmail(authRequest.getEmail())).thenReturn(userResponseDto);
+        when(userRepositoryMock.findByEmail(authRequest.getEmail())).thenReturn(Optional.of(user));
+        when(mappers.convertToUserResponseDto(user)).thenReturn(userResponseDto);
         when(passwordEncoderMock.matches(authRequest.getPassword(), userResponseDto.getPasswordHash())).thenReturn(true);
         when(jwtProviderMock.generateAccessToken(userResponseDto)).thenReturn(accessToken);
         when(jwtProviderMock.generateRefreshToken(userResponseDto)).thenReturn(refreshToken);
 
-        when(userRepositoryMock.findByEmail(authRequest.getEmail())).thenReturn(Optional.of(user));
-
         JwtResponse jwtResponse = authServiceMock.login(authRequest);
 
-        verify(userServiceMock, times(1)).getUserByEmail(authRequest.getEmail());
+        verify(userRepositoryMock, times(1)).findByEmail(authRequest.getEmail());
+        verify(mappers, times(1)).convertToUserResponseDto(user);
         verify(passwordEncoderMock, times(1)).matches(authRequest.getPassword(), userResponseDto.getPasswordHash());
         verify(jwtProviderMock, times(1)).generateAccessToken(userResponseDto);
         verify(jwtProviderMock, times(1)).generateRefreshToken(userResponseDto);
-        verify(userRepositoryMock, times(1)).findByEmail(authRequest.getEmail());
+
 
         assertEquals(accessToken, jwtResponse.getAccessToken());
         assertEquals(refreshToken, jwtResponse.getRefreshToken());
 
 
-        when(userServiceMock.getUserByEmail(wrongMailAuthRequest.getEmail())).thenReturn(null);
+        when(userRepositoryMock.findByEmail(wrongMailAuthRequest.getEmail())).thenReturn(Optional.empty());
         authException = assertThrows(AuthException.class,
                 () -> authServiceMock.login(wrongMailAuthRequest));
         assertEquals("User not found in database.", authException.getMessage());
@@ -132,7 +133,6 @@ class AuthServiceTest {
         authException = assertThrows(AuthException.class,
                 () -> authServiceMock.login(wrongPasswordAuthRequest));
         assertEquals("Wrong password.", authException.getMessage());
-
     }
 
     @Test
@@ -149,7 +149,7 @@ class AuthServiceTest {
         when(jwtProviderMock.validateRefreshToken(refreshToken)).thenReturn(true);
         when(jwtProviderMock.getRefreshClaims(refreshToken)).thenReturn(claims);
         when(userRepositoryMock.findByEmail(claims.getSubject())).thenReturn(Optional.of(user));
-        when(userServiceMock.getUserByEmail(claims.getSubject())).thenReturn(userResponseDto);
+        when(mappers.convertToUserResponseDto(user)).thenReturn(userResponseDto);
         when(jwtProviderMock.generateAccessToken(userResponseDto)).thenReturn(accessToken);
 
         JwtResponse jwtResponse = authServiceMock.getAccessToken(refreshToken);
@@ -157,7 +157,7 @@ class AuthServiceTest {
         verify(jwtProviderMock, times(1)).validateRefreshToken(refreshToken);
         verify(jwtProviderMock, times(1)).getRefreshClaims(refreshToken);
         verify(userRepositoryMock, times(1)).findByEmail(claims.getSubject());
-        verify(userServiceMock, times(1)).getUserByEmail(claims.getSubject());
+        verify(mappers, times(1)).convertToUserResponseDto(user);
         verify(jwtProviderMock, times(1)).generateAccessToken(userResponseDto);
 
         assertEquals(accessToken, jwtResponse.getAccessToken());
@@ -183,7 +183,7 @@ class AuthServiceTest {
         when(jwtProviderMock.validateRefreshToken(refreshToken)).thenReturn(true);
         when(jwtProviderMock.getRefreshClaims(refreshToken)).thenReturn(claims);
         when(userRepositoryMock.findByEmail(claims.getSubject())).thenReturn(Optional.of(user));
-        when(userServiceMock.getUserByEmail(claims.getSubject())).thenReturn(userResponseDto);
+        when(mappers.convertToUserResponseDto(user)).thenReturn(userResponseDto);
         when(jwtProviderMock.generateAccessToken(userResponseDto)).thenReturn(accessToken);
         when(jwtProviderMock.generateRefreshToken(userResponseDto)).thenReturn(refreshToken);
 
@@ -192,7 +192,7 @@ class AuthServiceTest {
         verify(jwtProviderMock, times(1)).validateRefreshToken(refreshToken);
         verify(jwtProviderMock, times(1)).getRefreshClaims(refreshToken);
         verify(userRepositoryMock, times(1)).findByEmail(claims.getSubject());
-        verify(userServiceMock, times(1)).getUserByEmail(any(String.class));
+        verify(mappers, times(1)).convertToUserResponseDto(user);
         verify(jwtProviderMock, times(1)).generateAccessToken(userResponseDto);
         verify(jwtProviderMock, times(1)).generateRefreshToken(userResponseDto);
 

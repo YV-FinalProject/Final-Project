@@ -35,7 +35,7 @@ public class CategoryController {
 
     @Operation(summary = "Deleting a category", description = "Provides functionality for deleting a product category")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteCategory(@PathVariable
@@ -46,7 +46,7 @@ public class CategoryController {
 
     @Operation(summary = "Inserting a category", description = "Provides functionality for inserting a new product category")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void insertCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto) {
@@ -55,7 +55,7 @@ public class CategoryController {
 
     @Operation(summary = "Updating a category", description = "Provides functionality for updating certain product category")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void updateCategory(@RequestBody @Valid CategoryRequestDto categoryRequestDto,

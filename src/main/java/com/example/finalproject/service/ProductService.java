@@ -17,9 +17,6 @@ import org.springframework.data.domain.Sort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -30,11 +27,9 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private static final Logger log = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final Mappers mappers;
-    private final MapperUtil mapperUtil;
 
 
     public ProductResponseDto getProduct(Long id) {
@@ -116,7 +111,7 @@ public class ProductService {
     }
     public List<ProductCountDto> getTop10Products(String status) {
 
-        return mapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
+        return MapperUtil.convertList(productRepository.findTop10Products(status),mappers::convertToProductCountDto);
     }
 
 
@@ -135,17 +130,17 @@ public class ProductService {
             }
             sortObject = orderBy(sortArray[0], ascending);
         }
-        return mapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
+        return MapperUtil.convertList(productRepository.findProductsByFilter(hasCategory, category, minPrice, maxPrice, hasDiscount, sortObject), mappers::convertToProductResponseDto);
     }
 
 
     public List<ProductPendingDto> findProductPending(Integer day) {
-        return mapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
+        return MapperUtil.convertList(productRepository.findProductPending(day),mappers::convertToProductPendingDto);
     }
 
 
     public List<ProductProfitDto> findProductProfit(String period, Integer value) {
-        return mapperUtil.convertList(productRepository.findProfitByPeriod(period, value),mappers::convertToProductProfitDto);
+        return MapperUtil.convertList(productRepository.findProfitByPeriod(period, value),mappers::convertToProductProfitDto);
     }
 
 
