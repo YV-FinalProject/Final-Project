@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -18,7 +16,7 @@ class UserRepositoryTest {
     @Test
     void existsByEmail() {
         String email = "benjamindietrich@example.com";
-        String notExistingEmail = "julia.vladimirov@example.com";
+        String notExistingEmail = "wrongemail@example.com";
 
         Boolean existsByEmail = userRepository.existsByEmail(email);
         assertTrue(existsByEmail);
@@ -32,7 +30,7 @@ class UserRepositoryTest {
     void findByEmail() {
 
         String email = "benjamindietrich@example.com";
-        String notExistingEmail = "julia.vladimirov@example.com";
+        String notExistingEmail = "wrongemail@example.com";
 
         User foundByEmail = userRepository.findByEmail(email).orElse(null);
         assertNotNull(foundByEmail);

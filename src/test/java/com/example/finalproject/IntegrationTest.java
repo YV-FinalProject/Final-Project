@@ -48,13 +48,6 @@ class IntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @AfterAll
-//    static void tearDown() {
-//        User user = userRepository.findByEmail("yuliavladimirov@example.com").orElse(null);
-//        assert user != null;
-//        userRepository.delete(user);
-//    }
-
     @Order(value = 1)
     @Test
     void registerUser() throws Exception{
@@ -82,7 +75,6 @@ class IntegrationTest {
                 .email("yuliavladimirov@example.com")
                 .password("ClientPass1$trong")
                 .build();
-
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,11 +107,6 @@ class IntegrationTest {
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.refreshToken").isEmpty());
 
-
         userRepository.delete(user);
-
     }
-
-
-
 }
