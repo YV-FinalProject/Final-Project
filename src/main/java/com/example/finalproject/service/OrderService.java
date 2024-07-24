@@ -83,9 +83,9 @@ public class OrderService {
 
         Set<OrderItemRequestDto> orderItemsRequestDtoSet = orderRequestDto.getOrderItemsSet();
         Set<OrderItem> orderItemToInsertSet = new HashSet<>();
-        OrderItem orderItemToInsert = new OrderItem();
 
         for (OrderItemRequestDto orderItem : orderItemsRequestDtoSet) {
+            OrderItem orderItemToInsert = new OrderItem();
             Product product = productRepository.findById(orderItem.getProductId()).orElse(null);
             if (product != null) {
                 orderItemToInsert.setProduct(product);

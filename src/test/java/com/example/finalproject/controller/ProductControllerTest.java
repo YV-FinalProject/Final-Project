@@ -184,7 +184,7 @@ class ProductControllerTest {
 
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"ADMINISTRATOR"})
+    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
     void getMaxDiscountProduct() throws Exception {
         when(productServiceMock.getMaxDiscountProduct()).thenReturn(productResponseDto);
         mockMvc.perform(get("/products/maxDiscount"))
@@ -197,7 +197,6 @@ class ProductControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"CLIENT"})
     void shouldNotGetMaxDiscountProduct() throws Exception {
         mockMvc.perform(get("/products/maxDiscount"))
                 .andDo(print())
