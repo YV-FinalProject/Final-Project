@@ -36,8 +36,6 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
-    private DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
-
     private UserRequestDto userCreateDto;
     private User createUser;
     private UserRequestDto userUpdateDto;
@@ -217,8 +215,9 @@ class UserServiceTest {
         String email = "arneoswald@example.com";
         String wrongEmail = "123@example.com";
 
-        when(userRepository.findByEmail(email)).thenReturn(Optional.of(createUser));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
         when(mappers.convertToUserResponseDto(any(User.class))).thenReturn(userResponseDto);
+
         UserResponseDto actualUserResponseDto = userService.getUserByEmail(email);
 
         verify(userRepository, times(1)).findByEmail(email);
@@ -227,7 +226,7 @@ class UserServiceTest {
         assertEquals(userResponseDto.getUserId(), actualUserResponseDto.getUserId());
 
         when(userRepository.findByEmail(wrongEmail)).thenReturn(Optional.empty());
-        dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
+        DataNotFoundInDataBaseException dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> userService.getUserByEmail(wrongEmail));
         assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
     }
