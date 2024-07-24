@@ -37,24 +37,10 @@ class OrderStatusSchedulerTest {
     @Test
     void updateOrderStatuses() {
         when(orderRepository.updateOrderStatuses(eq(START_DATE), eq(STATUSES_TO_UPDATE))).thenReturn(5);
-        when(orderRepository.countUndeliveredOrders(eq(START_DATE))).thenReturn(10);
 
         orderStatusScheduler.updateOrderStatuses();
 
         verify(orderRepository, times(1)).updateOrderStatuses(eq(START_DATE), eq(STATUSES_TO_UPDATE));
-        verify(orderRepository, times(1)).countUndeliveredOrders(eq(START_DATE));
-        verifyNoMoreInteractions(orderRepository);
-    }
-
-    @Test
-    void stopScheduler() {
-        when(orderRepository.updateOrderStatuses(eq(START_DATE), eq(STATUSES_TO_UPDATE))).thenReturn(5);
-        when(orderRepository.countUndeliveredOrders(eq(START_DATE))).thenReturn(0);
-
-        orderStatusScheduler.updateOrderStatuses();
-
-        verify(orderRepository, times(1)).updateOrderStatuses(eq(START_DATE), eq(STATUSES_TO_UPDATE));
-        verify(orderRepository, times(1)).countUndeliveredOrders(eq(START_DATE));
         verifyNoMoreInteractions(orderRepository);
     }
 }
