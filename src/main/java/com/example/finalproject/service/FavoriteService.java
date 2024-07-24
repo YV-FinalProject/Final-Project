@@ -70,10 +70,10 @@ public class FavoriteService {
                 for (Favorite item : favoritesSet) {
                     if (item.getProduct().getProductId().equals(productId)) {
                         favoriteRepository.deleteById(item.getFavoriteId());
-                    }else {
-                        throw new DataNotFoundInDataBaseException("Product not found in Favorites.");
+                        return;
                     }
                 }
+                throw new DataNotFoundInDataBaseException("Product not found in Favorites.");
             } else {
                 throw new DataNotFoundInDataBaseException("Product not found in database.");
             }
