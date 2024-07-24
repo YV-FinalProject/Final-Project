@@ -12,7 +12,6 @@ import com.example.finalproject.repository.ProductRepository;
 import com.example.finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -35,7 +34,6 @@ public class FavoriteService {
         }
     }
 
-    @Transactional
     public void insertFavorite(FavoriteRequestDto favoriteRequestDto, String email) {
         Favorite favorite = new Favorite();
         User user = userRepository.findByEmail(email).orElse(null);
@@ -62,7 +60,7 @@ public class FavoriteService {
 
     }
 
-    @Transactional
+
     public void deleteFavoriteByProductId(String email, Long productId) {
         User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {

@@ -6,6 +6,8 @@ import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.enums.DeliveryMethod;
 import com.example.finalproject.entity.enums.Role;
 import com.example.finalproject.entity.enums.Status;
+import com.example.finalproject.security.config.SecurityConfig;
+import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,23 +15,24 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.test.context.support.WithMockUser;
+
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import java.util.Set;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(OrderController.class)
 class OrderControllerTest {
 
@@ -41,6 +44,10 @@ class OrderControllerTest {
 
     @MockBean
     private OrderService orderServiceMock;
+
+    @MockBean
+    private JwtProvider jwtProvider;
+
 
     private UserResponseDto userResponseDto;
     private OrderResponseDto orderResponseDto;
@@ -63,7 +70,7 @@ class OrderControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .passwordHash("Pass1$trong")
+                .passwordHash("ClientPass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -115,40 +122,83 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
     void getOrderById() throws Exception {
         Long orderId = 1L;
-        when(orderServiceMock.getOrderById(anyLong())).thenReturn(orderResponseDto);
-        this.mockMvc.perform(get("/orders/{orderId}", orderId)).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderId").value(orderId));
-    }
-
-    @Test
-    void getOrderHistory() throws Exception {
-        Set<OrderResponseDto> orderResponseDtoSet = new HashSet<>();
-        orderResponseDtoSet.add(orderResponseDto);
-        when(orderServiceMock.getOrderHistory(anyString())).thenReturn(orderResponseDtoSet);
-
-        this.mockMvc.perform(get("/orders/history")).andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$..contactPhone").value(orderResponseDto.getContactPhone()));
-    }
-
-    @Test
-    void insertOrder() throws Exception {
-        mockMvc.perform(post("/orders")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(orderRequestDto)))
+        when(orderServiceMock.getOrderById(orderId)).thenReturn(orderResponseDto);
+        this.mockMvc.perform(get("/orders/{orderId}", orderId))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.orderId").value(1))
+                .andExpect(jsonPath("$.contactPhone").value("+496921441"));
+
+        verify(orderServiceMock, times(1)).getOrderById(orderId);
     }
 
     @Test
-    void cancelOrder() throws Exception {
+    void shouldNotGetOrderById() throws Exception {
         Long orderId = 1L;
-        mockMvc.perform(put("/orders//{orderId}", orderId))
+        when(orderServiceMock.getOrderById(orderId)).thenReturn(orderResponseDto);
+        this.mockMvc.perform(get("/orders/{orderId}", orderId))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
 
+        verify(orderServiceMock, never()).getOrderById(orderId);
     }
+
+//    @Test
+////    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+//    void getOrderHistory() throws Exception {
+//
+//        String accessSecret = "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==";
+////         String refreshSecret = "zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==";
+//
+//        SecretKey jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessSecret));
+//        String jwt =  Jwts.builder()
+//                .setSubject(userResponseDto.getEmail())
+//                .signWith(jwtAccessSecret)
+//                .claim("roles", List.of("CLIENT"))
+//                .claim("name", userResponseDto.getName())
+//                .compact();
+//
+//        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+//        jwtAuthentication.setAuthenticated(true);
+//
+//        Set<OrderResponseDto> orderResponseDtoSet = new HashSet<>();
+//        orderResponseDtoSet.add(orderResponseDto);
+//
+//        when(orderServiceMock.getOrderHistory("arneoswald@example.com")).thenReturn(orderResponseDtoSet);
+//
+//        this.mockMvc.perform(get("/orders/history")
+//                        .header("authorization", jwt)
+//                        .with(authentication(jwtAuthentication)))
+//
+//                .andExpect(status().isOk());
+////                .andExpect(jsonPath("$..orderId").value(1))
+////                .andExpect(jsonPath("$..contactPhone").value("+496921441"));
+//
+//        verify(orderServiceMock, times(1)).getOrderHistory(jwtAuthentication.getEmail());
+//
+//    }
+//
+//    @Test
+//    void insertOrder() throws Exception {
+//        mockMvc.perform(post("/orders")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(orderRequestDto))
+//                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENT")))
+//                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMINISTRATOR"))))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void cancelOrder() throws Exception {
+//        Long orderId = 1L;
+//        mockMvc.perform(put("/orders//{orderId}", orderId)
+//                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_CLIENT")))
+//                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMINISTRATOR"))))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 }

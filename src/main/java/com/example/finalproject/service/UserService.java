@@ -52,7 +52,7 @@ public class UserService {
         cartRepository.save(cart);
     }
 
-    @Transactional
+
     public void updateUser(Long id, UserRequestDto userUpdateDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundInDataBaseException("User not found in database."));
@@ -76,6 +76,7 @@ public class UserService {
         UserResponseDto userResponseDto;
         if (user != null) {
             userResponseDto = mappers.convertToUserResponseDto(user);
+            userResponseDto.setPasswordHash("***");
         } else {
             throw new DataNotFoundInDataBaseException("User not found in database.");
         }
