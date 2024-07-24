@@ -9,7 +9,6 @@ import org.springframework.scheduling.annotation.*;
 import org.springframework.stereotype.*;
 
 import java.sql.*;
-import java.time.*;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -32,28 +31,5 @@ public class OrderStatusScheduler {
         List<Status> statusesToUpdate = Arrays.asList(Status.CREATED, Status.PENDING_PAYMENT, Status.PAID, Status.ON_THE_WAY);
         Integer updatedOrders = orderRepository.updateOrderStatuses(START_DATE, statusesToUpdate);
         log.info("Number of orders updated: {}", updatedOrders);
-        Integer undeliveredOrders = orderRepository.countUndeliveredOrders(START_DATE);
-        if (undeliveredOrders == 0) {
-            stopScheduler();
-        }
-    }
-
-    public void stopScheduler() {
-        active = false;
-        if (scheduledTask != null) {
-            scheduledTask.cancel(false);
-        }
-        log.info("All orders are delivered. Scheduler stopped.");
-    }
-
-    //подготовка к запуску шедулера по триггеру
-    public void startScheduler() {
-        if (scheduledTask == null || scheduledTask.isCancelled()) {
-            active = true;
-            scheduledTask = taskScheduler.scheduleAtFixedRate(this::updateOrderStatuses, Duration.ofSeconds(30));
-            log.info("Scheduler started.");
-        } else {
-            log.info("Scheduler is already running.");
-        }
     }
 }
