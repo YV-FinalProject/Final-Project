@@ -15,11 +15,11 @@ public class LogUtils {
         if (result instanceof List) {
             resultInfo.append("RESULT_SIZE=").append(((List<?>) result).size());
             resultInfo.append(", { First record } : ");
-            resultInfo.append(((List)result).getFirst().toString());
+            resultInfo.append(((List<?>)result).getFirst().toString());
         }
 
         if (log.isDebugEnabled() || !(result instanceof List)) {
-            if (resultInfo.length() > 0) {
+            if (!resultInfo.isEmpty()) {
                 resultInfo.append(" ");
             }
             resultInfo.append(result);

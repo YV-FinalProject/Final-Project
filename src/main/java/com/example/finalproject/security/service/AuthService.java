@@ -45,7 +45,6 @@ public class AuthService {
         }
     }
 
-
             public JwtResponse getAccessToken (@NonNull String refreshToken) throws AuthException {
                 if (jwtProvider.validateRefreshToken(refreshToken)) {
                     final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
@@ -95,8 +94,4 @@ public class AuthService {
                 }
                 return jwtResponse;
             }
-
-//    public JwtAuthentication getAuthInfo() {
-//        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
-//    }
         }

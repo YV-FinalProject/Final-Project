@@ -127,12 +127,4 @@ public class AdviceController {
         return errorResponse;
     }
 
-    // по умолчанию для всех остальных исключений
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorMessage> exceptionHandler(Exception exception) {
-//        return ResponseEntity
-//                .status(HttpStatus.I_AM_A_TEAPOT)
-//                .body(new ErrorMessage("Sorry, something went wrong!"));
-//    }
-
 }

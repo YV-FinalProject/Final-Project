@@ -35,8 +35,6 @@ public class Mappers {
         return favoriteResponseDto;
     }
 
-
-
     public CartItemResponseDto convertToCartItemResponseDto(CartItem cartItem) {
         modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
                 .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
@@ -45,22 +43,12 @@ public class Mappers {
         return cartItemResponseDto;
     }
 
-//    public CartItem convertToCartItem(CartItemRequestDto cartItemsDto) {
-//        return modelMapper.map(cartItemsDto, CartItem.class);
-//    }
-
-
     public OrderResponseDto convertToOrderResponseDto(Order order) {
            modelMapper.typeMap(Order.class, OrderResponseDto.class)
             .addMappings(mapper -> mapper.skip(OrderResponseDto::setUserResponseDto));
         return modelMapper.map(order, OrderResponseDto.class);
 
     }
-
-//    public Order convertToOrder(OrderRequestDto ordersRequestDto) {
-//        return modelMapper.map(ordersRequestDto, Order.class);
-//    }
-
 
     public OrderItemResponseDto convertToOrderItemResponseDto(OrderItem orderItem) {
         modelMapper.typeMap(OrderItem.class, OrderItemResponseDto.class)
@@ -69,11 +57,6 @@ public class Mappers {
         orderItemResponseDto.setProductResponseDto(convertToProductResponseDto(orderItem.getProduct()));
         return orderItemResponseDto;
     }
-
-//    public OrderItem convertToOrderItem(OrderItemRequestDto orderItemRequestDto) {
-//        return modelMapper.map(orderItemRequestDto, OrderItem.class);
-//    }
-
 
     public Product convertToProduct(ProductRequestDto productRequestDto) {
         return modelMapper.map(productRequestDto, Product.class);
@@ -93,7 +76,6 @@ public class Mappers {
         return modelMapper.map(categoryRequestDto, Category.class);
     }
 
-
     public ProductCountDto convertToProductCountDto(ProductCountInterface productCountInterface) {
         return modelMapper.map(productCountInterface, ProductCountDto.class);
     }
@@ -105,9 +87,4 @@ public class Mappers {
     public ProductProfitDto convertToProductProfitDto(ProductProfitInterface productProfitInterface) {
         return modelMapper.map(productProfitInterface, ProductProfitDto.class);
     }
-
-
-    //   modelMapper.typeMap(CartItem.class, CartItemResponseDto.class)
-//            .addMappings(mapper -> mapper.skip(CartItemResponseDto::setCartResponseDto));
-
 }

@@ -10,8 +10,10 @@ The application allows customers to select a product from the catalog, add it to
 ## Detailed Project Documentation
 
 - [Project Requirements and Specifications](docs/Specs.md)
-- API Specifications
 - [Database Structure](docs/DB.md)
+- [Docker Specifications](docs/Docker.md)
+- The application's API in OpenAPI format is exposed via [Swagger](http://localhost:8080/swagger-ui/index.html#/) 
+- 
 
 ## Technology Stack
 
