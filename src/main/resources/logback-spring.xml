@@ -24,20 +24,14 @@
         </layout>
     </appender>
 
-    <!--    <logger name="org.hibernate" level="INFO" additivity="false">-->
-    <!--        <appender-ref ref="STDOUT"/>-->
-    <!--&lt;!&ndash;        <appender-ref ref="FILE"/>&ndash;&gt;-->
-    <!--    </logger>-->
-
     <logger name="com.example.finalproject" additivity="false" level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
     </logger>
 
     <root level="INFO">
-<!--        <appender-ref ref="STDOUT"/>-->
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
-
     </root>
-    <!--    <logger name="org.springframework.ws.client.MessageTracing.received" level="TRACE"/>-->
+
 </configuration>

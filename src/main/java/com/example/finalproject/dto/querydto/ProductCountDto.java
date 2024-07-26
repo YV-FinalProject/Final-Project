@@ -1,7 +1,6 @@
 package com.example.finalproject.dto.querydto;
 
 import lombok.*;
-import org.hibernate.id.IntegralDataTypeHolder;
 
 import java.math.BigDecimal;
 @Data

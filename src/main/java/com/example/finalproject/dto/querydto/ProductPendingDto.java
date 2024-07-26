@@ -2,9 +2,6 @@ package com.example.finalproject.dto.querydto;
 
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
