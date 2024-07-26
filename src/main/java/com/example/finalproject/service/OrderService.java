@@ -30,16 +30,22 @@ public class OrderService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
 
-    public OrderResponseDto getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElse(null);
-        if (order != null) {
-            OrderResponseDto orderResponseDto = mappers.convertToOrderResponseDto(order);
-            Set<OrderItemResponseDto> orderItemResponseDto = MapperUtil.convertSet(order.getOrderItems(), mappers::convertToOrderItemResponseDto);
-            orderResponseDto.setOrderItemsSet(orderItemResponseDto);
-            return orderResponseDto;
-        } else {
-            throw new DataNotFoundInDataBaseException("Order not found in database.");
+    public OrderResponseDto getOrderById(Long orderId, String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
+        Set<Order> ordersSet = user.getOrders();
+        for (Order order : ordersSet) {
+            if (order.getOrderId().equals(orderId)) {
+                OrderResponseDto orderResponseDto = mappers.convertToOrderResponseDto(order);
+                Set<OrderItemResponseDto> orderItemResponseDto = MapperUtil.convertSet(order.getOrderItems(), mappers::convertToOrderItemResponseDto);
+                orderResponseDto.setOrderItemsSet(orderItemResponseDto);
+                return orderResponseDto;
+            }
+        }
+
+        throw new DataNotFoundInDataBaseException("Order not found in database or doesn't belong to user.");
     }
 
     public Set<OrderResponseDto> getOrderHistory(String email) {
@@ -107,9 +113,9 @@ public class OrderService {
         orderRepository.save(orderToInsert);
 
         Cart cart = cartRepository.findById(user.getCart().getCartId()).orElse(null);
-        if(cart != null){
-            Set <CartItem> cartItemSet = cart.getCartItems();
-            for(CartItem item : cartItemSet){
+        if (cart != null) {
+            Set<CartItem> cartItemSet = cart.getCartItems();
+            for (CartItem item : cartItemSet) {
                 cartItemRepository.deleteById(item.getCartItemId());
             }
         } else {
@@ -117,19 +123,24 @@ public class OrderService {
         }
     }
 
-    public void cancelOrder(Long orderId){
-        Order order = orderRepository.findById(orderId).orElse(null);
-        if (order != null) {
-            if(order.getStatus() == Status.CREATED || order.getStatus() == Status.PENDING_PAYMENT) {
-                order.setStatus(Status.CANCELED);
-                orderRepository.save(order);
-            } else {
-                throw new OrderStatusException("Order already paid and can not be canceled.");
-            }
-        } else {
-            throw new DataNotFoundInDataBaseException("Order not found in database.");
+    public void cancelOrder(Long orderId, String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            throw new DataNotFoundInDataBaseException("User not found in database.");
         }
+        Set<Order> ordersSet = user.getOrders();
+        for (Order order : ordersSet) {
+            if (order.getOrderId().equals(orderId)) {
+                if (order.getStatus() == Status.CREATED || order.getStatus() == Status.PENDING_PAYMENT) {
+                    order.setStatus(Status.CANCELED);
+                    orderRepository.save(order);
+                    return;
+                } else {
+                    throw new OrderStatusException("Order already paid and can not be canceled.");
+                }
+            }
+        }
+        throw new DataNotFoundInDataBaseException("Order not found in database or doesn't belong to user.");
     }
-
-
 }
+
