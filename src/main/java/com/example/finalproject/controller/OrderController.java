@@ -33,7 +33,10 @@ public class OrderController {
     public OrderResponseDto getOrderById(@PathVariable
                                              @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
                                              @Parameter(description = "Order identifier") Long orderId) {
-        return orderService.getOrderById(orderId);
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();
+
+        return orderService.getOrderById(orderId, email);
     }
 
     @Operation(summary = "Getting order history", description = "Provides functionality for getting all orders of a user ")
@@ -67,6 +70,10 @@ public class OrderController {
     public void cancelOrder(@PathVariable
                                 @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
                                 @Parameter(description = "Order identifier") Long orderId){
-        orderService.cancelOrder(orderId);
+
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();
+
+        orderService.cancelOrder(orderId, email);
     }
 }

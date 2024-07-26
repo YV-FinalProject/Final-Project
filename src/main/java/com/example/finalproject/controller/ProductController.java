@@ -91,7 +91,6 @@ public class ProductController {
 
     @Operation(summary = "Getting maximum discount price product", description = "Provides functionality for getting product with maximum discount price")
     @SecurityRequirement(name = "JWT")
-    @PreAuthorize("hasAnyRole('CLIENT','ADMINISTRATOR')")
     @GetMapping(value = "/maxDiscount")
     @ResponseStatus(HttpStatus.OK)
     public ProductResponseDto getMaxDiscountProduct() {

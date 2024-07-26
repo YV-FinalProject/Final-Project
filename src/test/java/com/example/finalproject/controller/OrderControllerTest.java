@@ -29,6 +29,7 @@ import java.util.HashSet;
 
 import java.util.List;
 import java.util.Set;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -126,32 +127,37 @@ class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void getOrderById() throws Exception {
         Long orderId = 1L;
-        when(orderServiceMock.getOrderById(orderId)).thenReturn(orderResponseDto);
-        this.mockMvc.perform(get("/orders/{orderId}", orderId))
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        when(orderServiceMock.getOrderById(orderId, "arneoswald@example.com")).thenReturn(orderResponseDto);
+        this.mockMvc.perform(get("/orders/{orderId}", orderId)
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.orderId").value(1))
                 .andExpect(jsonPath("$.contactPhone").value("+496921441"));
 
-        verify(orderServiceMock, times(1)).getOrderById(orderId);
+        verify(orderServiceMock, times(1)).getOrderById(orderId, "arneoswald@example.com");
     }
 
     @Test
     void shouldNotGetOrderById() throws Exception {
         Long orderId = 1L;
-        when(orderServiceMock.getOrderById(orderId)).thenReturn(orderResponseDto);
+        when(orderServiceMock.getOrderById(orderId, null)).thenReturn(orderResponseDto);
         this.mockMvc.perform(get("/orders/{orderId}", orderId))
                 .andDo(print())
                 .andExpect(status().isForbidden());
 
-        verify(orderServiceMock, never()).getOrderById(orderId);
+        verify(orderServiceMock, never()).getOrderById(orderId, null);
     }
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void getOrderHistory() throws Exception {
 
         JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
@@ -181,7 +187,7 @@ class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void insertOrder() throws Exception {
 
         JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
@@ -190,7 +196,7 @@ class OrderControllerTest {
         mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequestDto))
-                .with(authentication(jwtAuthentication)))
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -210,15 +216,19 @@ class OrderControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void cancelOrder() throws Exception {
         Long orderId = 1L;
 
-        mockMvc.perform(put("/orders//{orderId}", orderId))
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(put("/orders//{orderId}", orderId)
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        verify(orderServiceMock, times(1)).cancelOrder(orderId);
+        verify(orderServiceMock, times(1)).cancelOrder(orderId, "arneoswald@example.com");
     }
 
     @Test
@@ -229,6 +239,6 @@ class OrderControllerTest {
                 .andDo(print())
                 .andExpect(status().isForbidden());
 
-        verify(orderServiceMock, never()).cancelOrder(orderId);
+        verify(orderServiceMock, never()).cancelOrder(orderId, null);
     }
 }

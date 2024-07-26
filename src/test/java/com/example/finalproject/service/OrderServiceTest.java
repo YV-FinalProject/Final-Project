@@ -8,7 +8,6 @@ import com.example.finalproject.entity.enums.DeliveryMethod;
 import com.example.finalproject.entity.enums.Role;
 import com.example.finalproject.entity.enums.Status;
 import com.example.finalproject.exception.DataNotFoundInDataBaseException;
-import com.example.finalproject.exception.OrderStatusException;
 import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,10 +56,9 @@ class OrderServiceTest {
     private Mappers mappersMock;
 
     DataNotFoundInDataBaseException dataNotFoundInDataBaseException;
-    OrderStatusException orderStatusException;
 
     private User user;
-    private Order order, wrongStatusOrder;
+    private Order order;
     private OrderItem orderItem;
     private Product product;
     private Cart cart;
@@ -145,15 +143,7 @@ class OrderServiceTest {
         user.setCart(cart);
 
 
-        wrongStatusOrder = new Order(1L,
-                Timestamp.valueOf(LocalDateTime.now()),
-                "Am Hofacker 64c, 9 OG, 32312, Leiteritzdorf, Sachsen-Anhalt, GERMANY",
-                "+496921441",
-                DeliveryMethod.COURIER_DELIVERY,
-                Status.PAID,
-                Timestamp.valueOf(LocalDateTime.now()),
-                null,
-                user);
+
 
 //ResponseDto
         orderResponseDto = OrderResponseDto.builder()
@@ -210,16 +200,19 @@ class OrderServiceTest {
 
     @Test
     void getOrderById() {
-        Long orderId = 1L;
-        Long wrongOrderId = 58L;
 
-        when(orderRepositoryMock.findById(orderId)).thenReturn(Optional.of(order));
+        String email = "arneoswald@example.com";
+        String wrongEmail = "wrongemail@example.com";
+
+        Long orderId = 1L;
+
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(mappersMock.convertToOrderResponseDto(any(Order.class))).thenReturn(orderResponseDto);
         when(mappersMock.convertToOrderItemResponseDto(any(OrderItem.class))).thenReturn(orderItemResponseDto);
 
-        OrderResponseDto actualOrderResponseDto = orderServiceMock.getOrderById(orderId);
+        OrderResponseDto actualOrderResponseDto = orderServiceMock.getOrderById(orderId, email);
 
-        verify(orderRepositoryMock, times(1)).findById(orderId);
+        verify(userRepositoryMock, times(1)).findByEmail(email);
         verify(mappersMock, times(1)).convertToOrderResponseDto(any(Order.class));
         verify(mappersMock, times(1)).convertToOrderItemResponseDto(any(OrderItem.class));
 
@@ -230,17 +223,18 @@ class OrderServiceTest {
         assertEquals(orderResponseDto.getOrderItemsSet().hashCode(), actualOrderResponseDto.getOrderItemsSet().hashCode());
 
 
-        when(orderRepositoryMock.findById(wrongOrderId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.getOrderById(wrongOrderId));
-        assertEquals("Order not found in database.", dataNotFoundInDataBaseException.getMessage());
+                () -> orderServiceMock.getOrderById(orderId, wrongEmail));
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
+
     }
 
     @Test
     void getOrderHistory() {
 
         String email = "arneoswald@example.com";
-        String wrongEmail = "julia.vladimirov@example.com";
+        String wrongEmail = "wrongemail@example.com";
 
         when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(mappersMock.convertToOrderResponseDto(any(Order.class))).thenReturn(orderResponseDto);
@@ -276,7 +270,7 @@ class OrderServiceTest {
     void insertOrder() {
 
         String email = "arneoswald@example.com";
-        String wrongEmail = "julia.vladimirov@example.com";
+        String wrongEmail = "wrongemail@example.com";
 
         when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
         when(productRepositoryMock.findById(orderRequestDto.getOrderItemsSet().iterator().next().getProductId())).thenReturn(Optional.of(product));
@@ -312,22 +306,22 @@ class OrderServiceTest {
     @Test
     void cancelOrder() {
         Long orderId = 1L;
-        Long wrongOrderId = 150L;
-        when(orderRepositoryMock.findById(orderId)).thenReturn(Optional.of(order));
 
-        orderServiceMock.cancelOrder(orderId);
+        String email = "arneoswald@example.com";
+        String wrongEmail = "wrongemail@example.com";
 
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
+
+        orderServiceMock.cancelOrder(orderId, email);
+
+        verify(userRepositoryMock, times(1)).findByEmail(email);
         verify(orderRepositoryMock, times(1)).save(any(Order.class));
 
-        when(orderRepositoryMock.findById(wrongOrderId)).thenReturn(Optional.empty());
+        when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
-                () -> orderServiceMock.cancelOrder(wrongOrderId));
-        assertEquals("Order not found in database.", dataNotFoundInDataBaseException.getMessage());
+                () -> orderServiceMock.cancelOrder(orderId, wrongEmail));
+        assertEquals("User not found in database.", dataNotFoundInDataBaseException.getMessage());
 
-        when(orderRepositoryMock.findById(orderId)).thenReturn(Optional.of(wrongStatusOrder));
-        orderStatusException = assertThrows(OrderStatusException.class,
-                () -> orderServiceMock.cancelOrder(orderId));
-        assertEquals("Order already paid and can not be canceled.", orderStatusException.getMessage());
     }
 
 }
