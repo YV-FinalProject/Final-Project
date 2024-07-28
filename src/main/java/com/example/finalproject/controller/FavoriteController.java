@@ -1,10 +1,13 @@
 package com.example.finalproject.controller;
 
+import com.example.finalproject.security.jwt.JwtAuthentication;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.*;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
 import com.example.finalproject.dto.responsedto.FavoriteResponseDto;
@@ -24,37 +27,39 @@ public class FavoriteController {
     private final FavoriteService favoriteService;
 
     @Operation(summary = "Getting user's favorites", description = "Provides functionality for getting  all user's favorite products")
-    @GetMapping(value = "/{userId}")
+    @SecurityRequirement(name = "JWT")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Set<FavoriteResponseDto> getFavoritesByUserId(@PathVariable
-                                                             @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                                                             @Parameter(description = "User identifier") Long userId) {
-        return favoriteService.getFavoritesByUserId(userId);
+    public Set<FavoriteResponseDto> getFavorites() {
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();
+
+        return favoriteService.getFavorites(email);
     }
 
     @Operation(summary = "Inserting a favorite", description = "Provides functionality for inserting a new favorite product for the user")
-    @PostMapping(value = "/{userId}")
+    @SecurityRequirement(name = "JWT")
+    @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void insertFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto,
+    public void insertFavorite(@RequestBody @Valid FavoriteRequestDto favoriteRequestDto) {
 
-                               @PathVariable
-                               @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-                               @Parameter(description = "User identifier") Long userId) {
-        favoriteService.insertFavorite(favoriteRequestDto, userId);
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();
+
+        favoriteService.insertFavorite(favoriteRequestDto, email);
     }
 
     @Operation(summary = "Deleting a favorite", description = "Provides functionality for deleting a favorite product from user's favorites list")
-    @DeleteMapping
+    @SecurityRequirement(name = "JWT")
+    @DeleteMapping(value = "/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteFavoriteByProductId(
-            @RequestParam("userId")
-            @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-            @Parameter(description = "User identifier") Long userId,
+    public void deleteFavoriteByProductId(@PathVariable("productId")
+                                          @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
+                                          @Parameter(description = "Product identifier") Long productId) {
 
-            @RequestParam("productId")
-            @Min(value = 1, message = "Invalid ID: Id must be greater than or equal to 1")
-            @Parameter(description = "Product identifier") Long productId) {
-        favoriteService.deleteFavoriteByProductId(userId, productId);
+        final JwtAuthentication jwtInfoToken = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String email = jwtInfoToken.getEmail();
+
+        favoriteService.deleteFavoriteByProductId(email, productId);
     }
 }
-

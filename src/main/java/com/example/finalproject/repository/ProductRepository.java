@@ -77,7 +77,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "FROM Products p " +
             "JOIN OrderItems oi ON p.ProductID = oi.ProductID " +
             "JOIN Orders o ON oi.OrderId = o.OrderID " +
-            "WHERE o.Status = 'PAID' AND o.CreatedAt >= " +
+            "WHERE o.Status IN ('PAID','ON_THE_WAY','DELIVERED') AND o.CreatedAt >= " +
             "CASE " +
                     "WHEN :period = 'MONTH' THEN NOW() - INTERVAL :value MONTH " +
                     "WHEN :period = 'WEEK' THEN NOW() - INTERVAL :value WEEK " +

@@ -3,6 +3,9 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.requestdto.CartItemRequestDto;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.security.config.SecurityConfig;
+import com.example.finalproject.security.jwt.JwtAuthentication;
+import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.service.CartService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,34 +13,43 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(CartController.class)
 class CartControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private CartService cartServiceMock;
+
+    @MockBean
+    private JwtProvider jwtProvider;
+
 
     private UserResponseDto userResponseDto;
     private CartResponseDto cartResponseDto;
@@ -56,7 +68,7 @@ class CartControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("Pass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -93,32 +105,87 @@ class CartControllerTest {
     }
 
     @Test
-    void getCartItemsByUserId() throws Exception {
-        Long userId = 1L;
+    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    void getCartItems() throws Exception {
+        when(cartServiceMock.getCartItems(anyString())).thenReturn(cartItemResponseDtoSet);
 
-        when(cartServiceMock.getCartItemsByUserId(anyLong())).thenReturn(cartItemResponseDtoSet);
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
 
-        this.mockMvc.perform(get("/cart/{userId}",userId)).andDo(print())
+        this.mockMvc.perform(get("/cart")
+                .with(authentication(jwtAuthentication)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..cartItemId").value(1))
                 .andExpect(jsonPath("$..product.productId").value(1));
+
+        verify(cartServiceMock, times(1)).getCartItems(jwtAuthentication.getEmail());
     }
 
     @Test
+    void shouldNotGetCartItems() throws Exception {
+
+        this.mockMvc.perform(get("/cart"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(cartServiceMock, never()).getCartItems(null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
     void insertCartItem() throws Exception  {
-        Long userId = 1L;
-        mockMvc.perform(post("/cart/{userId}", userId)
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(post("/cart")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(cartItemRequestDto))).andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void deleteCarItemByProductId() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/cart?userId=1&productId=1"))
+                        .content(objectMapper.writeValueAsString(cartItemRequestDto))
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
+        verify(cartServiceMock, times(1)).insertCartItem(cartItemRequestDto, jwtAuthentication.getEmail());
+    }
+
+    @Test
+    void shouldNotInsertCartItem() throws Exception  {
+
+        mockMvc.perform(post("/cart")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(cartItemRequestDto)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(cartServiceMock, never()).insertCartItem(cartItemRequestDto, null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT","ADMINISTRATOR"})
+    void deleteCarItemByProductId() throws Exception {
+
+        Long productId = 1L;
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(delete("/cart/{productId}", productId)
+                        .with(authentication(jwtAuthentication)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(cartServiceMock, times(1)).deleteCarItemByProductId(jwtAuthentication.getEmail(), productId);
+    }
+
+    @Test
+    void shouldNotDeleteCarItemByProductId() throws Exception {
+        Long productId = 1L;
+
+        mockMvc.perform(delete("/cart/{productId}", productId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(cartServiceMock, never()).deleteCarItemByProductId(null, productId);
     }
 }

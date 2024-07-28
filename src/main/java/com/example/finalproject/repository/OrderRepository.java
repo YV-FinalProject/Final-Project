@@ -23,7 +23,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE o.createdAt > :startDate " +
             "AND o.status IN (:statuses)")
     Integer updateOrderStatuses(Timestamp startDate, @Param("statuses") List<Status> statuses);
-
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.status != 'DELIVERED' AND o.status != 'CANCELED' AND o.createdAt > :startDate")
-    Integer countUndeliveredOrders(Timestamp startDate);
 }

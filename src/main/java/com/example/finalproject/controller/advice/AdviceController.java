@@ -1,6 +1,11 @@
 package com.example.finalproject.controller.advice;
 
 import com.example.finalproject.exception.*;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.*;
 import org.modelmapper.spi.*;
 import org.springframework.context.support.*;
@@ -33,6 +38,41 @@ public class AdviceController {
     public ResponseEntity<ErrorMessage> exceptionHandler(OrderStatusException exception) {
         return ResponseEntity
                 .status(HttpStatus.NOT_ACCEPTABLE)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(AuthException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(AuthException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(ExpiredJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(UnsupportedJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(UnsupportedJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(MalformedJwtException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorMessage(exception.getMessage()));
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public ResponseEntity<ErrorMessage> exceptionHandler(SignatureException exception) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorMessage(exception.getMessage()));
     }
 
@@ -81,22 +121,10 @@ public class AdviceController {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-
-
-
-
     private Map<String, List<String>> getErrorsMap(List<String> errors) {
         Map<String, List<String>> errorResponse = new HashMap<>();
         errorResponse.put("errors", errors);
         return errorResponse;
     }
-
-    // по умолчанию для всех остальных исключений
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorMessage> exceptionHandler(Exception exception) {
-//        return ResponseEntity
-//                .status(HttpStatus.I_AM_A_TEAPOT)
-//                .body(new ErrorMessage("Sorry, something went wrong!"));
-//    }
 
 }

@@ -6,6 +6,9 @@ import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.enums.DeliveryMethod;
 import com.example.finalproject.entity.enums.Role;
 import com.example.finalproject.entity.enums.Status;
+import com.example.finalproject.security.config.SecurityConfig;
+import com.example.finalproject.security.jwt.JwtAuthentication;
+import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.service.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,22 +16,28 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(OrderController.class)
 class OrderControllerTest {
 
@@ -40,6 +49,10 @@ class OrderControllerTest {
 
     @MockBean
     private OrderService orderServiceMock;
+
+    @MockBean
+    private JwtProvider jwtProvider;
+
 
     private UserResponseDto userResponseDto;
     private OrderResponseDto orderResponseDto;
@@ -62,7 +75,7 @@ class OrderControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("ClientPass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -114,42 +127,118 @@ class OrderControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void getOrderById() throws Exception {
         Long orderId = 1L;
-        when(orderServiceMock.getOrderById(anyLong())).thenReturn(orderResponseDto);
-        this.mockMvc.perform(get("/orders/{orderId}", orderId)).andDo(print())
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        when(orderServiceMock.getOrderById(orderId, "arneoswald@example.com")).thenReturn(orderResponseDto);
+        this.mockMvc.perform(get("/orders/{orderId}", orderId)
+                        .with(authentication(jwtAuthentication)))
+                .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderId").value(orderId));
+                .andExpect(jsonPath("$.orderId").value(1))
+                .andExpect(jsonPath("$.contactPhone").value("+496921441"));
+
+        verify(orderServiceMock, times(1)).getOrderById(orderId, "arneoswald@example.com");
     }
 
     @Test
-    void getOrderHistoryByUserId() throws Exception {
-        Long userId = 1L;
+    void shouldNotGetOrderById() throws Exception {
+        Long orderId = 1L;
+        when(orderServiceMock.getOrderById(orderId, null)).thenReturn(orderResponseDto);
+        this.mockMvc.perform(get("/orders/{orderId}", orderId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(orderServiceMock, never()).getOrderById(orderId, null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
+    void getOrderHistory() throws Exception {
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
         Set<OrderResponseDto> orderResponseDtoSet = new HashSet<>();
         orderResponseDtoSet.add(orderResponseDto);
-        when(orderServiceMock.getOrderHistoryByUserId(anyLong())).thenReturn(orderResponseDtoSet);
 
-        this.mockMvc.perform(get("/orders/history/{orderId}", userId)).andDo(print())
+        when(orderServiceMock.getOrderHistory("arneoswald@example.com")).thenReturn(orderResponseDtoSet);
+
+        this.mockMvc.perform(get("/orders/history")
+                        .with(authentication(jwtAuthentication)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$..contactPhone").value(orderResponseDto.getContactPhone()));
+                .andExpect(jsonPath("$..orderId").value(1))
+                .andExpect(jsonPath("$..contactPhone").value("+496921441"));
+
+        verify(orderServiceMock, times(1)).getOrderHistory(jwtAuthentication.getEmail());
     }
 
     @Test
+    void shouldNotGetOrderHistory() throws Exception {
+
+        this.mockMvc.perform(get("/orders/history"))
+                .andExpect(status().isForbidden());
+
+        verify(orderServiceMock, never()).getOrderHistory(null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void insertOrder() throws Exception {
-        Long userId = 1L;
-        mockMvc.perform(post("/orders/{userId}", userId)
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(post("/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(orderRequestDto))
+                        .with(authentication(jwtAuthentication)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(orderServiceMock, times(1)).insertOrder(orderRequestDto, jwtAuthentication.getEmail());
+    }
+
+    @Test
+    void shouldNotInsertOrder() throws Exception {
+
+        mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderRequestDto)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
+
+        verify(orderServiceMock, never()).insertOrder(orderRequestDto, null);
     }
 
     @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void cancelOrder() throws Exception {
         Long orderId = 1L;
-        mockMvc.perform(put("/orders//{orderId}", orderId))
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(put("/orders//{orderId}", orderId)
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
+        verify(orderServiceMock, times(1)).cancelOrder(orderId, "arneoswald@example.com");
+    }
+
+    @Test
+    void shouldNotCancelOrder() throws Exception {
+        Long orderId = 1L;
+
+        mockMvc.perform(put("/orders//{orderId}", orderId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(orderServiceMock, never()).cancelOrder(orderId, null);
     }
 }

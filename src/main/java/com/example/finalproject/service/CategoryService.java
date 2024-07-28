@@ -10,7 +10,6 @@ import com.example.finalproject.mapper.Mappers;
 import com.example.finalproject.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class CategoryService {
         return MapperUtil.convertList(categoriesList, mappers::convertToCategoryResponseDto);
     }
 
-    @Transactional
-    public void deleteCategoryById(Long id) {
+
+    public void deleteCategory(Long id) {
         if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
         } else {
@@ -35,7 +34,7 @@ public class CategoryService {
         }
     }
 
-    @Transactional
+
     public void insertCategory(CategoryRequestDto categoryRequestDto) {
         Category checkCategory = categoryRepository.findCategoryByName(categoryRequestDto.getName());
         if(checkCategory == null){
@@ -47,7 +46,7 @@ public class CategoryService {
         }
     }
 
-    @Transactional
+
     public void updateCategory(CategoryRequestDto categoryRequestDto, Long id) {
         Category category = categoryRepository.findById(id).orElse(null);
         if (category != null) {

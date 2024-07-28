@@ -1,10 +1,6 @@
 package com.example.finalproject.dto.querydto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.id.IntegralDataTypeHolder;
+import lombok.*;
 
 import java.math.BigDecimal;
 @Data
@@ -17,4 +13,5 @@ public class ProductCountDto {
     private String status;
     private Integer count;
     private BigDecimal sum;
+
 }

@@ -12,7 +12,6 @@ import com.example.finalproject.repository.ProductRepository;
 import com.example.finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -25,8 +24,8 @@ public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
     private final Mappers mappers;
 
-    public Set<FavoriteResponseDto> getFavoritesByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+    public Set<FavoriteResponseDto> getFavorites(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Set<Favorite> favoritesList = user.getFavorites();
             return MapperUtil.convertSet(favoritesList, mappers::convertToFavoriteResponseDto);
@@ -35,10 +34,9 @@ public class FavoriteService {
         }
     }
 
-    @Transactional
-    public void insertFavorite(FavoriteRequestDto favoriteRequestDto, Long userId) {
+    public void insertFavorite(FavoriteRequestDto favoriteRequestDto, String email) {
         Favorite favorite = new Favorite();
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(favoriteRequestDto.getProductId()).orElse(null);
             if (product != null) {
@@ -62,9 +60,9 @@ public class FavoriteService {
 
     }
 
-    @Transactional
-    public void deleteFavoriteByProductId(Long userId, Long productId) {
-        User user = userRepository.findById(userId).orElse(null);
+
+    public void deleteFavoriteByProductId(String email, Long productId) {
+        User user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
             Product product = productRepository.findById(productId).orElse(null);
             if (product != null) {
@@ -72,10 +70,10 @@ public class FavoriteService {
                 for (Favorite item : favoritesSet) {
                     if (item.getProduct().getProductId().equals(productId)) {
                         favoriteRepository.deleteById(item.getFavoriteId());
-                    }else {
-                        throw new DataNotFoundInDataBaseException("Product not found in Favorites.");
+                        return;
                     }
                 }
+                throw new DataNotFoundInDataBaseException("Product not found in Favorites.");
             } else {
                 throw new DataNotFoundInDataBaseException("Product not found in database.");
             }

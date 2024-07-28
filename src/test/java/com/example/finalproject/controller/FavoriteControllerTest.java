@@ -3,6 +3,9 @@ package com.example.finalproject.controller;
 import com.example.finalproject.dto.requestdto.FavoriteRequestDto;
 import com.example.finalproject.dto.responsedto.*;
 import com.example.finalproject.entity.enums.Role;
+import com.example.finalproject.security.config.SecurityConfig;
+import com.example.finalproject.security.jwt.JwtAuthentication;
+import com.example.finalproject.security.jwt.JwtProvider;
 import com.example.finalproject.service.FavoriteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,24 +13,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Import(SecurityConfig.class)
 @WebMvcTest(FavoriteController.class)
 class FavoriteControllerTest {
 
@@ -35,10 +44,17 @@ class FavoriteControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
+    WebApplicationContext webApplicationContext;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @MockBean
     private FavoriteService favoriteServiceMock;
+
+    @MockBean
+    private JwtProvider jwtProvider;
+
 
     private UserResponseDto userResponseDto;
     private ProductResponseDto productResponseDto;
@@ -57,7 +73,7 @@ class FavoriteControllerTest {
                 .name("Arne Oswald")
                 .email("arneoswald@example.com")
                 .phone("+496151226")
-                .password("Pass1$trong")
+                .passwordHash("ClientPass1$trong")
                 .role(Role.CLIENT)
                 .build();
 
@@ -87,30 +103,88 @@ class FavoriteControllerTest {
     }
 
     @Test
-    void getFavoritesByUserId() throws Exception {
-        Long userId = 1L;
-        when(favoriteServiceMock.getFavoritesByUserId(anyLong())).thenReturn(favoriteResponseDtoSet);
-        this.mockMvc.perform(get("/favorites/{userId}",userId)).andDo(print())
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
+    void getFavorites() throws Exception {
+
+        when(favoriteServiceMock.getFavorites(any(String.class))).thenReturn(favoriteResponseDtoSet);
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        this.mockMvc.perform(get("/favorites")
+                        .with(authentication(jwtAuthentication)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$..favoriteId").value(1));
+
+        verify(favoriteServiceMock, times(1)).getFavorites(jwtAuthentication.getEmail());
     }
 
     @Test
+    void shouldNotGetFavorites() throws Exception {
+
+        this.mockMvc.perform(get("/favorites"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(favoriteServiceMock, never()).getFavorites(null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
     void insertFavorite() throws Exception {
-        Long userId = 1L;
-        mockMvc.perform(post("/favorites/{userId}", userId)
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(post("/favorites")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(favoriteResponseDto))).andDo(print())
-                .andExpect(status().isOk());
-
-    }
-
-    @Test
-    void deleteFavoriteByProductId() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders.delete("/favorites?userId=1&productId=1"))
+                        .content(objectMapper.writeValueAsString(favoriteRequestDto))
+                        .with(authentication(jwtAuthentication)))
                 .andDo(print())
                 .andExpect(status().isOk());
 
+        verify(favoriteServiceMock, times(1)).insertFavorite(favoriteRequestDto, jwtAuthentication.getEmail());
+    }
+
+    @Test
+    void shouldNotInsertFavorite() throws Exception {
+
+        mockMvc.perform(post("/favorites")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(favoriteRequestDto)))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(favoriteServiceMock, never()).insertFavorite(favoriteRequestDto, null);
+    }
+
+    @Test
+    @WithMockUser(username = "Test User", roles = {"CLIENT", "ADMINISTRATOR"})
+    void deleteFavoriteByProductId() throws Exception {
+
+        Long productId = 1L;
+
+        JwtAuthentication jwtAuthentication = new JwtAuthentication("arneoswald@example.com", List.of("CLIENT"));
+        jwtAuthentication.setAuthenticated(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/favorites/{productId}", productId)
+                        .with(authentication(jwtAuthentication)))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(favoriteServiceMock, times(1)).deleteFavoriteByProductId( jwtAuthentication.getEmail(), productId);
+    }
+
+    @Test
+    void shouldNotDeleteFavoriteByProductId() throws Exception {
+
+        Long productId = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/favorites/{productId}", productId))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+        verify(favoriteServiceMock, never()).deleteFavoriteByProductId( null, productId);
     }
 }
