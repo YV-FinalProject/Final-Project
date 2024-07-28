@@ -119,8 +119,8 @@ public class ProductController {
             @Parameter(description = "Indicator whether a discount is available or not") Boolean hasDiscount,
 
             @RequestParam(value = "sort", required = false)
-            @Pattern(regexp = "^((name|price|createdAt|updatedAt)(,asc|,desc))?$", message = "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'")
-            @Parameter(description = "Sorting parameters in ascending and descending order by:<br>name: <code>name,asc</code> / <code>name,desc</code><br>price: <code>price,asc</code> / <code>price,desc</code><br>creation date: <code>createdAt,asc</code> / <code>createdAt,desc</code><br>update date: <code>updatedAt,asc</code> / <code>updatedAt,desc</code>") String sort) {
+            @Pattern(regexp = "^((name|price|discountPrice|createdAt|updatedAt)(,asc|,desc))?$", message = "Invalid sorting definition: must be in form '<sort parameter>,<sort order>'")
+            @Parameter(description = "Sorting parameters in ascending and descending order by:<br>name: <code>name,asc</code> / <code>name,desc</code><br>price: <code>price,asc</code> / <code>price,desc</code><br>discountPrice: <code>discountPrice,asc</code> / <code>discountPrice,desc</code><br>creation date: <code>createdAt,asc</code> / <code>createdAt,desc</code><br>update date: <code>updatedAt,asc</code> / <code>updatedAt,desc</code>") String sort) {
         return productService.getProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
     }
 
