@@ -190,7 +190,6 @@ class CartServiceTest {
         verify(cartRepositoryMock, times(1)).findById(user.getCart().getCartId());
         verify(cartItemRepositoryMock, times(1)).save(any(CartItem.class));
 
-
         when(userRepositoryMock.findByEmail(wrongEmail)).thenReturn(Optional.empty());
         dataNotFoundInDataBaseException = assertThrows(DataNotFoundInDataBaseException.class,
                 () -> cartServiceMock.insertCartItem(cartItemRequestDto, wrongEmail));
@@ -209,6 +208,28 @@ class CartServiceTest {
         assertEquals("This product is already in cart.", dataAlreadyExistsException.getMessage());
 
     }
+
+    @Test
+    void insertCartItemWhenNoCart() {
+        String email = "arneoswald@example.com";
+
+        when(userRepositoryMock.findByEmail(email)).thenReturn(Optional.of(user));
+        when(productRepositoryMock.findById(cartItemRequestDto.getProductId())).thenReturn(Optional.of(product));
+        when(cartRepositoryMock.findById(user.getCart().getCartId())).thenReturn(Optional.empty());
+        when(cartRepositoryMock.save(any(Cart.class))).thenReturn(cart);
+        when(cartItemRepositoryMock.save(any(CartItem.class))).thenReturn(cartItem);
+
+
+        cartServiceMock.insertCartItem(cartItemRequestDto, email);
+
+        verify(userRepositoryMock, times(1)).findByEmail(email);
+        verify(productRepositoryMock, times(1)).findById(cartItemRequestDto.getProductId());
+        verify(cartRepositoryMock, times(1)).findById(user.getCart().getCartId());
+        verify(cartRepositoryMock, times(2)).save(any(Cart.class));
+        verify(cartItemRepositoryMock, times(1)).save(any(CartItem.class));
+    }
+
+
 
     @Test
     void deleteCarItemByProductId() {

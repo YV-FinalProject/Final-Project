@@ -295,11 +295,16 @@ class ProductServiceTest {
         BigDecimal minPrice = BigDecimal.valueOf(0.00);
         BigDecimal maxPrice = BigDecimal.valueOf(100.00);
         Boolean hasDiscount = true;
+        String sort = "name,asc";
         Sort sortObject = orderBy("name", true);
         when(productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject)).thenReturn(List.of(product));
-        List<Product> actualProductResponseDto = productRepositoryMock.findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
+        when(mappersMock.convertToProductResponseDto(product)).thenReturn(productResponseDto);
+
+        List<ProductResponseDto> actualProductResponseDto = productServiceMock.getProductsByFilter(categoryId, minPrice, maxPrice, hasDiscount, sort);
+
         assertFalse(actualProductResponseDto.isEmpty());
         verify(productRepositoryMock, times(1)).findProductsByFilter(hasCategory,categoryId,minPrice,maxPrice,hasDiscount,sortObject);
+        verify(mappersMock, times(1)).convertToProductResponseDto(product);
         assertEquals(product.getProductId(),actualProductResponseDto.getFirst().getProductId());
     }
 
